@@ -30,11 +30,6 @@ Results/
 *.a
 *.lib
 
-# Executables
-*.exe
-*.out
-*.app
-
 
 ### Delphi ###
 # Uncomment these types if you want even more clean repository. But be careful.
@@ -62,7 +57,6 @@ Results/
 #
 
 # Delphi compiler-generated binaries (safe to delete)
-*.exe
 *.dll
 *.bpl
 *.bpi
@@ -95,12 +89,6 @@ Win32/
 
 # Castalia statistics file
 *.stat
-
-
-### FlexBuilder ###
-bin/
-bin-debug/
-bin-release/
 
 
 ### Windows ###
