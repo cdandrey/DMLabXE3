@@ -26,7 +26,7 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 	ListViewAlg->Items->Item[5]->Indent = VPRE;    // вершин с прогнозом
 	ListViewAlg->Items->Item[6]->Indent = VREC;    // вершин с рекурсией
 	ListViewAlg->Items->Item[7]->Indent = EQUA;    // уравнений
-//	ListViewAlg->Items->Item[8]->Indent = RSRV;    - reserve
+	ListViewAlg->Items->Item[8]->Indent = NIND;    // новый метод независимых множеств
 
 	ListViewAlg->Items->Item[0]->Caption = STR_RANG;    // ранговый
 	ListViewAlg->Items->Item[1]->Caption = STR_FULL;    // быстрый полный перебор
@@ -36,7 +36,7 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 	ListViewAlg->Items->Item[5]->Caption = STR_VPRE;    // вершин с прогнозом
 	ListViewAlg->Items->Item[6]->Caption = STR_VREC;    // вершин с  рекурсией
 	ListViewAlg->Items->Item[7]->Caption = STR_EQUA;    // уравнений
-//	ListViewAlg->Items->Item[8]->Caption = STR_RSRV;    - reserve
+	ListViewAlg->Items->Item[8]->Caption = STR_NIND;    // новый метод независимых множеств
 
 	ListViewTestType->Items->Item[0]->Indent = TEST_MO; 	// математическое ожидание
 	ListViewTestType->Items->Item[1]->Indent = TEST_CKO;	// среднеквадратическое отклонение

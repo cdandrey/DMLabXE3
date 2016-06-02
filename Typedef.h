@@ -56,7 +56,7 @@
 #define VPRE        205
 #define VREC        206
 #define EQUA        207
-//#define RSRV        208 - reserve
+#define NIND        208
 
 // названия алгоритмов
 #define STR_RANG  "Ранговый метод"
@@ -67,7 +67,7 @@
 #define STR_VPRE  "Метод вершин с прогнозом"
 #define STR_VREC  "Метод вершин с рекурсией"
 #define STR_EQUA  "Метод уравнений"
-//#define STR_RSRV  "Метод " - reserve
+#define STR_NIND  "Новый метод независимых множеств"
 
 #define LIST_DIFF   200    // разница между id алгоритмов и их номеров в списке
 

@@ -20,6 +20,7 @@
 //       7. SearchCoverVrec - метод вершин с прогнозом и рекурсией
 //       8. SearchCoverAbsb - метод поглащений
 //       9. SearchCoverEqua - метод уравнений
+//       10. SearchCoverIndsNew - новый метод независимых множеств
 //
 //    данные возвращаются с номер в списке GraphIndex
 //---------------------------------------------------------------------------
@@ -39,7 +40,7 @@ __fastcall TThreadSearchCover::TThreadSearchCover(bool CreateSuspended)
 	FuncPoint[VPRE] = VpreSearchCover;
 	FuncPoint[VREC] = VrecSearchCover;
 	FuncPoint[EQUA] = EquaSearchCover;
-//	FuncPoint[RSRV] = RsrvSearchCover; - reserve
+	FuncPoint[NIND] = IndsNewSearchCover;
 }
 //------------------------------------------------------------------------------
 
@@ -292,6 +293,32 @@ AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 		Str += IntToStr(*it) + "  ";
 
 	return Str.Trim();
+}
+//---------------------------------------------------------------------------
+
+
+AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
+{
+	return ToString(Data.first) +
+		   " (" + IntToStr((int)Data.first.size()) + ") - " +
+		   ToString(Data.second) + " (" +
+		   IntToStr((int)Data.second.size()) + ")\n";
+}
+//---------------------------------------------------------------------------
+
+
+AnsiString __fastcall TThreadSearchCover::ToString(const set<pair<s_t,s_t> > &Data)
+{
+	AnsiString Str = "";
+
+	int k = 1;
+
+	for (set<pair<s_t,s_t> >::const_iterator it = Data.begin();it != Data.end(); ++it) {
+		Str += "\t" + IntToStr(k) + ".\t" +  ToString(*it);
+		++k;
+	}
+
+	return Str;
 }
 //---------------------------------------------------------------------------
 
@@ -1259,7 +1286,6 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			}
 
 			Sets = NewSets;
-
 			NewSets.clear();
 
 			for (set<pair<s_t,s_t> >::iterator it = Sets.begin();
@@ -1368,6 +1394,216 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 		QueryPerformanceCounter(&TimeEnd);
 
 		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+
+		ToCover();
+
+	} catch (...){
+		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::IndsNewSearchCover()
+{
+	try {
+
+		ToConsol("search-cover full " + FileName);
+
+		if (Vertex.size() == 0) {
+			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			return;
+		}
+
+		// задаем начальные данные характеристикам алгоритма
+		Q        = 0;
+		Cover    = v_t();
+		LogShort = "МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
+		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		QueryPerformanceCounter(&TimeBegin);
+
+		// промежуточные данные
+
+		// формируем независимые множества
+		ToConsol("\t--\tФормируем пары X - Y, где X - вершинное покрытие, Y - независимое множество...");
+
+		Log += "Шаг.1 Формируем пары X - Y, где X - вершинное покрытие, Y - независимое множество\n\n"
+			   "\t--\tсформированные множеста:\n\n";
+
+		// множество всех пар множеств - покрытие/нез.множество
+		// в паре множеств first - вершинные покрытия, second - независимое множесвтов
+		set<pair<s_t,s_t> > Sets;
+
+		for (unsigned i = 1; i <= (Vertex.size() - 1); ++i)
+			for (s_t::iterator it = VertexAdd.at(i).begin();
+				 it != VertexAdd.at(i).end(); ++it)
+			{
+				if (*it > i) {
+
+					pair<s_t,s_t> S;
+
+					S.second.insert(i);
+					S.second.insert(*it);
+
+					set_union(Vertex.at(i).begin(),Vertex.at(i).end(),
+							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
+							  inserter(S.first, S.first.begin()));
+
+					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+
+					Sets.insert(S);
+				}
+		   }
+
+		Log += ToString(Sets);
+
+		// main algorithm
+		ToConsol("\t--\tСозданно " + IntToStr((int)Sets.size()) + " независимых множеств");
+
+		// формируем множества пока появляются новые множества
+		// и появляются новые полные множества
+
+		pair<s_t,s_t> MaxSet;
+
+		while (true)
+		{
+			// обееденяем пары у которых одинаковы вершинные покрытия - first
+			Log += "\n\nШаг 2.1 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
+
+			set<pair<s_t,s_t> > NewSets(Sets);
+
+			for (set<pair<s_t,s_t> >::iterator it = Sets.begin();
+				it != Sets.end(); ++it)
+			{
+				set<pair<s_t,s_t> >::iterator it_next = it;
+
+				++it_next;
+
+				pair<s_t,s_t> S;
+				S.first = it->first;
+
+				bool Absorb = false;
+				unsigned CountIdent = 0;
+
+				for (; it_next != Sets.end(); ++it_next) {
+
+					if (Terminated)
+						return;
+
+					if (it->first == it_next->first) {
+
+						Absorb = true;
+
+						// removed etalon sets also the first time
+						if (CountIdent == 0)
+							NewSets.erase(*it);
+
+						NewSets.erase(*it_next);
+
+						set_union(it->second.begin(), it->second.end(),
+							it_next->second.begin(), it_next->second.end(),
+							inserter(S.second, S.second.begin()));
+
+						Q += it->second.size() + it_next->second.size();
+
+						++CountIdent;
+
+					} else {
+						// так как множества упорядочены в порядке возростания
+						// то после первого несовпадения нужно переходить к следующему
+						break;
+					}
+				}
+
+				if (CountIdent > 0 && Absorb)
+					NewSets.insert(S);
+
+				for (unsigned i = 0; i < CountIdent; ++i)
+					++it;
+			}
+
+			Sets = NewSets;
+			NewSets.clear();
+
+			Log += ToString(Sets);
+
+			// search maximum set
+			Log += "\n\nШаг 2.2 Находим пару с наибольшим независимым множеством.\n\n";
+
+			set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
+			int max_len = it_max->second.size();
+			for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
+				if (max_len < it->second.size()) {
+					max_len = it->second.size();
+					it_max = it;
+				}
+
+			Log += "\t--\tтекущее наибольшее независимое множество: " + ToString(*it_max);
+
+			if (MaxSet.first.size() > 0) {
+
+				set_union(MaxSet.first.begin(),MaxSet.first.end(),
+						  it_max->first.begin(),it_max->first.end(),
+						  inserter(MaxSet.first,MaxSet.first.begin()));
+
+				set_union(MaxSet.second.begin(),MaxSet.second.end(),
+						  it_max->second.begin(),it_max->second.end(),
+						  inserter(MaxSet.second,MaxSet.second.begin()));
+				Log += "\t--\tобъединенное с предыдущим, наибольшее независимое множество: " + ToString(MaxSet);
+
+			} else {
+				MaxSet.first = it_max->first;
+				MaxSet.second = it_max->second;
+			}
+
+			if (MaxSet.first.size() + MaxSet.second.size() == Vertex.size() - 1) {
+				Log += "\t--\tполное максимальное независимое множество найдено: ";
+				Log += ToString(MaxSet.second);
+				break;
+
+			} else {
+
+				// удаляем из оставшихся множеств элементы вошедшие в самое большое множество
+				Log += "\n\nШаг 2.3 Удаляем вершины входящие в наибольшее независимое множество.\n\n";
+
+				for (set<pair<s_t,s_t> >::iterator itSets = Sets.begin();
+					 itSets != --Sets.end(); ++itSets)
+				{
+					pair<s_t,s_t> tmpPair(*itSets);
+
+					if (Terminated) {
+						ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+						return;
+					}
+
+					for (s_t::const_iterator it = MaxSet.first.begin(); it != MaxSet.first.end(); ++it) {
+						tmpPair.first.erase(*it);
+						tmpPair.second.erase(*it);
+					}
+
+					for (s_t::const_iterator it = MaxSet.second.begin(); it != MaxSet.second.end(); ++it) {
+						tmpPair.first.erase(*it);
+						tmpPair.second.erase(*it);
+					}
+
+					if (tmpPair.first.size() != 0 && tmpPair.second.size() != 0)
+						NewSets.insert(tmpPair);
+
+				}    // end for it
+
+				Sets = NewSets;
+				NewSets.clear();
+
+				Log += ToString(Sets);
+			}
+		}    // end while
+
+		QueryPerformanceCounter(&TimeEnd);
+
+		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+
+		for (s_t::iterator it = MaxSet.first.begin(); it != MaxSet.first.end(); ++it)
+			Cover.push_back(*it);
 
 		ToCover();
 
