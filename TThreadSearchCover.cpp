@@ -299,10 +299,10 @@ AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 
 AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 {
-	return ToString(Data.first) +
-		   " (" + IntToStr((int)Data.first.size()) + ") - " +
-		   ToString(Data.second) + " (" +
-		   IntToStr((int)Data.second.size()) + ")\n";
+	return //ToString(Data.first) +
+		   //" (" + IntToStr((int)Data.first.size()) + ") - " +
+		   ToString(Data.second) +
+		   " (" +  IntToStr((int)Data.second.size()) + ")\n";
 }
 //---------------------------------------------------------------------------
 
@@ -1178,9 +1178,9 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
 							  inserter(S.first, S.first.begin()));
 
-					AnsiString Str = "  (" + IntToStr((int)S.first.size()) + ")  " +
-									 ToString(S.first) + "     -    (" +
-									 IntToStr((int)S.second.size()) + ")  " +
+					AnsiString Str = //"  (" + IntToStr((int)S.first.size()) + ")  " +
+									 //ToString(S.first) + "     -    (" +
+									 "(" + IntToStr((int)S.second.size()) + ")  " +
 									 ToString(S.second) + "\n";
 
 					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
@@ -1368,10 +1368,10 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 		for (unsigned i = 1; i <= n; ++i)
 			if (MapIterator[i].size() > 0)
 				for (unsigned j = 0; j < MapIterator[i].size(); ++j) {
-					Str += "  -- " + IntToStr((int)k) + ".\t("
-						   + IntToStr((int)MapIterator[i][j]->first.size()) + ") "
-						   + ToString(MapIterator[i][j]->first)
-						   + "\t\t\t-  (" + IntToStr((int)MapIterator[i][j]->second.size())
+					Str += "  -- " + IntToStr((int)k) + ".\t"
+//						   + IntToStr((int)MapIterator[i][j]->first.size()) + ") "
+//						   + ToString(MapIterator[i][j]->first)
+						   + " (" + IntToStr((int)MapIterator[i][j]->second.size())
 						   + ") " + ToString(MapIterator[i][j]->second) + "\n";
 
 					if (k == 1) {
@@ -1602,7 +1602,7 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 
 		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
 
-		for (s_t::iterator it = MaxSet.first.begin(); it != MaxSet.first.end(); ++it)
+		for (s_t::iterator it = MaxSet.second.begin(); it != MaxSet.second.end(); ++it)
 			Cover.push_back(*it);
 
 		ToCover();
