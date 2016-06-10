@@ -299,8 +299,8 @@ AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 
 AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 {
-	return //ToString(Data.first) +
-		   //" (" + IntToStr((int)Data.first.size()) + ") - " +
+	return ToString(Data.first) +
+		   " (" + IntToStr((int)Data.first.size()) + ")\t\t-\t\t" +
 		   ToString(Data.second) +
 		   " (" +  IntToStr((int)Data.second.size()) + ")\n";
 }
@@ -1178,10 +1178,11 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
 							  inserter(S.first, S.first.begin()));
 
-					AnsiString Str = //"  (" + IntToStr((int)S.first.size()) + ")  " +
-									 //ToString(S.first) + "     -    (" +
-									 "(" + IntToStr((int)S.second.size()) + ")  " +
-									 ToString(S.second) + "\n";
+					AnsiString Str =  ToString(S);
+//									 "  (" + IntToStr((int)S.first.size()) + ")  " +
+//									 ToString(S.first) + "     -    (" +
+//									 "(" + IntToStr((int)S.second.size()) + ")  " +
+//									 ToString(S.second) + "\n";
 
 					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
 
@@ -1369,10 +1370,11 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			if (MapIterator[i].size() > 0)
 				for (unsigned j = 0; j < MapIterator[i].size(); ++j) {
 					Str += "  -- " + IntToStr((int)k) + ".\t"
-//						   + IntToStr((int)MapIterator[i][j]->first.size()) + ") "
-//						   + ToString(MapIterator[i][j]->first)
+						   + ToString(MapIterator[i][j]->first)
+						   + " (" + IntToStr((int)MapIterator[i][j]->first.size())
+						   + ")\t\t-\t\t" + ToString(MapIterator[i][j]->second)
 						   + " (" + IntToStr((int)MapIterator[i][j]->second.size())
-						   + ") " + ToString(MapIterator[i][j]->second) + "\n";
+						   + ")\n";
 
 					if (k == 1) {
 						s_t MinCover = MapIterator[i].at(j)->first;
@@ -1531,12 +1533,13 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 			Log += "\n\nШаг 2.2 Находим пару с наибольшим независимым множеством.\n\n";
 
 			set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
-			int max_len = it_max->second.size();
 			for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
-				if (max_len < it->second.size()) {
-					max_len = it->second.size();
+				if (it_max->second.size() < it->second.size()) {
 					it_max = it;
-				}
+				} else if (it_max->second.size() == it->second.size()) {
+					if (it_max->first.size() > it->first.size())
+						it_max = it;
+                }
 
 			Log += "\t--\tтекущее наибольшее независимое множество: " + ToString(*it_max);
 
