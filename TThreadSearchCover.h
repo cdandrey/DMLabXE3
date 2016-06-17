@@ -100,6 +100,10 @@ private:
 	// метод независимых множеств
 	void __fastcall IndsSearchCover();
 	void __fastcall IndsNewSearchCover();
+	void __fastcall IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,set<pair<s_t,s_t> > *pFullSets);
+	void __fastcall IndsUnionSets(set<pair<s_t,s_t> > *pSets);
+	void __fastcall IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets);
+	pair<s_t,s_t> __fastcall IndsBuildFullSet(int n,pair<s_t,s_t> FullSet,set<pair<s_t,s_t> > Sets);
 
 	// ранговый метод
 	void __fastcall RangSearchCover();
