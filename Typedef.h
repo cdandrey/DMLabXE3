@@ -127,6 +127,7 @@ typedef pair<int,int>           p_t;
 typedef vector<p_t>             vp_t;
 typedef pair<s_t,s_t>           ps_t;
 typedef vector<pair<s_t,s_t> >  vps_t;
+typedef set<pair<s_t,s_t> >     sps_t;
 
 typedef void __fastcall (__closure *func_t)(void);
 

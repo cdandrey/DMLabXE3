@@ -68,8 +68,8 @@ private:
 	static AnsiString __fastcall ToString(AnsiString infin, const v_t &data);  // для рангового алгоритма меняет значение INFIN на символ infin
 	static AnsiString __fastcall ToString(const v_t  &data);
 	static AnsiString __fastcall ToString(const s_t  &data);
-	static AnsiString __fastcall ToString(const pair<s_t,s_t> &data);
-	static AnsiString __fastcall ToString(const set<pair<s_t,s_t> > &Data);
+	static AnsiString __fastcall ToString(const ps_t &data);
+	static AnsiString __fastcall ToString(const sps_t &Data);
 	static AnsiString __fastcall ToString(int count);
 
 	static AnsiString __fastcall ToStringEdges(const s_t  &VertexSet,
@@ -103,7 +103,7 @@ private:
 	void __fastcall IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,set<pair<s_t,s_t> > *pFullSets);
 	void __fastcall IndsUnionSets(set<pair<s_t,s_t> > *pSets);
 	void __fastcall IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets);
-	pair<s_t,s_t> __fastcall IndsBuildFullSet(int n,pair<s_t,s_t> FullSet,set<pair<s_t,s_t> > Sets);
+	ps_t __fastcall IndsBuildFullSet(int n,ps_t FullSet,sps_t Sets);
 
 	// ранговый метод
 	void __fastcall RangSearchCover();
