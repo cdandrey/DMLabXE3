@@ -231,7 +231,7 @@ typedef struct _alg {
 		Id[STR_VREC] = VREC;
 		Id[STR_VERT] = VERT;
 		Id[STR_EQUA] = EQUA;
-//		Id[STR_RSRV] = RSRV;   - reserve
+		Id[STR_NIND] = NIND;
 
 		Name[RANG]   = STR_RANG;
 		Name[FULL]   = STR_FULL;
@@ -241,7 +241,7 @@ typedef struct _alg {
 		Name[VREC]   = STR_VREC;
 		Name[VERT]   = STR_VERT;
 		Name[EQUA]   = STR_EQUA;
-//		Name[RSRV]   = STR_RSRV; - reserve
+		Name[NIND]   = STR_NIND;
 	}
 } alg_t;
 

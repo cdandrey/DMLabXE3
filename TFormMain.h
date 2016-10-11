@@ -27,6 +27,7 @@
 #include <Vcl.Grids.hpp>
 #include <Vcl.ValEdit.hpp>
 #include <System.Actions.hpp>
+#include <System.ImageList.hpp>
 
 //---------------------------------------------------------------------------
 class TFormMain : public TForm

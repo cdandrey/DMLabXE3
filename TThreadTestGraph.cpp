@@ -20,8 +20,7 @@ __fastcall TThreadTestGraph::TThreadTestGraph(bool CreateSuspended)
 	Algorithms[VERT] = VertSearchCover; // 6
 	Algorithms[VPRE] = VpreSearchCover; // 7
 	Algorithms[VREC] = VrecSearchCover;	// 8
-
-	//	Algorithms[RSRV] = AbsbSearchCover;	- reserve
+	Algorithms[NIND] = NindSearchCover;	// 9
 }
 // ---------------------------------------------------------------------------
 
@@ -193,10 +192,7 @@ void __fastcall TThreadTestGraph::TestMO()
 
 		for (unsigned int i = 0; i < Alg.size(); ++i) {
 
-			Result[Alg.at(i)] = vvvd_t(PARAM_COUNT,
-								vvd_t(ParamFirst.size(),
-								vd_t(ParamSecond.size(),0))
-								);
+			Result[Alg.at(i)] = vvvd_t(PARAM_COUNT,vvd_t(ParamFirst.size(),vd_t(ParamSecond.size(),0)));
 		}
 
 		register unsigned int TestNum = ParamFirst.size() *
@@ -237,12 +233,13 @@ void __fastcall TThreadTestGraph::TestMO()
 
 						AlgNum = Alg.at(i);
 
+						LenMinCover = 0;
 						Algorithms[AlgNum]();
 
 						Result[AlgNum][QO][f][s] += Q;
 						Result[AlgNum][TE][f][s] += TimeExecut;
 						Result[AlgNum][RL][f][s] += (double) LenCover / n;
-						Result[AlgNum][NS][f][s] += NumSets;
+						Result[AlgNum][NS][f][s] += NumMinCovers;
 
 
 						if (LenMinCover != 0) {
@@ -255,7 +252,7 @@ void __fastcall TThreadTestGraph::TestMO()
 						}
 					}    // for Alg
 
-					-- TestNum;
+					--TestNum;
 				}	// for k
 
 				// вычисляем математическое ожидание характеристик для каждого метода
@@ -768,7 +765,7 @@ bool TThreadTestGraph::IsCovered(const vs_t &Edg,const v_t &Cov)
 //		Q = 0;
 //		TimeExecut = 0;
 //		LenCover = 0;
-//		NumSets = 0;
+//		NumMinCovers = 0;
 //
 //		LARGE_INTEGER TimeBegin;
 //		LARGE_INTEGER TimeEnd;
@@ -801,7 +798,7 @@ void __fastcall TThreadTestGraph::EquaSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1003,7 +1000,7 @@ void __fastcall TThreadTestGraph::FreqSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1097,7 +1094,7 @@ void __fastcall TThreadTestGraph::FullSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1181,7 +1178,7 @@ void __fastcall TThreadTestGraph::IndsSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = INFIN;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1352,7 +1349,7 @@ void __fastcall TThreadTestGraph::IndsSearchCover()
 
 		}
 
-		NumSets = FullSetsSize;
+		NumMinCovers = FullSetsSize;
 
 		if (LenMinCover == 0)
 			LenMinCover = LenCover;
@@ -1367,6 +1364,293 @@ void __fastcall TThreadTestGraph::IndsSearchCover()
 //---------------------------------------------------------------------------
 
 
+void __fastcall TThreadTestGraph::NindSearchCover()
+{
+	try {
+
+		ToConsol("\tвыполняется метод независимых множеств...");
+
+		Q = 0;
+		TimeExecut = 0;
+		LenCover = INFIN;
+		NumMinCovers = 0;
+
+		LARGE_INTEGER TimeBegin;
+		LARGE_INTEGER TimeEnd;
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		set<pair<s_t,s_t> > Sets;
+
+		unsigned n = Vertex.size() - 1;
+		for (unsigned i = 1; i <= n; ++i)
+			for (s_t::iterator it = VertexAdd.at(i).begin();
+				 it != VertexAdd.at(i).end(); ++it)
+			{
+				if (*it > i) {
+
+					pair<s_t,s_t> S;
+
+					S.second.insert(i);
+					S.second.insert(*it);
+
+					set_union(Vertex.at(i).begin(),Vertex.at(i).end(),
+							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
+							  inserter(S.first, S.first.begin()));
+
+					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+
+					if ((S.first.size() + S.second.size()) == n) {
+						if (S.first.size() < LenCover) {
+							LenCover = S.first.size();
+							NumMinCovers = 1;
+						} else if (S.first.size() == LenCover) {
+							++NumMinCovers;
+						}
+					} else {
+						Sets.insert(S);
+					}
+				}
+		   }
+
+		IndsUnionSets(n,&Sets,&LenCover);
+
+		// build solver for each pair
+		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
+		{
+			int iLenCover = IndsBuildFullSet(n,*it,Sets);
+			if (iLenCover < LenCover) {
+				LenCover = iLenCover;
+                NumMinCovers = 1;
+			} else if (iLenCover == LenCover) {
+				++NumMinCovers;
+			}
+		}
+
+		if (LenMinCover == 0)
+			LenMinCover = LenCover;
+
+		QueryPerformanceCounter(&TimeEnd);
+		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
+
+	} catch (...){
+		ToConsol("Ошибка выполнения метода независимых множеств! Тестирование завершенно с ошибкой.");
+	}
+}
+//---------------------------------------------------------------------------
+
+
+unsigned __fastcall TThreadTestGraph::IndsBuildFullSet(int n,ps_t FullSet,set<pair<s_t,s_t> > Sets)
+{
+	try {
+
+	Sets.erase(FullSet);
+
+	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
+
+		IndsRemoveUsedVertex(FullSet,&Sets);
+		IndsUnionSets(&Sets);
+
+		if (Sets.size() > 0) {
+
+		// search maximum set
+		set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
+		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
+			++Q;
+			if (it_max->second.size() < it->second.size()) {
+				it_max = it;
+			} else if (it_max->second.size() == it->second.size()) {
+				if (it_max->first.size() > it->first.size())
+					it_max = it;
+			}
+		}
+
+		Q += FullSet.first.size() + it_max->first.size();
+		Q += FullSet.second.size() + it_max->second.size();
+
+		set_union(FullSet.first.begin(),FullSet.first.end(),
+				it_max->first.begin(),it_max->first.end(),
+				inserter(FullSet.first,FullSet.first.begin()));
+
+		set_union(FullSet.second.begin(),FullSet.second.end(),
+				  it_max->second.begin(),it_max->second.end(),
+				  inserter(FullSet.second,FullSet.second.begin()));
+		}
+
+	}
+
+	return (FullSet.first.size() + FullSet.second.size() == n) ?
+				static_cast<unsigned>(FullSet.first.size())	: INFIN;
+
+	} catch (...) {
+		ToConsol("Error: " + IntToStr((int)Sets.size()));
+		return 0;
+	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadTestGraph::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,unsigned *pLenCover)
+{
+		bool Absorb = false;
+		set<pair<s_t,s_t> > NewSets(*pSets);
+
+		// union pair with equal covers( first set in pair )
+
+		for (set<pair<s_t,s_t> >::iterator it = pSets->begin();
+			it != pSets->end(); ++it)
+		{
+
+			pair<s_t,s_t> S;
+			S.first = it->first;
+
+			unsigned CountIdent = 0;
+			set<pair<s_t,s_t> >::iterator it_next = it;
+			++it_next;
+
+			for (; it_next != pSets->end(); ++it_next) {
+
+				if (Terminated)
+					return;
+
+				if (it->first == it_next->first) {
+
+					Absorb = true;
+
+					if (CountIdent == 0)
+						NewSets.erase(*it);
+
+					NewSets.erase(*it_next);
+
+					set_union(it->second.begin(), it->second.end(),
+							it_next->second.begin(), it_next->second.end(),
+							inserter(S.second, S.second.begin()));
+
+					if (S.second.size() + S.first.size() == n) {
+						//pFullSets->insert(S);
+						if (S.first.size() < *pLenCover) {
+							*pLenCover = S.first.size();
+							NumMinCovers = 1;
+						} else if (S.first.size() == *pLenCover) {
+							++NumMinCovers;
+						}
+						Absorb = false;
+					}
+
+					Q += it->second.size() + it_next->second.size();
+
+					++CountIdent;
+
+				} else {
+					// так как множества упорядочены в порядке возростания
+					// то после первого несовпадения нужно переходить к следующему
+					break;
+				}
+			}
+
+			if (CountIdent > 0 && Absorb)
+				NewSets.insert(S);
+
+			for (unsigned i = 0; i < CountIdent; ++i)
+				++it;
+		}
+
+		pSets->swap(NewSets);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadTestGraph::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
+{
+		bool Absorb = false;
+		set<pair<s_t,s_t> > NewSets(*pSets);
+
+		for (set<pair<s_t,s_t> >::iterator it = pSets->begin();
+			it != pSets->end(); ++it)
+		{
+
+			pair<s_t,s_t> S;
+			S.first = it->first;
+
+			unsigned CountIdent = 0;
+			set<pair<s_t,s_t> >::iterator it_next = it;
+			++it_next;
+
+			for (; it_next != pSets->end(); ++it_next) {
+
+				if (Terminated)
+					return;
+
+				if (it->first == it_next->first) {
+
+					Absorb = true;
+
+					if (CountIdent == 0)
+						NewSets.erase(*it);
+
+					NewSets.erase(*it_next);
+
+					set_union(it->second.begin(), it->second.end(),
+							it_next->second.begin(), it_next->second.end(),
+							inserter(S.second, S.second.begin()));
+
+					Q += it->second.size() + it_next->second.size();
+
+					++CountIdent;
+
+				} else {
+					// так как множества упорядочены в порядке возростания
+					// то после первого несовпадения нужно переходить к следующему
+					break;
+				}
+			}
+
+			if (CountIdent > 0 && Absorb)
+				NewSets.insert(S);
+
+			for (unsigned i = 0; i < CountIdent; ++i)
+				++it;
+		}
+
+		pSets->swap(NewSets);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadTestGraph::IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets)
+{
+	set<pair<s_t,s_t> > NewSets;
+
+	for (set<pair<s_t,s_t> >::iterator itSets = pSets->begin();
+		 itSets != --pSets->end(); ++itSets)
+	{
+		pair<s_t,s_t> NewPair(*itSets);
+
+		if (Terminated) {
+			ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+			return;
+		}
+
+		for (s_t::const_iterator it = UsedSet.first.begin(); it != UsedSet.first.end(); ++it) {
+			NewPair.first.erase(*it);
+			NewPair.second.erase(*it);
+		}
+
+		for (s_t::const_iterator it = UsedSet.second.begin(); it != UsedSet.second.end(); ++it) {
+			NewPair.first.erase(*it);
+			NewPair.second.erase(*it);
+		}
+
+		if (NewPair.first.size() != 0 || NewPair.second.size() != 0)
+			NewSets.insert(NewPair);
+
+	}
+
+	pSets->swap(NewSets);
+}
+//---------------------------------------------------------------------------
+
+
 void __fastcall TThreadTestGraph::RangSearchCover()
 {
 	try {
@@ -1377,7 +1661,7 @@ void __fastcall TThreadTestGraph::RangSearchCover()
 		TimeExecut = 0;
 		LenCover = 0;
 		LenMinCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1592,7 +1876,7 @@ void __fastcall TThreadTestGraph::VertSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1700,7 +1984,7 @@ void __fastcall TThreadTestGraph::VpreSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;
@@ -1810,7 +2094,7 @@ void __fastcall TThreadTestGraph::VrecSearchCover()
 		Q = 0;
 		TimeExecut = 0;
 		LenCover = 0;
-		NumSets = 0;
+		NumMinCovers = 0;
 
 		LARGE_INTEGER TimeBegin;
 		LARGE_INTEGER TimeEnd;

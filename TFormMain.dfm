@@ -176,30 +176,30 @@ object FormMain: TFormMain
           Columns = <
             item
               Caption = #1040#1083#1075#1086#1088#1080#1090#1084
-              MaxWidth = 270
+              MaxWidth = 540
               MinWidth = 270
               Width = 270
             end
             item
               Caption = #1054#1087#1077#1088#1072#1094#1080#1080
-              MaxWidth = 70
+              MaxWidth = 140
               MinWidth = 70
               Width = 70
             end
             item
               Caption = #1042#1088#1077#1084#1103', '#1084#1089
-              MaxWidth = 70
+              MaxWidth = 140
               MinWidth = 70
               Width = 70
             end
             item
               Caption = #1044#1083#1080#1085#1072
-              MaxWidth = 50
+              MaxWidth = 100
               MinWidth = 50
             end
             item
               AutoSize = True
-              Caption = #1052#1080#1085#1080#1084#1072#1083#1100#1085#1086#1077' '#1087#1086#1082#1088#1099#1090#1080#1077
+              Caption = #1052#1072#1082#1089#1080#1084#1072#1083#1100#1085#1086#1077' '#1084#1085#1086#1078#1077#1089#1090#1074#1086
             end>
           FullDrag = True
           GridLines = True
@@ -240,6 +240,8 @@ object FormMain: TFormMain
           ViewStyle = vsReport
           OnClick = ListViewAlgClick
           OnDblClick = ListViewAlgDblClick
+          ExplicitLeft = 45
+          ExplicitTop = 26
         end
         object RichEditLog: TRichEdit
           AlignWithMargins = True
@@ -257,6 +259,7 @@ object FormMain: TFormMain
           ReadOnly = True
           ScrollBars = ssBoth
           TabOrder = 1
+          Zoom = 100
         end
       end
       object GroupBoxGraphs: TGroupBox
@@ -322,6 +325,7 @@ object FormMain: TFormMain
           ParentFont = False
           ScrollBars = ssBoth
           TabOrder = 1
+          Zoom = 100
         end
       end
     end
@@ -408,6 +412,7 @@ object FormMain: TFormMain
             ParentFont = False
             ScrollBars = ssBoth
             TabOrder = 1
+            Zoom = 100
           end
         end
         object GroupBoxTestResults: TGroupBox
@@ -464,6 +469,7 @@ object FormMain: TFormMain
                 ParentFont = False
                 ScrollBars = ssBoth
                 TabOrder = 0
+                Zoom = 100
               end
             end
             object TabSheetTestResultChart: TTabSheet
@@ -743,6 +749,7 @@ object FormMain: TFormMain
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1089#1087#1080#1089#1086#1082' '#1082#1072#1082
       DialogCaption = #1042#1099#1073#1086#1088' '#1087#1072#1087#1082#1080' '#1076#1083#1103' '#1089#1086#1093#1088#1072#1085#1077#1085#1080#1103' '#1089#1087#1080#1089#1082#1072
       BrowseOptions = [bifBrowseForComputer, bifEditBox, bifNewDialogStyle]
+      BrowseOptionsEx = []
       ImageIndex = 2
       ShortCut = 49235
       OnAccept = ActionSaveListAccept
@@ -812,7 +819,7 @@ object FormMain: TFormMain
     ShareImages = True
     Left = 600
     Bitmap = {
-      494C01010B000D003C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010B000D00440110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000000000005CADBA00319BAD00319BAD00319BAD00319B

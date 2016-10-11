@@ -17,26 +17,26 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 {
 	ThreadExecut = THR_NONE;
 
-	// записываем коды и названия алгоритмов
+	// codes and names of algorithm
 	ListViewAlg->Items->Item[0]->Indent = RANG;    // ранговый
 	ListViewAlg->Items->Item[1]->Indent = FULL;    // быстрый полный перебор
 	ListViewAlg->Items->Item[2]->Indent = INDS;    // независимых множеств
-	ListViewAlg->Items->Item[3]->Indent = FREQ;    // частотный
-	ListViewAlg->Items->Item[4]->Indent = VERT;    // вершин
-	ListViewAlg->Items->Item[5]->Indent = VPRE;    // вершин с прогнозом
-	ListViewAlg->Items->Item[6]->Indent = VREC;    // вершин с рекурсией
-	ListViewAlg->Items->Item[7]->Indent = EQUA;    // уравнений
-	ListViewAlg->Items->Item[8]->Indent = NIND;    // новый метод независимых множеств
+	ListViewAlg->Items->Item[3]->Indent = NIND;    // новый метод независимых множеств
+	ListViewAlg->Items->Item[4]->Indent = FREQ;    // частотный
+	ListViewAlg->Items->Item[5]->Indent = VERT;    // вершин
+	ListViewAlg->Items->Item[6]->Indent = VPRE;    // вершин с прогнозом
+	ListViewAlg->Items->Item[7]->Indent = VREC;    // вершин с рекурсией
+	ListViewAlg->Items->Item[8]->Indent = EQUA;    // уравнений
 
 	ListViewAlg->Items->Item[0]->Caption = STR_RANG;    // ранговый
 	ListViewAlg->Items->Item[1]->Caption = STR_FULL;    // быстрый полный перебор
 	ListViewAlg->Items->Item[2]->Caption = STR_INDS;    // независимых множеств
-	ListViewAlg->Items->Item[3]->Caption = STR_FREQ;    // частотный
-	ListViewAlg->Items->Item[4]->Caption = STR_VERT;    // вершин
-	ListViewAlg->Items->Item[5]->Caption = STR_VPRE;    // вершин с прогнозом
-	ListViewAlg->Items->Item[6]->Caption = STR_VREC;    // вершин с  рекурсией
-	ListViewAlg->Items->Item[7]->Caption = STR_EQUA;    // уравнений
-	ListViewAlg->Items->Item[8]->Caption = STR_NIND;    // новый метод независимых множеств
+	ListViewAlg->Items->Item[3]->Caption = STR_NIND;    // новый метод независимых множеств
+	ListViewAlg->Items->Item[4]->Caption = STR_FREQ;    // частотный
+	ListViewAlg->Items->Item[5]->Caption = STR_VERT;    // вершин
+	ListViewAlg->Items->Item[6]->Caption = STR_VPRE;    // вершин с прогнозом
+	ListViewAlg->Items->Item[7]->Caption = STR_VREC;    // вершин с  рекурсией
+	ListViewAlg->Items->Item[8]->Caption = STR_EQUA;    // уравнений
 
 	ListViewTestType->Items->Item[0]->Indent = TEST_MO; 	// математическое ожидание
 	ListViewTestType->Items->Item[1]->Indent = TEST_CKO;	// среднеквадратическое отклонение
@@ -1380,7 +1380,7 @@ void TFormMain::ToConsol(const AnsiString &Message)
 
 	int LastPos = Consol->Text.Length();
 	Consol->Perform(EM_SETSEL, LastPos, LastPos);
-	Consol->Perform(EM_SCROLLCARET, 0, 0);
+//	Consol->Perform(EM_SCROLLCARET, 0, 0);
 	Consol->SetFocus();
 }
 //---------------------------------------------------------------------------

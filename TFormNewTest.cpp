@@ -23,7 +23,7 @@ __fastcall TFormNewTest::TFormNewTest(TComponent* Owner)
 	ListViewAlg->Items->Item[5]->Indent = FormMain->ListViewAlg->Items->Item[5]->Indent;
 	ListViewAlg->Items->Item[6]->Indent = FormMain->ListViewAlg->Items->Item[6]->Indent;
 	ListViewAlg->Items->Item[7]->Indent = FormMain->ListViewAlg->Items->Item[7]->Indent;
-//	ListViewAlg->Items->Item[8]->Indent = FormMain->ListViewAlg->Items->Item[8]->Indent; - reserve
+	ListViewAlg->Items->Item[8]->Indent = FormMain->ListViewAlg->Items->Item[8]->Indent;
 
 	ListViewAlg->Items->Item[0]->Caption = FormMain->ListViewAlg->Items->Item[0]->Caption;
 	ListViewAlg->Items->Item[1]->Caption = FormMain->ListViewAlg->Items->Item[1]->Caption;
@@ -33,7 +33,7 @@ __fastcall TFormNewTest::TFormNewTest(TComponent* Owner)
 	ListViewAlg->Items->Item[5]->Caption = FormMain->ListViewAlg->Items->Item[5]->Caption;
 	ListViewAlg->Items->Item[6]->Caption = FormMain->ListViewAlg->Items->Item[6]->Caption;
 	ListViewAlg->Items->Item[7]->Caption = FormMain->ListViewAlg->Items->Item[7]->Caption;
-//	ListViewAlg->Items->Item[8]->Caption = FormMain->ListViewAlg->Items->Item[8]->Caption; - reserve
+	ListViewAlg->Items->Item[8]->Caption = FormMain->ListViewAlg->Items->Item[8]->Caption;
 
 	ModalResult = false;
 }

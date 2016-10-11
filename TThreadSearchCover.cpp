@@ -20,7 +20,7 @@
 //       7. SearchCoverVrec - метод вершин с прогнозом и рекурсией
 //       8. SearchCoverAbsb - метод поглащений
 //       9. SearchCoverEqua - метод уравнений
-//       10. SearchCoverIndsNew - новый метод независимых множеств
+//       10. SearchCoverNind - новый метод независимых множеств
 //
 //    данные возвращаются с номер в списке GraphIndex
 //---------------------------------------------------------------------------
@@ -40,7 +40,7 @@ __fastcall TThreadSearchCover::TThreadSearchCover(bool CreateSuspended)
 	FuncPoint[VPRE] = VpreSearchCover;
 	FuncPoint[VREC] = VrecSearchCover;
 	FuncPoint[EQUA] = EquaSearchCover;
-	FuncPoint[NIND] = IndsNewSearchCover;
+	FuncPoint[NIND] = NindSearchCover;
 }
 //------------------------------------------------------------------------------
 
@@ -105,10 +105,11 @@ void TThreadSearchCover::ToCover()
 		= FloatToStr(Q);
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].T
 		= FloatToStr(Time);
+
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Cover
-		= ToString(Cover);
+		= ToString(CoverToIndep(Cover));
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LenCover
-		= IntToStr((int)Cover.size());
+		= IntToStr(static_cast<int>(N - Cover.size()));
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		= LogShort;
@@ -124,12 +125,12 @@ void TThreadSearchCover::ToCover()
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].T;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
-		+= "\n  -- Длина покрытия:\t\t";
+		+= "\n  -- Длина множества:\t\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LenCover;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
-		+= "\n  -- Вершинное покрытие:\t";
+		+= "\n  -- Максимальное независимое множество:\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Cover;
 
@@ -149,6 +150,17 @@ void TThreadSearchCover::ToCover()
 	}
 
 	Application->ProcessMessages();
+}
+//------------------------------------------------------------------------------
+
+v_t TThreadSearchCover::CoverToIndep(const v_t &cover)
+{
+	v_t indep;
+	for (int i = 1; i <= N; ++i)
+		if (find(cover.begin(),cover.end(),i) == cover.end())
+			indep.push_back(i);
+
+	return indep;
 }
 //------------------------------------------------------------------------------
 
@@ -969,18 +981,18 @@ void __fastcall TThreadSearchCover::FreqSearchCover()
 			++Step;
 		}
 
-		Log += "\n  -- минимальное вершинное покрытие: ("
-			   + IntToStr((int)Cover.size()) + ") "
-			   + ToString(Cover) + "\n";
+		Log += "\n  -- максимальное независимое множество: ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
+			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //------------------------------------------------------------------------------
@@ -1054,18 +1066,18 @@ void __fastcall TThreadSearchCover::FullSearchCover()
 		// из независимого множесва получаем вершинное покрытие
 		Cover = CoverFromIndep(VertexSet,MaxIndep);
 
-		Log += "\n  -- минимальное вершинное покрытие: ("
-			   + IntToStr((int)Cover.size()) + ") "
-			   + ToString(Cover) + "\n";
+		Log += "\n  -- максимальное независимое множество: ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
+			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1232,63 +1244,6 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 
 			// обееденяем пары у которых одинаковы вершинные покрытия - first
 
-//			for (set<pair<s_t,s_t> >::iterator it = Sets.begin();
-//				it != Sets.end(); ++it)
-//			{
-//				set<pair<s_t,s_t> >::iterator it_next = it;
-//
-//				++it_next;
-//
-//				pair<s_t,s_t> S;
-//				S.first = it->first;
-//
-//				unsigned CountIdent = 0;
-//
-//				for (; it_next != Sets.end(); ++it_next) {
-//
-//					if (Terminated)
-//						return;
-//
-//					if (it->first == it_next->first) {
-//
-//						Absorb = true;
-//
-//						if (CountIdent == 0)
-//							NewSets.erase(*it);
-//
-//						NewSets.erase(*it_next);
-//
-//						set_union(it->second.begin(), it->second.end(),
-//							it_next->second.begin(), it_next->second.end(),
-//							inserter(S.second, S.second.begin()));
-//
-//						if (S.second.size() + S.first.size() == n) {
-//							FullSets.insert(S);
-//
-//							Absorb = false;
-//						}
-//
-//						Q += it->second.size() + it_next->second.size();
-//
-//						++CountIdent;
-//
-//					} else {
-//						// так как множества упорядочены в порядке возростания
-//						// то после первого несовпадения нужно переходить к следующему
-//						break;
-//					}
-//				}
-//
-//				if (CountIdent > 0 && Absorb)
-//					NewSets.insert(S);
-//
-//				for (unsigned i = 0; i < CountIdent; ++i)
-//					++it;
-//			}
-//
-//			Sets = NewSets;
-//			NewSets.clear();
-
 			IndsUnionSets(n,&Sets,&FullSets);
 			set<pair<s_t,s_t> > NewSets;
 
@@ -1390,28 +1345,27 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 
 		Log = Str + "\n" + Log;
 
-		Log += ".3 Минимальное вершинное покрытие: \n\n  -- ("
-			   + IntToStr((int)Cover.size()) +  ") "
-			   + ToString(Cover) + "\n"
+		Log += ".3 Максимальное независимое множество: \n\n  -- ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) +  ") "
+			   + ToString(CoverToIndep(Cover)) + "\n"
 			   + "  -- в графе всего " + IntToStr((int)FullSets.size())
 			   + " вершинных покрытия и независимых множеств.\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
 
 
-void __fastcall TThreadSearchCover::IndsNewSearchCover()
+void __fastcall TThreadSearchCover::NindSearchCover()
 {
-	int error = 0;
 	try {
 
 		ToConsol("search-cover full " + FileName);
@@ -1424,7 +1378,7 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 		// задаем начальные данные характеристикам алгоритма
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
+		LogShort = "НОВЫЙ МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
 		Log      = "Пошаговый отчет работы алгоритма: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
@@ -1441,8 +1395,7 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 		set<pair<s_t,s_t> > Sets;
 		set<pair<s_t,s_t> > FullSets;
 
-		unsigned n = Vertex.size() - 1;
-		for (unsigned i = 1; i <= n; ++i)
+		for (unsigned i = 1; i <= N; ++i)
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
@@ -1459,7 +1412,7 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 
 					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
 
-					if ((S.first.size() + S.second.size()) == n)
+					if ((S.first.size() + S.second.size()) == N)
 						FullSets.insert(S);
 					else
 						Sets.insert(S);
@@ -1475,14 +1428,18 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 
 		Log += "\n\nШаг 2 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
 
-		IndsUnionSets(n,&Sets,&FullSets);
+		IndsUnionSets(N,&Sets,&FullSets);
 		Log += ToString(Sets);
 
+		Log += "\n\nШаг 3 Строим решения для каждой сфомированной пары.\n\n";
 		// строим решения для каждой сфомированной пары
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
-			FullSets.insert(IndsBuildFullSet(n,*it,Sets));
-			++error;
+			Log += "\n-- пара:\t" + ToString(it->second);
+
+			pair<s_t,s_t> FullSetTmp = IndsBuildFullSet(N,*it,Sets);
+			if (FullSetTmp.first.size() + FullSetTmp.second.size() == N)
+				FullSets.insert(FullSetTmp);
 		}
 
 		// сортируем покрытия в порядке возростания
@@ -1494,7 +1451,7 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 		AnsiString Str = "Все вершинные покрытия и независимые множества графа:\n\n";
 		Str += "(длина) покрытие - (длина) независимое множество\n";
 		unsigned k = 1;
-		for (unsigned i = 1; i <= n; ++i)
+		for (unsigned i = 1; i <= N; ++i)
 			if (MapIterator[i].size() > 0)
 				for (unsigned j = 0; j < MapIterator[i].size(); ++j) {
 					Str += "  -- " + IntToStr((int)k) + ".\t"
@@ -1505,7 +1462,7 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 						   + ")\n";
 
 					if (k == 1) {
-						s_t MinCover = MapIterator[i].at(j)->second;
+						s_t MinCover = MapIterator[i].at(j)->first;
 						for (s_t::iterator it = MinCover.begin();
 							 it !=  MinCover.end(); ++it)
 							Cover.push_back(*it);
@@ -1515,20 +1472,22 @@ void __fastcall TThreadSearchCover::IndsNewSearchCover()
 
 		Log = Str + "\n" + Log;
 
-		Log += ".3 Минимальное вершинное покрытие: \n\n  -- ("
-			   + IntToStr((int)Cover.size()) +  ") "
-			   + ToString(Cover) + "\n"
-			   + "  -- в графе всего " + IntToStr((int)FullSets.size())
-			   + " вершинных покрытия и независимых множеств.\n";
+		Log += "\n\nШаг 3 Результаты работы алгоритма: \n\n  -- максимальное независимое множество - "
+			   + ToString(CoverToIndep(Cover))
+			   + " ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) +  ")\n"
+			   + "  -- количество вершинных покрытий и независимых множест в графе - "
+			   + IntToStr((int)FullSets.size())
+			   + "\n";
+
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
-		ToConsol(IntToStr(error));
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1542,44 +1501,46 @@ pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t
 
 	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
 
+		Log += "\n\t--\tудаляем вершины:";
+
 		IndsRemoveUsedVertex(FullSet,&Sets);
 		IndsUnionSets(&Sets);
 
+		Log += "\n\t--\tоставшиеся пары:\n" + ToString(Sets);
+
 		if (Sets.size() > 0) {
 
-		// search maximum set
-		Log += "\n\nШаг 2.2 Находим пару с наибольшим независимым множеством.\n\n";
-
-		set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
-		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
-			++Q;
-			if (it_max->second.size() < it->second.size()) {
-				it_max = it;
-			} else if (it_max->second.size() == it->second.size()) {
-				if (it_max->first.size() > it->first.size())
+			// search maximum set
+			set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
+			for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
+				++Q;
+				if (it_max->second.size() < it->second.size()) {
 					it_max = it;
+				} else if (it_max->second.size() == it->second.size()) {
+					if (it_max->first.size() > it->first.size())
+						it_max = it;
+				}
 			}
-		}
 
-		Log += "\t--\tтекущее наибольшее независимое множество: " + ToString(*it_max);
+			Log += "\n\t--\tмаксимальное множество: " + ToString(it_max->second);
 
-		Q += FullSet.first.size() + it_max->first.size();
-		Q += FullSet.second.size() + it_max->second.size();
+			Q += FullSet.first.size() + it_max->first.size();
+			Q += FullSet.second.size() + it_max->second.size();
 
-		set_union(FullSet.first.begin(),FullSet.first.end(),
-				it_max->first.begin(),it_max->first.end(),
-				inserter(FullSet.first,FullSet.first.begin()));
+			set_union(FullSet.first.begin(),FullSet.first.end(),
+					it_max->first.begin(),it_max->first.end(),
+					inserter(FullSet.first,FullSet.first.begin()));
 
-		set_union(FullSet.second.begin(),FullSet.second.end(),
-				  it_max->second.begin(),it_max->second.end(),
-				  inserter(FullSet.second,FullSet.second.begin()));
+			set_union(FullSet.second.begin(),FullSet.second.end(),
+					  it_max->second.begin(),it_max->second.end(),
+					  inserter(FullSet.second,FullSet.second.begin()));
 
-		Log += "\t--\tобъединенное с предыдущим, наибольшее независимое множество: " + ToString(FullSet);
+			Log += "\n\t--\tобъединенное с предыдущим: " + ToString(FullSet);
 		}
 
 	}
 
-	Log += "\t--\tполное максимальное независимое множество найдено: ";
+	Log += "\n\t--\tполное максимальное независимое множество найдено: ";
 	Log += ToString(FullSet.second);
 
 	return FullSet;
@@ -1739,7 +1700,7 @@ void __fastcall TThreadSearchCover::IndsRemoveUsedVertex(const pair<s_t,s_t> &Us
 			NewPair.second.erase(*it);
 		}
 
-		if (NewPair.first.size() != 0 && NewPair.second.size() != 0)
+		if (NewPair.first.size() != 0 || NewPair.second.size() != 0)
 			NewSets.insert(NewPair);
 
 	}
@@ -1917,7 +1878,7 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 				Log += "  -- кратчайший путь найден;\n\nАлгоритм завершил работу,";
 				Log += "кратчайший путь является минимальным покрытием.\n";
 
-				ToConsol("Минимальное покрытие найдено! Алгоритм завершил работу.");
+				ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 				ToCover();
 
@@ -2054,7 +2015,7 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 		} // end for rang
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2216,18 +2177,18 @@ void __fastcall TThreadSearchCover::VertSearchCover()
 		// из независимого множесва получаем вершинное покрытие
 		Cover = CoverFromIndep(VertexSet,Indep);
 
-		Log += "\n  -- минимальное вершинное покрытие: ("
-			   + IntToStr((int)Cover.size()) + ") "
-			   + ToString(Cover) + "\n";
+		Log += "\n  -- максимальное независимое множество: ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
+			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2423,18 +2384,18 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 		// из независимого множесва получаем вершинное покрытие
 		Cover = CoverFromIndep(VertexSet,Indep);
 
-		Log += "\n  -- минимальное вершинное покрытие: ("
-			   + IntToStr((int)Cover.size()) + ") "
-			   + ToString(Cover) + "\n";
+		Log += "\n  -- максимальное независимое множество: ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
+			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2532,18 +2493,18 @@ void __fastcall TThreadSearchCover::VrecSearchCover()
 		// из независимого множесва получаем вершинное покрытие
 		Cover = CoverFromIndep(VertexSet,MaxIndep);
 
-		Log += "\n  -- минимальное вершинное покрытие: ("
-			   + IntToStr((int)Cover.size()) + ") "
-			   + ToString(Cover) + "\n";
+		Log += "\n  -- максимальное независимое множество: ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
+			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2870,19 +2831,19 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 			CoverTemp.push_back(Cover),
 			MinIndex = 0;
 
-		Log += "\nМинимальное покрытие: (" + IntToStr((int)CoverTemp.at(MinIndex).size())
-				+ ") : " + ToString(CoverTemp.at(MinIndex)) + "\n";
+		Log += "\nМаксимальное независимое множество: (" + IntToStr(static_cast<int>(N - CoverTemp.at(MinIndex).size()))
+				+ ") : " + ToString(CoverToIndep(CoverTemp.at(MinIndex))) + "\n";
 
 		Cover.swap(CoverTemp.at(MinIndex));
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Минимальное вершинное покрытие найдено! Алгоритм завершил работу.");
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Минимальное вершинное покрытие не найдено.");
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
 }
 //---------------------------------------------------------------------------

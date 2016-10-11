@@ -27,7 +27,7 @@ private:
 	double TimeExecut;     		 // время выполнения алгоритма
 	unsigned int LenCover; 		 // длина вершинного покрытия
 	unsigned int LenMinCover;    // длина минимальное вершинного покрытия, вычисляется RANG и FULL
-	unsigned int NumSets;		 // количество независимых множеств
+	unsigned int NumMinCovers; 	 // количество минимальных покрытий ( для методов независимых множеств)
 
 
 	map<int,func_t> Algorithms;  // указатели на функции поиска минимального покрытия, которые необходимо тестировать
@@ -89,7 +89,12 @@ private:
 		   void __fastcall FullSearchCover(); 	//  метод быстрого полного перебора
 		   v_t  __fastcall FullSearchIndep(int  I,s_t  VertexSet,vs_t Vertex,v_t  Indep);
 
-		   void __fastcall IndsSearchCover();	// метод независимых множеств
+		   void     __fastcall IndsSearchCover();	// метод независимых множеств
+		   void     __fastcall NindSearchCover();
+		   void     __fastcall IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,unsigned *pLenCover);
+		   void     __fastcall IndsUnionSets(set<pair<s_t,s_t> > *pSets);
+		   void     __fastcall IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets);
+		   unsigned __fastcall IndsBuildFullSet(int n,ps_t FullSet,sps_t Sets);
 
 		   void __fastcall RangSearchCover();   // ранговый алгоритм поиска покртия
 
