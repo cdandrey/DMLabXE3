@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -97,8 +97,8 @@ int __fastcall TRandom::NormalFromVectorErase(v_t& _Vector)
 
 void __fastcall TRandom::SetGamma(double Mean)
 {
-	// Mean = Alpha * Beta, по умолчанию Beta = 1.0 тогда Mean == Alpha
-	// Sigma = Alpha * Beta^2 , по умолчанию  Beta = 1.0 тогда Sigma == Alpha
+	// Mean = Alpha * Beta, РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ Beta = 1.0 С‚РѕРіРґР° Mean == Alpha
+	// Sigma = Alpha * Beta^2 , РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ  Beta = 1.0 С‚РѕРіРґР° Sigma == Alpha
 	GAMMA = tr1::gamma_distribution<double>(Mean);
 }
 //---------------------------------------------------------------------------

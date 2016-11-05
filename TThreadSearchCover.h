@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 
 #ifndef TThreadSearchCoverH
 #define TThreadSearchCoverH
@@ -13,21 +13,21 @@ public:
 
 	__fastcall TThreadSearchCover(bool CreateSuspended);
 
-	__property Terminated;  // сигнал прерывания работы потока
+	__property Terminated;  // СЃРёРіРЅР°Р» РїСЂРµСЂС‹РІР°РЅРёСЏ СЂР°Р±РѕС‚С‹ РїРѕС‚РѕРєР°
 
-	/**** входные данные потока ****/
+	/**** РІС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ РїРѕС‚РѕРєР° ****/
 
-	v_t ListFuncExecut;    // список функций которые необходимо выполнить потоку
-	int FuncExecut;        // текущая выполняемая потоком функция
+	v_t ListFuncExecut;    // СЃРїРёСЃРѕРє С„СѓРЅРєС†РёР№ РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹РїРѕР»РЅРёС‚СЊ РїРѕС‚РѕРєСѓ
+	int FuncExecut;        // С‚РµРєСѓС‰Р°СЏ РІС‹РїРѕР»РЅСЏРµРјР°СЏ РїРѕС‚РѕРєРѕРј С„СѓРЅРєС†РёСЏ
 
 
-	AnsiString FileName;    // имя файла графа
-	int N;                  // количество вершин
-	int GraphIndex;         // номер графа в списке
+	AnsiString FileName;    // РёРјСЏ С„Р°Р№Р»Р° РіСЂР°С„Р°
+	int N;                  // РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ
+	int GraphIndex;         // РЅРѕРјРµСЂ РіСЂР°С„Р° РІ СЃРїРёСЃРєРµ
 
-	vs_t  Edges;            // список ребер
-	vs_t  Vertex;           // список вершин
-	vs_t  VertexAdd;        // список вершин графа дополнения
+	vs_t  Edges;            // СЃРїРёСЃРѕРє СЂРµР±РµСЂ
+	vs_t  Vertex;           // СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ
+	vs_t  VertexAdd;        // СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ РіСЂР°С„Р° РґРѕРїРѕР»РЅРµРЅРёСЏ
 
 
 protected:
@@ -36,37 +36,37 @@ protected:
 
 private:
 
-	/**** переменные потока ****/
+	/**** РїРµСЂРµРјРµРЅРЅС‹Рµ РїРѕС‚РѕРєР° ****/
 
-	map<int,func_t> FuncPoint;    // указатели на функции потока
+	map<int,func_t> FuncPoint;    // СѓРєР°Р·Р°С‚РµР»Рё РЅР° С„СѓРЅРєС†РёРё РїРѕС‚РѕРєР°
 
-	LARGE_INTEGER TimeBegin;      // момент начала работы алгоритма
-	LARGE_INTEGER TimeEnd;        // момент окончания работы алгоритма
-	LARGE_INTEGER Freq;           // частота процессора
+	LARGE_INTEGER TimeBegin;      // РјРѕРјРµРЅС‚ РЅР°С‡Р°Р»Р° СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°
+	LARGE_INTEGER TimeEnd;        // РјРѕРјРµРЅС‚ РѕРєРѕРЅС‡Р°РЅРёСЏ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°
+	LARGE_INTEGER Freq;           // С‡Р°СЃС‚РѕС‚Р° РїСЂРѕС†РµСЃСЃРѕСЂР°
 
-	/**** выходные данные ****/
+	/**** РІС‹С…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ ****/
 
-	double     Q;                 // количество операций
-	v_t        Cover;             // вершинное покрытие
-	AnsiString LogShort;          // краткий отчет
-	AnsiString Log;               // отчет
+	double     Q;                 // РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРїРµСЂР°С†РёР№
+	v_t        Cover;             // РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ
+	AnsiString LogShort;          // РєСЂР°С‚РєРёР№ РѕС‚С‡РµС‚
+	AnsiString Log;               // РѕС‚С‡РµС‚
 
-	/**** функции взаимодействия потока с главной формой приложения ****/
+	/**** С„СѓРЅРєС†РёРё РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ РїРѕС‚РѕРєР° СЃ РіР»Р°РІРЅРѕР№ С„РѕСЂРјРѕР№ РїСЂРёР»РѕР¶РµРЅРёСЏ ****/
 
-	inline void 		  ToConsol(const AnsiString &Message);    // добовляем сообщение в Consol главной формы
-		   void 		  ToCover();     // добовляет найденное минимальное покрытие в MapCovers
+	inline void 		  ToConsol(const AnsiString &Message);    // РґРѕР±РѕРІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ Consol РіР»Р°РІРЅРѕР№ С„РѕСЂРјС‹
+		   void 		  ToCover();     // РґРѕР±РѕРІР»СЏРµС‚ РЅР°Р№РґРµРЅРЅРѕРµ РјРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РІ MapCovers
 		   v_t            CoverToIndep(const v_t &cover);
 
 	       void __fastcall Lock();
 		   void __fastcall UnLock();
 
-	/**** функции преобразования данных в текст ****/
+	/**** С„СѓРЅРєС†РёРё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РґР°РЅРЅС‹С… РІ С‚РµРєСЃС‚ ****/
 
-	static AnsiString __fastcall ToString(const vp_t &data);                 // для рангового алгоритма
-	static AnsiString __fastcall ToString(int ColCount,const vv_t &H);   // для рангового алгоритма
+	static AnsiString __fastcall ToString(const vp_t &data);                 // РґР»СЏ СЂР°РЅРіРѕРІРѕРіРѕ Р°Р»РіРѕСЂРёС‚РјР°
+	static AnsiString __fastcall ToString(int ColCount,const vv_t &H);   // РґР»СЏ СЂР°РЅРіРѕРІРѕРіРѕ Р°Р»РіРѕСЂРёС‚РјР°
 	static AnsiString __fastcall ToString(AnsiString Tab, const s_t  &SetData, const vs_t &VecSetData);
 	static AnsiString __fastcall ToString(AnsiString Tab, const vs_t &data);
-	static AnsiString __fastcall ToString(AnsiString infin, const v_t &data);  // для рангового алгоритма меняет значение INFIN на символ infin
+	static AnsiString __fastcall ToString(AnsiString infin, const v_t &data);  // РґР»СЏ СЂР°РЅРіРѕРІРѕРіРѕ Р°Р»РіРѕСЂРёС‚РјР° РјРµРЅСЏРµС‚ Р·РЅР°С‡РµРЅРёРµ INFIN РЅР° СЃРёРјРІРѕР» infin
 	static AnsiString __fastcall ToString(const v_t  &data);
 	static AnsiString __fastcall ToString(const s_t  &data);
 	static AnsiString __fastcall ToString(const ps_t &data);
@@ -82,12 +82,12 @@ private:
 												const vs_t &Vertex_,
 												const AnsiString &Tab,
 											    bool Short = false);
-	/**** функции поиска минимального вершиного покрытия графа ****/
+	/**** С„СѓРЅРєС†РёРё РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ РіСЂР°С„Р° ****/
 
-    // частотный метод поиска вершинных покрытий
+    // С‡Р°СЃС‚РѕС‚РЅС‹Р№ РјРµС‚РѕРґ РїРѕРёСЃРєР° РІРµСЂС€РёРЅРЅС‹С… РїРѕРєСЂС‹С‚РёР№
 	void __fastcall FreqSearchCover();
 
-	// метод быстрого полного перебора
+	// РјРµС‚РѕРґ Р±С‹СЃС‚СЂРѕРіРѕ РїРѕР»РЅРѕРіРѕ РїРµСЂРµР±РѕСЂР°
 	void __fastcall FullSearchCover();
 
 	v_t  __fastcall FullSearchIndep(
@@ -98,25 +98,26 @@ private:
 					   v_t        Indep
 					);
 
-	// метод независимых множеств
+	// РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
 	void __fastcall IndsSearchCover();
 	void __fastcall NindSearchCover();
+	void __fastcall NinuSearchCover();
 	void __fastcall IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,set<pair<s_t,s_t> > *pFullSets);
 	void __fastcall IndsUnionSets(set<pair<s_t,s_t> > *pSets);
 	void __fastcall IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets);
 	ps_t __fastcall IndsBuildFullSet(int n,ps_t FullSet,sps_t Sets);
 
-	// ранговый метод
+	// СЂР°РЅРіРѕРІС‹Р№ РјРµС‚РѕРґ
 	void __fastcall RangSearchCover();
 
-	// метод вершин
+	// РјРµС‚РѕРґ РІРµСЂС€РёРЅ
 	void __fastcall VertSearchCover();
 
-	// метод вершин с прогнозом
+	// РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ РїСЂРѕРіРЅРѕР·РѕРј
 	void __fastcall VpreSearchCover();
 	inline int VpreMinDegree(const s_t &VertexSet,const vs_t &Vertex);
 
-	// метод вершин с рекурсией
+	// РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ СЂРµРєСѓСЂСЃРёРµР№
 	void __fastcall VrecSearchCover();
 	v_t  __fastcall VrecSearchIndep(
 					   AnsiString LogRowBegin,
@@ -126,20 +127,20 @@ private:
 					   v_t        Indep
 					);
 
-	// метод уравнений
+	// РјРµС‚РѕРґ СѓСЂР°РІРЅРµРЅРёР№
 	void __fastcall EquaSearchCover();
 	inline int EdgesCountRemove(int I,const vs_t &Vertex_);
-	inline int Max(const s_t &VertexSet,const vs_t &Vertex);       				// функция возвращает итератор на вершину с максимальной степенью
-	inline int Max(int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);	// фукнция возвращает лучший прогноз по заданному критерию
-	inline int Max(int EdgesCountBegin,int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);	// фукнция возвращает лучший прогноз по заданному критерию
+	inline int Max(const s_t &VertexSet,const vs_t &Vertex);       				// С„СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РёС‚РµСЂР°С‚РѕСЂ РЅР° РІРµСЂС€РёРЅСѓ СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ СЃС‚РµРїРµРЅСЊСЋ
+	inline int Max(int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);	// С„СѓРєРЅС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ Р»СѓС‡С€РёР№ РїСЂРѕРіРЅРѕР· РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РєСЂРёС‚РµСЂРёСЋ
+	inline int Max(int EdgesCountBegin,int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);	// С„СѓРєРЅС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ Р»СѓС‡С€РёР№ РїСЂРѕРіРЅРѕР· РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РєСЂРёС‚РµСЂРёСЋ
 
 
-	/**** вспомогательные функции алгоритмов поиска вершинного покрытия ****/
+	/**** РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё Р°Р»РіРѕСЂРёС‚РјРѕРІ РїРѕРёСЃРєР° РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ ****/
 
-	// функция получает вершинное покрытие из независимого множества
+	// С„СѓРЅРєС†РёСЏ РїРѕР»СѓС‡Р°РµС‚ РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РёР· РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР°
 	inline v_t CoverFromIndep(s_t VertexSet,const v_t &Indep);
 
-	// функции поиска связаных со всеми, висячих и изолированных вершин
+	// С„СѓРЅРєС†РёРё РїРѕРёСЃРєР° СЃРІСЏР·Р°РЅС‹С… СЃРѕ РІСЃРµРјРё, РІРёСЃСЏС‡РёС… Рё РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹С… РІРµСЂС€РёРЅ
 	void __fastcall SearchExtremCover(
 						AnsiString LevelLog,
 						s_t        &_VertexSet,
@@ -166,7 +167,7 @@ private:
 						v_t  &_Indep
 					);
 
-	// функция удаляет вершину и ее связи из графа
+	// С„СѓРЅРєС†РёСЏ СѓРґР°Р»СЏРµС‚ РІРµСЂС€РёРЅСѓ Рё РµРµ СЃРІСЏР·Рё РёР· РіСЂР°С„Р°
 	inline void VertexErase(
 					int  I,
 					vs_t &_VertexInc
@@ -178,15 +179,15 @@ private:
 					vs_t &_VertexInc
 				);
 
-	// фукнция удаляет из графа все вершины смежные с вершинной I
+	// С„СѓРєРЅС†РёСЏ СѓРґР°Р»СЏРµС‚ РёР· РіСЂР°С„Р° РІСЃРµ РІРµСЂС€РёРЅС‹ СЃРјРµР¶РЅС‹Рµ СЃ РІРµСЂС€РёРЅРЅРѕР№ I
 	inline void VertexAdjacentErase(
 					int   I,
 					s_t   &VertexSet_,
 					vs_t  &Vertex_
 				);
 
-	// функция включает вершину в нез.множество,
-	// удаляет ее и связаные с ней вершины из графа
+	// С„СѓРЅРєС†РёСЏ РІРєР»СЋС‡Р°РµС‚ РІРµСЂС€РёРЅСѓ РІ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ,
+	// СѓРґР°Р»СЏРµС‚ РµРµ Рё СЃРІСЏР·Р°РЅС‹Рµ СЃ РЅРµР№ РІРµСЂС€РёРЅС‹ РёР· РіСЂР°С„Р°
 	inline void VertexToIndep(
 					int  I,
 					s_t  &_VertexSet,
@@ -194,7 +195,7 @@ private:
 					v_t  &_Indep
 				);
 
-	// функция подсчета количества ребер в графе по вектору инциденций
+	// С„СѓРЅРєС†РёСЏ РїРѕРґСЃС‡РµС‚Р° РєРѕР»РёС‡РµСЃС‚РІР° СЂРµР±РµСЂ РІ РіСЂР°С„Рµ РїРѕ РІРµРєС‚РѕСЂСѓ РёРЅС†РёРґРµРЅС†РёР№
 	int EdgesCalculate(const s_t &VertexSet,const vs_t &Vertex_) const {
 		int num = 0;
 		for (s_t::const_iterator it = VertexSet.begin();

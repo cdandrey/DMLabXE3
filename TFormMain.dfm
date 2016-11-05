@@ -133,6 +133,10 @@ object FormMain: TFormMain
     TabOrder = 0
     object TabSheetGraph: TTabSheet
       Caption = #1056#1072#1073#1086#1090#1072' '#1089' '#1075#1088#1072#1092#1072#1084#1080
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SplitterGroupBoxGraph: TSplitter
         Left = 412
         Top = 0
@@ -332,6 +336,10 @@ object FormMain: TFormMain
     object TabSheetTestGraph: TTabSheet
       Caption = #1058#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1077' '#1072#1083#1075#1086#1088#1080#1090#1084#1086#1074
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object PanelResult: TPanel
         Left = 0
         Top = 0
@@ -455,6 +463,10 @@ object FormMain: TFormMain
             TabOrder = 1
             object TabSheetTestResultList: TTabSheet
               Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1086#1074' '#1090#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1103' '#1074' '#1074#1080#1076#1077' '#1089#1087#1080#1089#1082#1072
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 0
+              ExplicitHeight = 0
               object RichEditTestResults: TRichEdit
                 Left = 0
                 Top = 0
@@ -475,6 +487,10 @@ object FormMain: TFormMain
             object TabSheetTestResultChart: TTabSheet
               Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1099' '#1090#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1103' '#1074' '#1075#1088#1072#1092#1080#1095#1077#1089#1082#1086#1084' '#1074#1080#1076#1077
               ImageIndex = 1
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 0
+              ExplicitHeight = 0
             end
           end
           object ListViewTestType: TListView
@@ -819,7 +835,7 @@ object FormMain: TFormMain
     ShareImages = True
     Left = 600
     Bitmap = {
-      494C01010B000D00440110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010B000D00480110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000000000005CADBA00319BAD00319BAD00319BAD00319B
