@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------
+п»ї// ---------------------------------------------------------------------------
 #pragma hdrstop
 
 #include "TThreadTestGraph.h"
@@ -21,6 +21,7 @@ __fastcall TThreadTestGraph::TThreadTestGraph(bool CreateSuspended)
 	Algorithms[VPRE] = VpreSearchCover; // 7
 	Algorithms[VREC] = VrecSearchCover;	// 8
 	Algorithms[NIND] = NindSearchCover;	// 9
+	Algorithms[NINU] = NinuSearchCover;	// 9
 }
 // ---------------------------------------------------------------------------
 
@@ -145,7 +146,7 @@ void __fastcall TThreadTestGraph::Execute()
 {
 	try {
 
-		// освободить занятую потоком память по окончании его работы
+		// РѕСЃРІРѕР±РѕРґРёС‚СЊ Р·Р°РЅСЏС‚СѓСЋ РїРѕС‚РѕРєРѕРј РїР°РјСЏС‚СЊ РїРѕ РѕРєРѕРЅС‡Р°РЅРёРё РµРіРѕ СЂР°Р±РѕС‚С‹
 		FreeOnTerminate = true;
 
 		Synchronize(Lock);
@@ -183,10 +184,10 @@ void __fastcall TThreadTestGraph::TestMO()
 	try {
 
 		ToConsol(MESSAGE_CLEAR);
-		ToConsol("Начинается выполнение теста: " + FileName);
+		ToConsol("РќР°С‡РёРЅР°РµС‚СЃСЏ РІС‹РїРѕР»РЅРµРЅРёРµ С‚РµСЃС‚Р°: " + FileName);
 		OpenAutoSaveFile(FileName);
 
-		// задаем размерность массивов резульатов тестирования
+		// Р·Р°РґР°РµРј СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ РјР°СЃСЃРёРІРѕРІ СЂРµР·СѓР»СЊР°С‚РѕРІ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ
 		FormMain->Tests[TestIndex]->SuccefullMO = false;
 		FormMain->ListViewTestType->Items->Item[0]->SubItems->Strings[0] = "";
 
@@ -197,35 +198,35 @@ void __fastcall TThreadTestGraph::TestMO()
 
 		register unsigned int TestNum = ParamFirst.size() *
 										ParamSecond.size() *
-										Count;	// счетчик тестов
+										Count;	// СЃС‡РµС‚С‡РёРє С‚РµСЃС‚РѕРІ
 
-		register int AlgNum; // номер тестируемого алгоритма
+		register int AlgNum; // РЅРѕРјРµСЂ С‚РµСЃС‚РёСЂСѓРµРјРѕРіРѕ Р°Р»РіРѕСЂРёС‚РјР°
 
-		AnsiString Message;	// сообщение выводимое в консоль
+		AnsiString Message;	// СЃРѕРѕР±С‰РµРЅРёРµ РІС‹РІРѕРґРёРјРѕРµ РІ РєРѕРЅСЃРѕР»СЊ
 
 		for (unsigned int f = 0; f < ParamFirst.size(); ++f) {
 
 			for (unsigned int s = 0; s < ParamSecond.size(); ++s) {
 
-				unsigned int n = 0;	// количество вершин гарфа
-				unsigned int a = 0;	// плотность графа
-				unsigned int t = 0;	// допустимое время выполнения алгоритма
+				unsigned int n = 0;	// РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ РіР°СЂС„Р°
+				unsigned int a = 0;	// РїР»РѕС‚РЅРѕСЃС‚СЊ РіСЂР°С„Р°
+				unsigned int t = 0;	// РґРѕРїСѓСЃС‚РёРјРѕРµ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р°Р»РіРѕСЂРёС‚РјР°
 
-				// определяем параметры создававемого графа
+				// РѕРїСЂРµРґРµР»СЏРµРј РїР°СЂР°РјРµС‚СЂС‹ СЃРѕР·РґР°РІР°РІРµРјРѕРіРѕ РіСЂР°С„Р°
 				SetParamGraph(f,s,n,a,t);
 
-				// выполняем Count раз поиск минимального вершинного покрытия для разных графов
+				// РІС‹РїРѕР»РЅСЏРµРј Count СЂР°Р· РїРѕРёСЃРє РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ РґР»СЏ СЂР°Р·РЅС‹С… РіСЂР°С„РѕРІ
 				for (register unsigned int k = 0; k < Count; ++k) {
 
 					if (Terminated)
 						break;
 
-					ToConsol(Message.sprintf("%d - параметры: %d %d %d",TestNum,n,a,t));
-					ToConsol("\tсоздается граф...");
+					ToConsol(Message.sprintf("%d - РїР°СЂР°РјРµС‚СЂС‹: %d %d %d",TestNum,n,a,t));
+					ToConsol("\tСЃРѕР·РґР°РµС‚СЃСЏ РіСЂР°С„...");
 
-					CreateGraph(n,a); // создаем матрицы графа
+					CreateGraph(n,a); // СЃРѕР·РґР°РµРј РјР°С‚СЂРёС†С‹ РіСЂР°С„Р°
 
-					// находим минимальные покрытия выбранными методами
+					// РЅР°С…РѕРґРёРј РјРёРЅРёРјР°Р»СЊРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ РІС‹Р±СЂР°РЅРЅС‹РјРё РјРµС‚РѕРґР°РјРё
 					for (unsigned int i = 0; i < Alg.size(); ++i) {
 
 						if (Terminated)
@@ -255,7 +256,7 @@ void __fastcall TThreadTestGraph::TestMO()
 					--TestNum;
 				}	// for k
 
-				// вычисляем математическое ожидание характеристик для каждого метода
+				// РІС‹С‡РёСЃР»СЏРµРј РјР°С‚РµРјР°С‚РёС‡РµСЃРєРѕРµ РѕР¶РёРґР°РЅРёРµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє РґР»СЏ РєР°Р¶РґРѕРіРѕ РјРµС‚РѕРґР°
 				for (unsigned int i = 0; i < Alg.size(); ++i) {
 
 					AlgNum = Alg.at(i);
@@ -279,17 +280,17 @@ void __fastcall TThreadTestGraph::TestMO()
             }
 		}
 
-		// возвращаем результаты тестирования
+		// РІРѕР·РІСЂР°С‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚С‹ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ
 		FormMain->Tests[TestIndex]->MO = Result;
 		FormMain->Tests[TestIndex]->SuccefullMO = true;
-		FormMain->ListViewTestType->Items->Item[0]->SubItems->Strings[0] = "найдено";
+		FormMain->ListViewTestType->Items->Item[0]->SubItems->Strings[0] = "РЅР°Р№РґРµРЅРѕ";
 		FormMain->TestResultToRichEdit(TestIndex,TEST_MO);
 
 		AutoSaveFile.close();
-		ToConsol("Тестирование завершенно успешно.");
+		ToConsol("РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СѓСЃРїРµС€РЅРѕ.");
 
 	} catch (...) {
-		ToConsol("Неизвестная ошибка! Тестирование завершенно с ошибкой.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 		FormMain->Tests[TestIndex]->SuccefullMO = false;
 		FormMain->ListViewTestType->Items->Item[0]->SubItems->Strings[0] = "";
 		AutoSaveFile.close();
@@ -303,37 +304,37 @@ void __fastcall TThreadTestGraph::TestCOMP()
 	try {
 
 		ToConsol(MESSAGE_CLEAR);
-		ToConsol("Начинается выполнение теста: " + FileName);
+		ToConsol("РќР°С‡РёРЅР°РµС‚СЃСЏ РІС‹РїРѕР»РЅРµРЅРёРµ С‚РµСЃС‚Р°: " + FileName);
 
 		register unsigned int TestNum = ParamFirst.size() *
 										ParamSecond.size() *
-										Count;	// счетчик тестов
+										Count;	// СЃС‡РµС‚С‡РёРє С‚РµСЃС‚РѕРІ
 
-		AnsiString Message;	// сообщение выводимое в консоль
+		AnsiString Message;	// СЃРѕРѕР±С‰РµРЅРёРµ РІС‹РІРѕРґРёРјРѕРµ РІ РєРѕРЅСЃРѕР»СЊ
 
 		for (unsigned int f = 0; f < ParamFirst.size(); ++f) {
 
 			for (unsigned int s = 0; s < ParamSecond.size(); ++s) {
 
-				unsigned int n = 0;	// количество вершин гарфа
-				unsigned int a = 0;	// плотность графа
-				unsigned int t = 0;	// допустимое время выполнения алгоритма
+				unsigned int n = 0;	// РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ РіР°СЂС„Р°
+				unsigned int a = 0;	// РїР»РѕС‚РЅРѕСЃС‚СЊ РіСЂР°С„Р°
+				unsigned int t = 0;	// РґРѕРїСѓСЃС‚РёРјРѕРµ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р°Р»РіРѕСЂРёС‚РјР°
 
-				// определяем параметры создававемого графа
+				// РѕРїСЂРµРґРµР»СЏРµРј РїР°СЂР°РјРµС‚СЂС‹ СЃРѕР·РґР°РІР°РІРµРјРѕРіРѕ РіСЂР°С„Р°
 				SetParamGraph(f,s,n,a,t);
 
-				// выполняем Count раз поиск минимального вершинного покрытия для разных графов
+				// РІС‹РїРѕР»РЅСЏРµРј Count СЂР°Р· РїРѕРёСЃРє РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ РґР»СЏ СЂР°Р·РЅС‹С… РіСЂР°С„РѕРІ
 				for (register unsigned int k = 0; k < Count; ++k) {
 
 					if (Terminated)
 						break;
 
-					ToConsol(Message.sprintf("%d - параметры: %d %d %d",TestNum,n,a,t));
-					ToConsol("\tсоздается граф...");
+					ToConsol(Message.sprintf("%d - РїР°СЂР°РјРµС‚СЂС‹: %d %d %d",TestNum,n,a,t));
+					ToConsol("\tСЃРѕР·РґР°РµС‚СЃСЏ РіСЂР°С„...");
 
-					CreateGraph(n,a); // создаем матрицы графа
+					CreateGraph(n,a); // СЃРѕР·РґР°РµРј РјР°С‚СЂРёС†С‹ РіСЂР°С„Р°
 
-					// находим минимальные покрытия выбранными методами
+					// РЅР°С…РѕРґРёРј РјРёРЅРёРјР°Р»СЊРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ РІС‹Р±СЂР°РЅРЅС‹РјРё РјРµС‚РѕРґР°РјРё
 					Algorithms[Alg.at(0)]();
 					unsigned int LenCoverLast = LenCover;
 
@@ -346,7 +347,7 @@ void __fastcall TThreadTestGraph::TestCOMP()
 
 						if (LenCoverLast != LenCover) {
 
-							ToConsol("Найдено несовпадающее решение! Тестирование завершенно успешно.");
+							ToConsol("РќР°Р№РґРµРЅРѕ РЅРµСЃРѕРІРїР°РґР°СЋС‰РµРµ СЂРµС€РµРЅРёРµ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СѓСЃРїРµС€РЅРѕ.");
 							ReturnErrorGraph();
 							return;
 						}
@@ -357,10 +358,10 @@ void __fastcall TThreadTestGraph::TestCOMP()
 			}
 		}
 
-		ToConsol("Несовпадений найдено не было! Тестирование завершенно успешно.");
+		ToConsol("РќРµСЃРѕРІРїР°РґРµРЅРёР№ РЅР°Р№РґРµРЅРѕ РЅРµ Р±С‹Р»Рѕ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СѓСЃРїРµС€РЅРѕ.");
 
 	} catch (...) {
-		ToConsol("Неизвестная ошибка! Тестирование завершенно с ошибкой.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //-----------------------------------------------------------------------------
@@ -372,7 +373,7 @@ void __fastcall TThreadTestGraph::CreateGraph(unsigned int N,unsigned int A)
 
 		if (!(N > 0 && A > 0 && A <= 100)) {
 
-			ToConsol("Ошибка! Неправильно заданны параметры графа.");
+			ToConsol("РћС€РёР±РєР°! РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅРЅС‹ РїР°СЂР°РјРµС‚СЂС‹ РіСЂР°С„Р°.");
 			return;
 		}
 
@@ -415,7 +416,7 @@ void __fastcall TThreadTestGraph::CreateGraph(unsigned int N,unsigned int A)
 		for (i = 1; i <= N - 1; ++i) {
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Тестирование завершенно.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ.");
 				return;
 			}
 
@@ -446,7 +447,7 @@ void __fastcall TThreadTestGraph::CreateGraph(unsigned int N,unsigned int A)
 			do {
 
 				if (Terminated) {
-					ToConsol("Процесс остановлен! Тестирование завершенно.");
+					ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ.");
 					return;
 				}
 
@@ -473,16 +474,16 @@ void __fastcall TThreadTestGraph::CreateGraph(unsigned int N,unsigned int A)
 		}
 
 		//E = Edges.size();
-		//A = (200 * E) / (N * (N - 1));  // реальная плотность графа
+		//A = (200 * E) / (N * (N - 1));  // СЂРµР°Р»СЊРЅР°СЏ РїР»РѕС‚РЅРѕСЃС‚СЊ РіСЂР°С„Р°
 
 	} catch(...) {
-		ToConsol("Неизвестная ошибка во время создания графа!\nТестирование завершенно с ошибкой.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР° РІРѕ РІСЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ РіСЂР°С„Р°!\nРўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 // ---------------------------------------------------------------------------
 
 
-/**** вспомогательные функции алгоритмов поиска вершинного покрытия ****/
+/**** РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё Р°Р»РіРѕСЂРёС‚РјРѕРІ РїРѕРёСЃРєР° РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ ****/
 
 
 void __fastcall TThreadTestGraph::SearchExtremCover(s_t &VertexSet_,vs_t &Vertex_,v_t &Cover_)
@@ -501,7 +502,7 @@ void __fastcall TThreadTestGraph::SearchExtremCover(s_t &VertexSet_,vs_t &Vertex
 
 		if (Degree == 1) {
 
-			// 'висячая' вершина
+			// 'РІРёСЃСЏС‡Р°СЏ' РІРµСЂС€РёРЅР°
 			int NumAdjacent = *Vertex_.at(Num).begin();
 			Cover_.push_back(NumAdjacent);
 			VertexErase(NumAdjacent,VertexSet_,Vertex_);
@@ -510,7 +511,7 @@ void __fastcall TThreadTestGraph::SearchExtremCover(s_t &VertexSet_,vs_t &Vertex
 
 		} else if (Degree == VertexSet_.size() - 1) {
 
-			// вершина связанная со всеми вершинами графа
+			// РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР°СЏ СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р°
 
 			Cover_.push_back(Num);
 			VertexErase(Num,VertexSet_,Vertex_);
@@ -753,14 +754,14 @@ bool TThreadTestGraph::IsCovered(const vs_t &Edg,const v_t &Cov)
 //---------------------------------------------------------------------------
 
 
-/**** функции поиска минимального вершиного покрытия графа ****/
+/**** С„СѓРЅРєС†РёРё РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ РіСЂР°С„Р° ****/
 
 //// - reserve methods
 //void __fastcall TThreadTestGraph::RsrvSearchCover()
 //{
 //	try {
 //
-//		ToConsol("\tвыполняется метод поглощений...");
+//		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµС‚РѕРґ РїРѕРіР»РѕС‰РµРЅРёР№...");
 //
 //		Q = 0;
 //		TimeExecut = 0;
@@ -783,7 +784,7 @@ bool TThreadTestGraph::IsCovered(const vs_t &Edg,const v_t &Cov)
 //		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 //
 //	} catch (...){
-//		ToConsol("Ошибка выполнения метода поглощения! Тестирование завершенно с ошибкой.");
+//		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РїРѕРіР»РѕС‰РµРЅРёСЏ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 //	}
 //}
 ////------------------------------------------------------------------------------
@@ -793,7 +794,7 @@ void __fastcall TThreadTestGraph::EquaSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется частотный метод 3...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ С‡Р°СЃС‚РѕС‚РЅС‹Р№ РјРµС‚РѕРґ 3...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -909,7 +910,7 @@ void __fastcall TThreadTestGraph::EquaSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения частотного метода 3! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ С‡Р°СЃС‚РѕС‚РЅРѕРіРѕ РјРµС‚РѕРґР° 3! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //------------------------------------------------------------------------------
@@ -995,7 +996,7 @@ void __fastcall TThreadTestGraph::FreqSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется частотный метод...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ С‡Р°СЃС‚РѕС‚РЅС‹Р№ РјРµС‚РѕРґ...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -1079,7 +1080,7 @@ void __fastcall TThreadTestGraph::FreqSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения частотного метода! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ С‡Р°СЃС‚РѕС‚РЅРѕРіРѕ РјРµС‚РѕРґР°! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //------------------------------------------------------------------------------
@@ -1089,7 +1090,7 @@ void __fastcall TThreadTestGraph::FullSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется метод быстрого полного перебора...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµС‚РѕРґ Р±С‹СЃС‚СЂРѕРіРѕ РїРѕР»РЅРѕРіРѕ РїРµСЂРµР±РѕСЂР°...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -1131,7 +1132,7 @@ void __fastcall TThreadTestGraph::FullSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения метода быстрого перебора! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° Р±С‹СЃС‚СЂРѕРіРѕ РїРµСЂРµР±РѕСЂР°! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1173,7 +1174,7 @@ void __fastcall TThreadTestGraph::IndsSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется метод независимых множеств...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -1358,7 +1359,7 @@ void __fastcall TThreadTestGraph::IndsSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения метода независимых множеств! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1368,7 +1369,7 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется метод независимых множеств...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -1387,6 +1388,7 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
+				++Q;
 				if (*it > i) {
 
 					pair<s_t,s_t> S;
@@ -1398,7 +1400,7 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
 							  inserter(S.first, S.first.begin()));
 
-					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+					++Q;
 
 					if ((S.first.size() + S.second.size()) == n) {
 						if (S.first.size() < LenCover) {
@@ -1413,11 +1415,12 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 				}
 		   }
 
-		IndsUnionSets(n,&Sets,&LenCover);
+		//IndsUnionSets(n,&Sets,&LenCover);
 
 		// build solver for each pair
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
+			++Q;
 			int iLenCover = IndsBuildFullSet(n,*it,Sets);
 			if (iLenCover < LenCover) {
 				LenCover = iLenCover;
@@ -1434,7 +1437,85 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения метода независимых множеств! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
+	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadTestGraph::NinuSearchCover()
+{
+	try {
+
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ СѓРїСЂРѕС‰РµРЅРЅС‹Р№...");
+
+		Q = 0;
+		TimeExecut = 0;
+		LenCover = INFIN;
+		NumMinCovers = 0;
+
+		LARGE_INTEGER TimeBegin;
+		LARGE_INTEGER TimeEnd;
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		set<pair<s_t,s_t> > Sets;
+
+		unsigned n = Vertex.size() - 1;
+		for (unsigned i = 1; i <= n; ++i)
+			for (s_t::iterator it = VertexAdd.at(i).begin();
+				 it != VertexAdd.at(i).end(); ++it)
+			{
+				++Q;
+				if (*it > i) {
+
+					pair<s_t,s_t> S;
+
+					S.second.insert(i);
+					S.second.insert(*it);
+
+					set_union(Vertex.at(i).begin(),Vertex.at(i).end(),
+							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
+							  inserter(S.first, S.first.begin()));
+
+					++Q;
+
+					if ((S.first.size() + S.second.size()) == n) {
+						if (S.first.size() < LenCover) {
+							LenCover = S.first.size();
+							NumMinCovers = 1;
+						} else if (S.first.size() == LenCover) {
+							++NumMinCovers;
+						}
+					} else {
+						Sets.insert(S);
+					}
+				}
+		   }
+
+		IndsUnionSetsAbsorb(n,&Sets,&LenCover);
+
+		// build solver for each pair
+		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
+		{
+			++Q;
+			int iLenCover = IndsBuildFullSet(n,*it,Sets);
+			if (iLenCover < LenCover) {
+				LenCover = iLenCover;
+                NumMinCovers = 1;
+			} else if (iLenCover == LenCover) {
+				++NumMinCovers;
+			}
+		}
+
+		if (LenMinCover == 0)
+			LenMinCover = LenCover;
+
+		QueryPerformanceCounter(&TimeEnd);
+		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
+
+	} catch (...){
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1444,46 +1525,49 @@ unsigned __fastcall TThreadTestGraph::IndsBuildFullSet(int n,ps_t FullSet,set<pa
 {
 	try {
 
-	Sets.erase(FullSet);
+		Sets.erase(FullSet);
 
-	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
+		while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
 
-		IndsRemoveUsedVertex(FullSet,&Sets);
-		IndsUnionSets(&Sets);
+			IndsRemoveUsedVertex(FullSet,&Sets);
+			//IndsUnionSets(&Sets);
 
-		if (Sets.size() > 0) {
-
-		// search maximum set
-		set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
-		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
 			++Q;
-			if (it_max->second.size() < it->second.size()) {
-				it_max = it;
-			} else if (it_max->second.size() == it->second.size()) {
-				if (it_max->first.size() > it->first.size())
-					it_max = it;
+			if (Sets.size() > 0) {
+
+				// search maximum set
+				set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
+				for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
+					++Q;
+					if (it_max->second.size() < it->second.size()) {
+						it_max = it;
+					} else if (it_max->second.size() == it->second.size()) {
+						if (it_max->first.size() > it->first.size())
+							it_max = it;
+					}
+				}
+
+				++Q;
+
+				set_union(FullSet.first.begin(),FullSet.first.end(),
+						it_max->first.begin(),it_max->first.end(),
+						inserter(FullSet.first,FullSet.first.begin()));
+
+				set_union(FullSet.second.begin(),FullSet.second.end(),
+						  it_max->second.begin(),it_max->second.end(),
+						  inserter(FullSet.second,FullSet.second.begin()));
 			}
+
 		}
 
-		Q += FullSet.first.size() + it_max->first.size();
-		Q += FullSet.second.size() + it_max->second.size();
-
-		set_union(FullSet.first.begin(),FullSet.first.end(),
-				it_max->first.begin(),it_max->first.end(),
-				inserter(FullSet.first,FullSet.first.begin()));
-
-		set_union(FullSet.second.begin(),FullSet.second.end(),
-				  it_max->second.begin(),it_max->second.end(),
-				  inserter(FullSet.second,FullSet.second.begin()));
-		}
-
-	}
-
-	return (FullSet.first.size() + FullSet.second.size() == n) ?
-				static_cast<unsigned>(FullSet.first.size())	: INFIN;
+		return (FullSet.first.size() + FullSet.second.size() == n) ?
+					static_cast<unsigned>(FullSet.first.size())	: INFIN;
 
 	} catch (...) {
-		ToConsol("Error: " + IntToStr((int)Sets.size()));
+		ToConsol("Error: function"
+			     " unsigned __fastcall TThreadTestGraph::"
+			     "IndsBuildFullSet(int n,ps_t FullSet,set<pair<s_t,s_t> > Sets) " 
+				+ IntToStr((int)Sets.size()));
 		return 0;
 	}
 }
@@ -1513,6 +1597,7 @@ void __fastcall TThreadTestGraph::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets
 				if (Terminated)
 					return;
 
+				++Q;
 				if (it->first == it_next->first) {
 
 					Absorb = true;
@@ -1537,13 +1622,13 @@ void __fastcall TThreadTestGraph::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets
 						Absorb = false;
 					}
 
-					Q += it->second.size() + it_next->second.size();
+					++Q;
 
 					++CountIdent;
 
 				} else {
-					// так как множества упорядочены в порядке возростания
-					// то после первого несовпадения нужно переходить к следующему
+					// С‚Р°Рє РєР°Рє РјРЅРѕР¶РµСЃС‚РІР° СѓРїРѕСЂСЏРґРѕС‡РµРЅС‹ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
+					// С‚Рѕ РїРѕСЃР»Рµ РїРµСЂРІРѕРіРѕ РЅРµСЃРѕРІРїР°РґРµРЅРёСЏ РЅСѓР¶РЅРѕ РїРµСЂРµС…РѕРґРёС‚СЊ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ
 					break;
 				}
 			}
@@ -1580,7 +1665,7 @@ void __fastcall TThreadTestGraph::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 
 				if (Terminated)
 					return;
-
+				++Q;
 				if (it->first == it_next->first) {
 
 					Absorb = true;
@@ -1594,13 +1679,13 @@ void __fastcall TThreadTestGraph::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 							it_next->second.begin(), it_next->second.end(),
 							inserter(S.second, S.second.begin()));
 
-					Q += it->second.size() + it_next->second.size();
+					++Q;
 
 					++CountIdent;
 
 				} else {
-					// так как множества упорядочены в порядке возростания
-					// то после первого несовпадения нужно переходить к следующему
+					// С‚Р°Рє РєР°Рє РјРЅРѕР¶РµСЃС‚РІР° СѓРїРѕСЂСЏРґРѕС‡РµРЅС‹ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
+					// С‚Рѕ РїРѕСЃР»Рµ РїРµСЂРІРѕРіРѕ РЅРµСЃРѕРІРїР°РґРµРЅРёСЏ РЅСѓР¶РЅРѕ РїРµСЂРµС…РѕРґРёС‚СЊ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ
 					break;
 				}
 			}
@@ -1617,6 +1702,98 @@ void __fastcall TThreadTestGraph::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TThreadTestGraph::IndsUnionSetsAbsorb(int n,sps_t *pSets,unsigned *pLenCover)
+{
+	// РѕР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ Сѓ РєРѕС‚РѕСЂС‹С… РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ СЏРІР»СЏСЋС‚СЃСЏ РїРѕРґРјРЅРѕР¶РµСЃС‚РІРѕРј РґСЂСѓРіРѕР№ РїР°СЂС‹
+
+	v_t absorb(pSets->size(), 0);
+	vv_t absorb_sets(pSets->size(), v_t());
+
+	int i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != prev_it(pSets->end()); ++it) {
+
+		if (absorb[i] == 1) {
+			++i;
+			continue;
+		}
+
+		int j = i + 1;
+
+		for (sps_t::iterator jt = next_it(it); jt != pSets->end(); ++jt) {
+
+			if (Terminated)
+				return;
+
+			if (absorb[j] == 1) {
+				++j;
+				continue;
+			}
+
+			s_t union_res;
+			set_union(it->first.begin(), it->first.end(),
+				jt->first.begin(), jt->first.end(),
+				inserter(union_res,union_res.begin()));
+
+			++Q;
+			if (it->first.size() == union_res.size()) {
+				absorb[j] = 1;
+				absorb_sets[i].push_back(j);
+			}
+			else if (jt->first.size() == union_res.size()) {
+				absorb[i] = 1;
+				copy(absorb_sets.at(i).begin(), absorb_sets.at(i).end(), back_inserter(absorb_sets[j]));
+				absorb_sets[j].push_back(i);
+				break;
+			}
+
+			++j;
+		}
+
+		++i;
+	}
+
+	sps_t sets_new;
+	i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != pSets->end(); ++it) {
+		if (absorb[i] != 1) {
+			if (absorb_sets[i].size() > 0) {
+				s_t second_new;
+				for (int j = 0; j < absorb_sets[i].size(); ++j) {
+					sps_t::iterator jt = pSets->begin();
+					advance(jt, absorb_sets[i][j]);
+					set_union(it->second.begin(), it->second.end(),
+						jt->second.begin(), jt->second.end(),
+						inserter(second_new, second_new.begin()));
+		
+					//Q += max(it->second.size(),jt->second.size());
+				}
+				
+				if (it->first.size() + second_new.size() == n){
+					//pFullSets->insert(make_pair(it->first, second_new));
+					if (it->first.size() < *pLenCover) {
+						*pLenCover = it->first.size();
+						NumMinCovers = 1;
+					} else if (it->first.size() == *pLenCover) {
+						++NumMinCovers;
+					}
+				}
+				else {
+					sets_new.insert(make_pair(it->first, second_new));
+				}
+			}
+			else {
+				sets_new.insert(*it);
+			}
+		}
+
+		++i;
+	}
+
+	pSets->swap(sets_new);
+}
+//---------------------------------------------------------------------------
+
+
 void __fastcall TThreadTestGraph::IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets)
 {
 	set<pair<s_t,s_t> > NewSets;
@@ -1627,7 +1804,7 @@ void __fastcall TThreadTestGraph::IndsRemoveUsedVertex(const pair<s_t,s_t> &Used
 		pair<s_t,s_t> NewPair(*itSets);
 
 		if (Terminated) {
-			ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+			ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
@@ -1655,7 +1832,7 @@ void __fastcall TThreadTestGraph::RangSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется ранговый метод...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ СЂР°РЅРіРѕРІС‹Р№ РјРµС‚РѕРґ...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -1861,7 +2038,7 @@ void __fastcall TThreadTestGraph::RangSearchCover()
 		}
 
 	} catch (...){
-		ToConsol("Ошибка выполнения рангового метода!  Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ СЂР°РЅРіРѕРІРѕРіРѕ РјРµС‚РѕРґР°!  РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1871,7 +2048,7 @@ void __fastcall TThreadTestGraph::VertSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется метод вершин...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµС‚РѕРґ РІРµСЂС€РёРЅ...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -1970,7 +2147,7 @@ void __fastcall TThreadTestGraph::VertSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения метода вершин! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РІРµСЂС€РёРЅ! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1979,7 +2156,7 @@ void __fastcall TThreadTestGraph::VertSearchCover()
 void __fastcall TThreadTestGraph::VpreSearchCover()
 {
 	try {
-		ToConsol("\tвыполняется метод вершин с прогнозом...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ РїСЂРѕРіРЅРѕР·РѕРј...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -2079,7 +2256,7 @@ void __fastcall TThreadTestGraph::VpreSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения метода вершин с прогнозом! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РІРµСЂС€РёРЅ СЃ РїСЂРѕРіРЅРѕР·РѕРј! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2089,7 +2266,7 @@ void __fastcall TThreadTestGraph::VrecSearchCover()
 {
 	try {
 
-		ToConsol("\tвыполняется метод вершин с рекурсией...");
+		ToConsol("\tРІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ СЂРµРєСѓСЂСЃРёРµР№...");
 
 		Q = 0;
 		TimeExecut = 0;
@@ -2127,7 +2304,7 @@ void __fastcall TThreadTestGraph::VrecSearchCover()
 		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
 	} catch (...){
-		ToConsol("Ошибка выполнения метода вершин с рекурсией! Тестирование завершенно с ошибкой.");
+		ToConsol("РћС€РёР±РєР° РІС‹РїРѕР»РЅРµРЅРёСЏ РјРµС‚РѕРґР° РІРµСЂС€РёРЅ СЃ СЂРµРєСѓСЂСЃРёРµР№! РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРЅРѕ СЃ РѕС€РёР±РєРѕР№.");
 	}
 }
 //---------------------------------------------------------------------------

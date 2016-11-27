@@ -83,7 +83,7 @@ void __fastcall TThreadCreateTest::Create()
 
 		Test->FileName = FileName;
 
-		// определяем какие параметры изменяются
+		// РѕРїСЂРµРґРµР»СЏРµРј РєР°РєРёРµ РїР°СЂР°РјРµС‚СЂС‹ РёР·РјРµРЅСЏСЋС‚СЃСЏ
 		v_t ValueN = LineToVec(RangeN);
 		v_t ValueA = LineToVec(RangeA);
 		v_t ValueT = LineToVec(RangeT);
@@ -107,23 +107,23 @@ void __fastcall TThreadCreateTest::Create()
 			Test->ParamConst = ValueN.at(0);
 			Test->TypeParams = CHANGE_A_T;
 		} else {
-			ToConsol("Ошибка! Незадана одна из размерностей тестируемых графов.");
-			ToConsol("Тест не создан.");
+			ToConsol("РћС€РёР±РєР°! РќРµР·Р°РґР°РЅР° РѕРґРЅР° РёР· СЂР°Р·РјРµСЂРЅРѕСЃС‚РµР№ С‚РµСЃС‚РёСЂСѓРµРјС‹С… РіСЂР°С„РѕРІ.");
+			ToConsol("РўРµСЃС‚ РЅРµ СЃРѕР·РґР°РЅ.");
 			return;
 		}
 
 		Test->Count = TextToInt(CountStr);
 		if (Test->Count < 1) {
-			ToConsol("Ошибка! Не заданно количество тестов.");
-			ToConsol("Тест не создан.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅРЅРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµСЃС‚РѕРІ.");
+			ToConsol("РўРµСЃС‚ РЅРµ СЃРѕР·РґР°РЅ.");
 			return;
 		}
 
-		// определяем какие алгоритмы буду тестироваться
+		// РѕРїСЂРµРґРµР»СЏРµРј РєР°РєРёРµ Р°Р»РіРѕСЂРёС‚РјС‹ Р±СѓРґСѓ С‚РµСЃС‚РёСЂРѕРІР°С‚СЊСЃСЏ
 		Test->Alg = Alg;
 		if (Alg.size() < 1) {
-			ToConsol("Ошибка! Не заданны алгоритмы которые необходимо тестировать.");
-			ToConsol("Тест не создан.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅРЅС‹ Р°Р»РіРѕСЂРёС‚РјС‹ РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ С‚РµСЃС‚РёСЂРѕРІР°С‚СЊ.");
+			ToConsol("РўРµСЃС‚ РЅРµ СЃРѕР·РґР°РЅ.");
 			return;
 		}
 
@@ -135,10 +135,10 @@ void __fastcall TThreadCreateTest::Create()
 
 		Application->ProcessMessages();
 
-		ToConsol("Тест " + FileName + " - успешно создан.");
+		ToConsol("РўРµСЃС‚ " + FileName + " - СѓСЃРїРµС€РЅРѕ СЃРѕР·РґР°РЅ.");
 
 	} catch (...) {
-		ToConsol("Неизвестная ошибка! Тест не создан.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РўРµСЃС‚ РЅРµ СЃРѕР·РґР°РЅ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -160,7 +160,7 @@ inline v_t __fastcall TThreadCreateTest::LineToVec(const AnsiString &Line)
 
 	while (Pos <= Len) {
 
-		// выделяем число
+		// РІС‹РґРµР»СЏРµРј С‡РёСЃР»Рѕ
 		while (Pos <= Len) {
 
 			Ch =  Line[Pos];
@@ -173,7 +173,7 @@ inline v_t __fastcall TThreadCreateTest::LineToVec(const AnsiString &Line)
 			++Pos;
 		}
 
-		// пропускаем разделитель числа
+		// РїСЂРѕРїСѓСЃРєР°РµРј СЂР°Р·РґРµР»РёС‚РµР»СЊ С‡РёСЃР»Р°
 		Range = false;
 
 		while (Pos <= Len) {
@@ -189,7 +189,7 @@ inline v_t __fastcall TThreadCreateTest::LineToVec(const AnsiString &Line)
 			++Pos;
 		}
 
-		// сохраняем найденное число
+		// СЃРѕС…СЂР°РЅСЏРµРј РЅР°Р№РґРµРЅРЅРѕРµ С‡РёСЃР»Рѕ
 		if (StrNum != "") {
 
 			if ((Range) || (RangeNums.size() == 2))

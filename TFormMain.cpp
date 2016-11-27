@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -18,38 +18,36 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 	ThreadExecut = THR_NONE;
 
 	// codes and names of algorithm
-	ListViewAlg->Items->Item[0]->Indent = RANG;    // ранговый
-	ListViewAlg->Items->Item[1]->Indent = FULL;    // быстрый полный перебор
-	ListViewAlg->Items->Item[2]->Indent = INDS;    // независимых множеств
-	ListViewAlg->Items->Item[3]->Indent = NIND;    // новый метод независимых множеств
-	ListViewAlg->Items->Item[4]->Indent = FREQ;    // частотный
-	ListViewAlg->Items->Item[5]->Indent = VERT;    // вершин
-	ListViewAlg->Items->Item[6]->Indent = VPRE;    // вершин с прогнозом
-	ListViewAlg->Items->Item[7]->Indent = VREC;    // вершин с рекурсией
-	ListViewAlg->Items->Item[8]->Indent = EQUA;    // уравнений
+	 ListViewAlg->Items->Item[0]->Indent = RANG;    // СЂР°РЅРіРѕРІС‹Р№
+	 ListViewAlg->Items->Item[1]->Indent = FULL;    // Р±С‹СЃС‚СЂС‹Р№ РїРѕР»РЅС‹Р№ РїРµСЂРµР±РѕСЂ
+	 ListViewAlg->Items->Item[2]->Indent = INDS;    // РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
+	 ListViewAlg->Items->Item[3]->Indent = NIND;    // РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
+	 ListViewAlg->Items->Item[4]->Indent = NINU;    // РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ СѓРїСЂРѕС‰РµРЅРЅС‹Р№
+	 ListViewAlg->Items->Item[5]->Indent = FREQ;    // С‡Р°СЃС‚РѕС‚РЅС‹Р№
+	 ListViewAlg->Items->Item[6]->Indent = VERT;    // РјРµС‚РѕРґ РІРµСЂС€РёРЅ
+	 ListViewAlg->Items->Item[7]->Indent = EQUA;    // РјРµС‚РѕРґ СѓСЂР°РІРЅРµРЅРёР№
 
-	ListViewAlg->Items->Item[0]->Caption = STR_RANG;    // ранговый
-	ListViewAlg->Items->Item[1]->Caption = STR_FULL;    // быстрый полный перебор
-	ListViewAlg->Items->Item[2]->Caption = STR_INDS;    // независимых множеств
-	ListViewAlg->Items->Item[3]->Caption = STR_NIND;    // новый метод независимых множеств
-	ListViewAlg->Items->Item[4]->Caption = STR_FREQ;    // частотный
-	ListViewAlg->Items->Item[5]->Caption = STR_VERT;    // вершин
-	ListViewAlg->Items->Item[6]->Caption = STR_VPRE;    // вершин с прогнозом
-	ListViewAlg->Items->Item[7]->Caption = STR_VREC;    // вершин с  рекурсией
-	ListViewAlg->Items->Item[8]->Caption = STR_EQUA;    // уравнений
+	 ListViewAlg->Items->Item[0]->Caption = STR_RANG;    // СЂР°РЅРіРѕРІС‹Р№
+	 ListViewAlg->Items->Item[1]->Caption = STR_FULL;    // Р±С‹СЃС‚СЂС‹Р№ РїРѕР»РЅС‹Р№ РїРµСЂРµР±РѕСЂ
+	 ListViewAlg->Items->Item[2]->Caption = STR_INDS;    // РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
+	 ListViewAlg->Items->Item[3]->Caption = STR_NIND;    // РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
+	 ListViewAlg->Items->Item[4]->Caption = STR_NINU;    // РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ СѓРїСЂРѕС‰РµРЅРЅС‹Р№
+	 ListViewAlg->Items->Item[5]->Caption = STR_FREQ;    // С‡Р°СЃС‚РѕС‚РЅС‹Р№
+	 ListViewAlg->Items->Item[6]->Caption = STR_VERT;    // РјРµС‚РѕРґ РІРµСЂС€РёРЅ
+	 ListViewAlg->Items->Item[7]->Caption = STR_EQUA;    // РјРµС‚РѕРґ СѓСЂР°РІРЅРµРЅРёР№
 
-	ListViewTestType->Items->Item[0]->Indent = TEST_MO; 	// математическое ожидание
-	ListViewTestType->Items->Item[1]->Indent = TEST_CKO;	// среднеквадратическое отклонение
-	ListViewTestType->Items->Item[2]->Indent = TEST_COMP;	// сравнение методов
+	ListViewTestType->Items->Item[0]->Indent = TEST_MO; 	// РјР°С‚РµРјР°С‚РёС‡РµСЃРєРѕРµ РѕР¶РёРґР°РЅРёРµ
+	ListViewTestType->Items->Item[1]->Indent = TEST_CKO;	// СЃСЂРµРґРЅРµРєРІР°РґСЂР°С‚РёС‡РµСЃРєРѕРµ РѕС‚РєР»РѕРЅРµРЅРёРµ
+	ListViewTestType->Items->Item[2]->Indent = TEST_COMP;	// СЃСЂР°РІРЅРµРЅРёРµ РјРµС‚РѕРґРѕРІ
 
-	SaveDialog->Filter = AnsiString("Граф (*") + SUFIX_GRAPH +
+	SaveDialog->Filter = AnsiString("Р“СЂР°С„ (*") + SUFIX_GRAPH +
 						 AnsiString(")|*") + SUFIX_GRAPH +
-						 AnsiString("|Тест (*") + SUFIX_TEST +
+						 AnsiString("|РўРµСЃС‚ (*") + SUFIX_TEST +
 						 AnsiString(")|*") + SUFIX_TEST;
 
-	OpenDialog->Filter = AnsiString("Граф (*") + SUFIX_GRAPH +
+	OpenDialog->Filter = AnsiString("Р“СЂР°С„ (*") + SUFIX_GRAPH +
 						 AnsiString(")|*") + SUFIX_GRAPH +
-						 AnsiString("|Тест (*") + SUFIX_TEST +
+						 AnsiString("|РўРµСЃС‚ (*") + SUFIX_TEST +
 						 AnsiString(")|*") + SUFIX_TEST;
 
 	Alg = new alg_t();
@@ -60,7 +58,7 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 
 void TFormMain::ActionsLock()
 {
-	// действия меню "Файл"
+	// РґРµР№СЃС‚РІРёСЏ РјРµРЅСЋ "Р¤Р°Р№Р»"
 	ActionNew->Enabled      = false;
 	ActionOpen->Enabled     = false;
 	ActionSave->Enabled     = false;
@@ -68,11 +66,11 @@ void TFormMain::ActionsLock()
 	ActionReCreate->Enabled = false;
 	ActionDel->Enabled      = false;
 
-	// действия меню "Операции"
+	// РґРµР№СЃС‚РІРёСЏ РјРµРЅСЋ "РћРїРµСЂР°С†РёРё"
 	ActionRun->Enabled    = false;
 	ActionRunAll->Enabled = false;
 
-	// действия меню "Отчеты"
+	// РґРµР№СЃС‚РІРёСЏ РјРµРЅСЋ "РћС‚С‡РµС‚С‹"
 	ActionAlgLogView->Enabled = false;
 
 	PageControlMain->Enabled = false;
@@ -84,7 +82,7 @@ void TFormMain::ActionsLock()
 
 void TFormMain::ActionsUnLock()
 {
-	// действия меню "Файл"
+	// РґРµР№СЃС‚РІРёСЏ РјРµРЅСЋ "Р¤Р°Р№Р»"
 	ActionNew->Enabled        = true;
 	ActionOpen->Enabled       = true;
 	ActionSave->Enabled       = true;
@@ -92,11 +90,11 @@ void TFormMain::ActionsUnLock()
 	ActionReCreate->Enabled = true;
 	ActionDel->Enabled        = true;
 
-	// действия меню "Операции"
+	// РґРµР№СЃС‚РІРёСЏ РјРµРЅСЋ "РћРїРµСЂР°С†РёРё"
 	ActionRun->Enabled        = true;
 	ActionRunAll->Enabled     = true;
 
-	// действия меню "Отчеты"
+	// РґРµР№СЃС‚РІРёСЏ РјРµРЅСЋ "РћС‚С‡РµС‚С‹"
 	ActionAlgLogView->Enabled = true;
 //	ActionAutoSaveTest->Enabled = true;
 
@@ -110,7 +108,7 @@ void __fastcall TFormMain::ActionNewExecute(TObject *Sender)
 {
 	switch (PageControlMain->ActivePageIndex) {
 
-	// действия относятся к графу
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 	case 0:
 
 		FormNewGraph->ShowModal();
@@ -134,7 +132,7 @@ void __fastcall TFormMain::ActionNewExecute(TObject *Sender)
 
 		break;
 
-	// действия относятся к тестам
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Р°Рј
 	case 1:;
 		FormNewTest->ShowModal();
 
@@ -167,7 +165,7 @@ void __fastcall TFormMain::ActionNewExecute(TObject *Sender)
 
 void __fastcall TFormMain::ActionOpenExecute(TObject *Sender)
 {
-	// открываем диалоговое окно
+	// РѕС‚РєСЂС‹РІР°РµРј РґРёР°Р»РѕРіРѕРІРѕРµ РѕРєРЅРѕ
 	if (!OpenDialog->Execute())
 		return;
 
@@ -179,7 +177,7 @@ void __fastcall TFormMain::ActionOpenExecute(TObject *Sender)
 
 		AnsiString File = OpenDialog->Files->operator [](i);
 
-		// если тип открываемого файла является графом - открываем граф
+		// РµСЃР»Рё С‚РёРї РѕС‚РєСЂС‹РІР°РµРјРѕРіРѕ С„Р°Р№Р»Р° СЏРІР»СЏРµС‚СЃСЏ РіСЂР°С„РѕРј - РѕС‚РєСЂС‹РІР°РµРј РіСЂР°С„
 		if (File.Pos(SUFIX_GRAPH) != 0){
 
 			StatusBar->SimpleText = MESSAGE_OPEN_GRAPH;
@@ -193,12 +191,12 @@ void __fastcall TFormMain::ActionOpenExecute(TObject *Sender)
 				GraphToList(OpenGraph);
 				GraphToRichEdit(OpenGraph);
 
-				Consol->Lines->Append("Граф успешно открыт.\n");
+				Consol->Lines->Append("Р“СЂР°С„ СѓСЃРїРµС€РЅРѕ РѕС‚РєСЂС‹С‚.\n");
 
 			} else {
 
-				Consol->Lines->Append("Произошла ошибка.");
-				Consol->Lines->Append("Граф не был открыт.\n");
+				Consol->Lines->Append("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°.");
+				Consol->Lines->Append("Р“СЂР°С„ РЅРµ Р±С‹Р» РѕС‚РєСЂС‹С‚.\n");
 				delete OpenGraph;
 
 			}    // end if GraphFromFile
@@ -219,7 +217,7 @@ void __fastcall TFormMain::ActionSaveExecute(TObject *Sender)
 
 	switch (PageControlMain->ActivePageIndex) {
 
-	// действия относятся к графу
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 	case 0:
 
 		Index = ListBoxGraphs->ItemIndex;
@@ -236,17 +234,17 @@ void __fastcall TFormMain::ActionSaveExecute(TObject *Sender)
 		Consol->Lines->Clear();
 		Consol->Lines->Append(MESSAGE_SAVE_GRAPH);
 
-		// открываем диалоговое окно
+		// РѕС‚РєСЂС‹РІР°РµРј РґРёР°Р»РѕРіРѕРІРѕРµ РѕРєРЅРѕ
 		if (!SaveDialog->Execute()) {
-			Consol->Lines->Append("Действие было отмененно пользователем.");
-			Consol->Lines->Append(Graphs[Index]->FileName + " - не сохранен.");
+			Consol->Lines->Append("Р”РµР№СЃС‚РІРёРµ Р±С‹Р»Рѕ РѕС‚РјРµРЅРµРЅРЅРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.");
+			Consol->Lines->Append(Graphs[Index]->FileName + " - РЅРµ СЃРѕС…СЂР°РЅРµРЅ.");
 			break;
 		}
 
-		// сохраняем граф
+		// СЃРѕС…СЂР°РЅСЏРµРј РіСЂР°С„
 		if (GraphToFile(Graphs[Index],SaveDialog->FileName)) {
 
-			// если имя графа было измененно делаем эту замену в списке
+			// РµСЃР»Рё РёРјСЏ РіСЂР°С„Р° Р±С‹Р»Рѕ РёР·РјРµРЅРµРЅРЅРѕ РґРµР»Р°РµРј СЌС‚Сѓ Р·Р°РјРµРЅСѓ РІ СЃРїРёСЃРєРµ
 			FileSave = ExtractFileName(SaveDialog->FileName);
 			FileSave = ReplaceStr(FileSave,SUFIX_GRAPH,"");
 
@@ -257,16 +255,16 @@ void __fastcall TFormMain::ActionSaveExecute(TObject *Sender)
 				GraphToRichEdit(Graphs[Index]);
 			}
 
-			Consol->Lines->Append(Graphs[Index]->FileName + " - успешно сохранен.");
+			Consol->Lines->Append(Graphs[Index]->FileName + " - СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅРµРЅ.");
 
 		} else {
-			Consol->Lines->Append("Произошла ошибка.");
-			Consol->Lines->Append(Graphs[Index]->FileName + " - не сохранен.");
+			Consol->Lines->Append("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°.");
+			Consol->Lines->Append(Graphs[Index]->FileName + " - РЅРµ СЃРѕС…СЂР°РЅРµРЅ.");
 		}
 
 		break;
 
-	// действия относятся к тестам
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Р°Рј
 	case 1:;
 
 	default:;
@@ -279,7 +277,7 @@ void __fastcall TFormMain::ActionSaveExecute(TObject *Sender)
 
 void __fastcall TFormMain::ActionSaveListAccept(TObject *Sender)
 {
-	// заключаем функцию в try - finally что бы обязательно выполнить UnLock()
+	// Р·Р°РєР»СЋС‡Р°РµРј С„СѓРЅРєС†РёСЋ РІ try - finally С‡С‚Рѕ Р±С‹ РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ UnLock()
 	try {
 
 		register int Index  = -1;
@@ -288,7 +286,7 @@ void __fastcall TFormMain::ActionSaveListAccept(TObject *Sender)
 
 		switch (PageControlMain->ActivePageIndex) {
 
-		// действия относятся к графу
+		// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 		case 0:
 
 			Index = ListBoxGraphs->ItemIndex;
@@ -312,15 +310,15 @@ void __fastcall TFormMain::ActionSaveListAccept(TObject *Sender)
 				Consol->Lines->Append(MESSAGE_SAVE_GRAPH);
 				Application->ProcessMessages();
 
-				// сохраняем граф
+				// СЃРѕС…СЂР°РЅСЏРµРј РіСЂР°С„
 				if (GraphToFile(Graphs[Index],FileSave)) {
 
-					Consol->Lines->Append(Graphs[Index]->FileName + " - успешно сохранен.");
+					Consol->Lines->Append(Graphs[Index]->FileName + " - СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅРµРЅ.");
 
 				} else {
 
-					Consol->Lines->Append("Произошла ошибка.");
-					Consol->Lines->Append(Graphs[Index]->FileName + " - не сохранен.");
+					Consol->Lines->Append("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°.");
+					Consol->Lines->Append(Graphs[Index]->FileName + " - РЅРµ СЃРѕС…СЂР°РЅРµРЅ.");
 
 				}    // enf if GraphToFile
 
@@ -328,7 +326,7 @@ void __fastcall TFormMain::ActionSaveListAccept(TObject *Sender)
 
 			break;
 
-		// действия относятся к тестам
+		// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Р°Рј
 		case 1:;
 
 		default:;
@@ -350,7 +348,7 @@ void __fastcall TFormMain::ActionDelExecute(TObject *Sender)
 
 	switch (PageControlMain->ActivePageIndex) {
 
-	// действия относятся к графу
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 	case 0:
 
 		Index = ListBoxGraphs->ItemIndex;
@@ -372,7 +370,7 @@ void __fastcall TFormMain::ActionDelExecute(TObject *Sender)
 
 		break;
 
-	// действия относятся к тестам
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Р°Рј
 	case 1:;
 
 	default:;
@@ -387,7 +385,7 @@ void __fastcall TFormMain::ActionReCreateExecute(TObject *Sender)
 
 	switch (PageControlMain->ActivePageIndex) {
 
-	// действия относятся к графу
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 	case 0:
 
 		index = ListBoxGraphs->ItemIndex;
@@ -404,7 +402,7 @@ void __fastcall TFormMain::ActionReCreateExecute(TObject *Sender)
 
 		break;
 
-	// действия относятся к тестам
+	// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Р°Рј
 	case 1:;
 
 	default:;
@@ -418,7 +416,7 @@ void __fastcall TFormMain::ActionStopExecute(TObject *Sender)
 	switch (ThreadExecut) {
 
 	case THR_NONE:
-		ToConsol("Выполняемых процессов нет.");
+		ToConsol("Р’С‹РїРѕР»РЅСЏРµРјС‹С… РїСЂРѕС†РµСЃСЃРѕРІ РЅРµС‚.");
 		break;
 
 	case THR_GENERATE_GRAPH:
@@ -430,7 +428,7 @@ void __fastcall TFormMain::ActionStopExecute(TObject *Sender)
 		break;
 
 	default :
-		ToConsol("Ошибка! Выполняется неизвестный процесс.");
+		ToConsol("РћС€РёР±РєР°! Р’С‹РїРѕР»РЅСЏРµС‚СЃСЏ РЅРµРёР·РІРµСЃС‚РЅС‹Р№ РїСЂРѕС†РµСЃСЃ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -440,12 +438,12 @@ void __fastcall TFormMain::ActionRunAllExecute(TObject *Sender)
 {
 	if (PageControlMain->ActivePageIndex == ForGraph) {
 
-		// действия относятся к графу
+		// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 
 		int GraphIndex = ListBoxGraphs->ItemIndex;
 
 		if (GraphIndex < 0 || GraphIndex > ListBoxGraphs->Count) {
-			ToConsol("Невозможно выполнить алгоритм - не выбран граф!");
+			ToConsol("РќРµРІРѕР·РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Р°Р»РіРѕСЂРёС‚Рј - РЅРµ РІС‹Р±СЂР°РЅ РіСЂР°С„!");
 			return;
 		}
 
@@ -470,12 +468,12 @@ void __fastcall TFormMain::ActionRunAllExecute(TObject *Sender)
 		}
 	} else if (PageControlMain->ActivePageIndex == ForTestGraph) {
 
-		// действия относятся к тесту
+		// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Сѓ
 
 		int TestIndex = ListBoxTests->ItemIndex;
 
 		if (TestIndex < 0 || TestIndex > ListBoxTests->Count) {
-			ToConsol("Невозможно выполнить тестирование - не выбран тест!");
+			ToConsol("РќРµРІРѕР·РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ - РЅРµ РІС‹Р±СЂР°РЅ С‚РµСЃС‚!");
 			return;
 		}
 
@@ -502,16 +500,16 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 {
 	if (PageControlMain->ActivePageIndex == 0) {
 
-		// действия относятся к графу
+		// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РіСЂР°С„Сѓ
 
 		int GraphIndex = ListBoxGraphs->ItemIndex;
 
 		if (GraphIndex < 0 || GraphIndex > ListBoxGraphs->Count) {
-			ToConsol("Невозможно выполнить алгоритм - не выбран граф!");
+			ToConsol("РќРµРІРѕР·РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Р°Р»РіРѕСЂРёС‚Рј - РЅРµ РІС‹Р±СЂР°РЅ РіСЂР°С„!");
 			return;
 		}
 
-		// определяем какой алгоритм нужно выполнить и заносим его в вектор
+		// РѕРїСЂРµРґРµР»СЏРµРј РєР°РєРѕР№ Р°Р»РіРѕСЂРёС‚Рј РЅСѓР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Рё Р·Р°РЅРѕСЃРёРј РµРіРѕ РІ РІРµРєС‚РѕСЂ
 		v_t CheckedFunc;
 		for (int i = 0; i < ListViewAlg->Items->Count; ++i)
 			if (ListViewAlg->Items->Item[i]->Checked) {
@@ -533,38 +531,38 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			ThrSearchCover->Resume();
 
 		} else {
-			ToConsol("Не выбран алгоритм!");
+			ToConsol("РќРµ РІС‹Р±СЂР°РЅ Р°Р»РіРѕСЂРёС‚Рј!");
 			return;
 		}
 
 	} else if (PageControlMain->ActivePageIndex == 1) {
 
-		// действия относятся к тесту
+		// РґРµР№СЃС‚РІРёСЏ РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє С‚РµСЃС‚Сѓ
 
-        // определяем индек теста в списки и проверяем его корректность
+        // РѕРїСЂРµРґРµР»СЏРµРј РёРЅРґРµРє С‚РµСЃС‚Р° РІ СЃРїРёСЃРєРё Рё РїСЂРѕРІРµСЂСЏРµРј РµРіРѕ РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ
 		int TestIndex = ListBoxTests->ItemIndex;
 
 		if (TestIndex < 0 || TestIndex > ListBoxTests->Count) {
-			ToConsol("Невозможно выполнить тестирование - не выбран тест!");
+			ToConsol("РќРµРІРѕР·РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ - РЅРµ РІС‹Р±СЂР°РЅ С‚РµСЃС‚!");
 			return;
 		}
 
-		// проверка выбран тип вычисляемых характеристик тестом
+		// РїСЂРѕРІРµСЂРєР° РІС‹Р±СЂР°РЅ С‚РёРї РІС‹С‡РёСЃР»СЏРµРјС‹С… С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє С‚РµСЃС‚РѕРј
 		if (!ListViewTestType->Selected) {
-			ToConsol("Невыбран тип вычисляемой характеристики тестом! Тест не запущен.");
+			ToConsol("РќРµРІС‹Р±СЂР°РЅ С‚РёРї РІС‹С‡РёСЃР»СЏРµРјРѕР№ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё С‚РµСЃС‚РѕРј! РўРµСЃС‚ РЅРµ Р·Р°РїСѓС‰РµРЅ.");
 			return;
 		}
 
-		// в Ident  хранится тип вычисляемых характеристик тестом
+		// РІ Ident  С…СЂР°РЅРёС‚СЃСЏ С‚РёРї РІС‹С‡РёСЃР»СЏРµРјС‹С… С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє С‚РµСЃС‚РѕРј
 		unsigned int TestType = ListViewTestType->Selected->Indent;
 
-		// проверка наличия минимум двух алгоритмов для режима сравнения
+		// РїСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ РјРёРЅРёРјСѓРј РґРІСѓС… Р°Р»РіРѕСЂРёС‚РјРѕРІ РґР»СЏ СЂРµР¶РёРјР° СЃСЂР°РІРЅРµРЅРёСЏ
 		if ((TestType == TEST_COMP)&&(Tests.at(TestIndex)->Alg.size() == 1)) {
-			ToConsol("В выбраном тесте исследуется только один алгоритм, сравнение выполнить не возможно!");
+			ToConsol("Р’ РІС‹Р±СЂР°РЅРѕРј С‚РµСЃС‚Рµ РёСЃСЃР»РµРґСѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ Р°Р»РіРѕСЂРёС‚Рј, СЃСЂР°РІРЅРµРЅРёРµ РІС‹РїРѕР»РЅРёС‚СЊ РЅРµ РІРѕР·РјРѕР¶РЅРѕ!");
 			return;
         }
 
-		// создаем поток и запускаем его
+		// СЃРѕР·РґР°РµРј РїРѕС‚РѕРє Рё Р·Р°РїСѓСЃРєР°РµРј РµРіРѕ
 		ThrTestGraph                = new TThreadTestGraph(true);
 
 		ThrTestGraph->TestIndex 	= TestIndex;
@@ -597,10 +595,10 @@ void __fastcall TFormMain::ActionAlgLogViewExecute(TObject *Sender)
 
 	if (ActionAlgLogView->Checked) {
 
-		// в режиме отображения подробного отчета определяем алгоритм
-		// который выделен и его отчет существует или если такого нет,
-		// то определяем первый отмеченый алгоритм с отчетом и выводим его
-		// иначе выводим короткие отчеты
+		// РІ СЂРµР¶РёРјРµ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РїРѕРґСЂРѕР±РЅРѕРіРѕ РѕС‚С‡РµС‚Р° РѕРїСЂРµРґРµР»СЏРµРј Р°Р»РіРѕСЂРёС‚Рј
+		// РєРѕС‚РѕСЂС‹Р№ РІС‹РґРµР»РµРЅ Рё РµРіРѕ РѕС‚С‡РµС‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РёР»Рё РµСЃР»Рё С‚Р°РєРѕРіРѕ РЅРµС‚,
+		// С‚Рѕ РѕРїСЂРµРґРµР»СЏРµРј РїРµСЂРІС‹Р№ РѕС‚РјРµС‡РµРЅС‹Р№ Р°Р»РіРѕСЂРёС‚Рј СЃ РѕС‚С‡РµС‚РѕРј Рё РІС‹РІРѕРґРёРј РµРіРѕ
+		// РёРЅР°С‡Рµ РІС‹РІРѕРґРёРј РєРѕСЂРѕС‚РєРёРµ РѕС‚С‡РµС‚С‹
 		int AlgSelect = -1;
 
 		if (ListViewAlg->Selected
@@ -629,8 +627,8 @@ void __fastcall TFormMain::ActionAlgLogViewExecute(TObject *Sender)
 		}
 
 	} else {
-		// в режиме вывода коротких отчетов просто выводим все существующие
-		// короткие отчеты выбранных алгоритмов
+		// РІ СЂРµР¶РёРјРµ РІС‹РІРѕРґР° РєРѕСЂРѕС‚РєРёС… РѕС‚С‡РµС‚РѕРІ РїСЂРѕСЃС‚Рѕ РІС‹РІРѕРґРёРј РІСЃРµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ
+		// РєРѕСЂРѕС‚РєРёРµ РѕС‚С‡РµС‚С‹ РІС‹Р±СЂР°РЅРЅС‹С… Р°Р»РіРѕСЂРёС‚РјРѕРІ
 		ParamCoversToRichEdit();
 	}
 }
@@ -641,24 +639,24 @@ void __fastcall TFormMain::ViewTestResults(TTestGraph *Test)
 {
 	RichEditTestResults->Clear();
 
-	AnsiString line = "Параметры теста:";
+	AnsiString line = "РџР°СЂР°РјРµС‚СЂС‹ С‚РµСЃС‚Р°:";
 	RichEditTestResults->Lines->Add(line);
 
-	line = "Вершины:" + EditNBEGIN->Text + " - "
+	line = "Р’РµСЂС€РёРЅС‹:" + EditNBEGIN->Text + " - "
 		   + EditNEND->Text + " / " + EditNSTEP->Text;
 	RichEditTestResults->Lines->Add(line);
 
-	line = "Плотность:" + EditABEGIN->Text + " - "
+	line = "РџР»РѕС‚РЅРѕСЃС‚СЊ:" + EditABEGIN->Text + " - "
 		   + EditAEND->Text + " / " + EditASTEP->Text;
 	RichEditTestResults->Lines->Add(line);
 
-	line = "Количество тестов:" + EditCOUNTTEST->Text;
+	line = "РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РµСЃС‚РѕРІ:" + EditCOUNTTEST->Text;
 	RichEditTestResults->Lines->Add(line);
 
-	line = "Вероятность выполнения, мс:" + EditACCEPTTIME->Text;
+	line = "Р’РµСЂРѕСЏС‚РЅРѕСЃС‚СЊ РІС‹РїРѕР»РЅРµРЅРёСЏ, РјСЃ:" + EditACCEPTTIME->Text;
 	RichEditTestResults->Lines->Add(line);
 
-	line = "Результаты:";
+	line = "Р РµР·СѓР»СЊС‚Р°С‚С‹:";
 	RichEditTestResults->Lines->Add(line);
 	RichEditTestResults->Lines->Add("");
 	int num = ListTests->ItemIndex;
@@ -690,42 +688,42 @@ bool __fastcall TFormMain::ControlInputParam(TTestGraph* test)
 	try {
 		if (!test->NBEGIN || !test->NEND || !test->NSTEP) {
 			ShowMessage(
-				"Ошибка задания диапозона изменения количества вершин! Все значения должны быть больше 0.");
+				"РћС€РёР±РєР° Р·Р°РґР°РЅРёСЏ РґРёР°РїРѕР·РѕРЅР° РёР·РјРµРЅРµРЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° РІРµСЂС€РёРЅ! Р’СЃРµ Р·РЅР°С‡РµРЅРёСЏ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0.");
 			return false;
 		}
 
 		if (test->NBEGIN > test->NEND) {
 			ShowMessage(
-				"Ошибка задания диапозона изменения количества вершин! Конечное значени должно быть больше либо равно начального значения.");
+				"РћС€РёР±РєР° Р·Р°РґР°РЅРёСЏ РґРёР°РїРѕР·РѕРЅР° РёР·РјРµРЅРµРЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° РІРµСЂС€РёРЅ! РљРѕРЅРµС‡РЅРѕРµ Р·РЅР°С‡РµРЅРё РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ Р»РёР±Рѕ СЂР°РІРЅРѕ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ.");
 			return false;
 		}
 
 		if (!test->ABEGIN || !test->AEND || !test->ASTEP) {
 			ShowMessage(
-				"Ошибка задания диапозона изменения плотности! Все значения должны быть больше 0.");
+				"РћС€РёР±РєР° Р·Р°РґР°РЅРёСЏ РґРёР°РїРѕР·РѕРЅР° РёР·РјРµРЅРµРЅРёСЏ РїР»РѕС‚РЅРѕСЃС‚Рё! Р’СЃРµ Р·РЅР°С‡РµРЅРёСЏ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0.");
 			return false;
 		}
 
 		if (test->ABEGIN > test->AEND) {
 			ShowMessage(
-				"Ошибка задания диапозона изменения плотности! Конечное значени должно быть больше либо равно начального значения.");
+				"РћС€РёР±РєР° Р·Р°РґР°РЅРёСЏ РґРёР°РїРѕР·РѕРЅР° РёР·РјРµРЅРµРЅРёСЏ РїР»РѕС‚РЅРѕСЃС‚Рё! РљРѕРЅРµС‡РЅРѕРµ Р·РЅР°С‡РµРЅРё РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ Р»РёР±Рѕ СЂР°РІРЅРѕ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ.");
 			return false;
 		}
 
 		if (!test->COUNTTEST) {
 			ShowMessage(
-				"Ошибка задания количества тестов! Значение должны быть больше 0.");
+				"РћС€РёР±РєР° Р·Р°РґР°РЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° С‚РµСЃС‚РѕРІ! Р—РЅР°С‡РµРЅРёРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0.");
 			return false;
 		}
 
 		if (!test->ACCEPTTIME) {
 			ShowMessage(
-				"Ошибка задания вероятного времени выполнения! Значение должны быть больше 0.");
+				"РћС€РёР±РєР° Р·Р°РґР°РЅРёСЏ РІРµСЂРѕСЏС‚РЅРѕРіРѕ РІСЂРµРјРµРЅРё РІС‹РїРѕР»РЅРµРЅРёСЏ! Р—РЅР°С‡РµРЅРёРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 0.");
 			return false;
 		}
 
 		if (!(test->ALG.size() > 0 || test->ALG_EXACT != -1)) {
-			ShowMessage("Не выбран ни один из алгоритмов для тестирования!");
+			ShowMessage("РќРµ РІС‹Р±СЂР°РЅ РЅРё РѕРґРёРЅ РёР· Р°Р»РіРѕСЂРёС‚РјРѕРІ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ!");
 			return false;
 		}
 
@@ -781,7 +779,7 @@ void __fastcall TFormMain::ButtonNewTestClick(TObject *Sender)
 		if (!ControlInputParam(TESTS[TESTS.size() - 1]))
 			return;
 
-		ListTests->AddItem("Тест-" + IntToStr((int)TESTS.size()), Sender);
+		ListTests->AddItem("РўРµСЃС‚-" + IntToStr((int)TESTS.size()), Sender);
 
 		ListTests->ItemIndex = TESTS.size() - 1;
 
@@ -800,8 +798,8 @@ void __fastcall TFormMain::ButtonStopTestClick(TObject *Sender)
 //	TESTS[ListTests->ItemIndex]->ThreadRunMO->Graph->ThreadTRang->Handle;
 //	TerminateThread((void *)TESTS[ListTests->ItemIndex]->ThreadRunMO->Graph->ThreadTRang->Handle,0);
 
-	AnsiString Str = AnsiString("Получена команда прерывания. Тестирование закончится") +
-					 AnsiString("после выполнения текущего алгоритма...");
+	AnsiString Str = AnsiString("РџРѕР»СѓС‡РµРЅР° РєРѕРјР°РЅРґР° РїСЂРµСЂС‹РІР°РЅРёСЏ. РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РєРѕРЅС‡РёС‚СЃСЏ") +
+					 AnsiString("РїРѕСЃР»Рµ РІС‹РїРѕР»РЅРµРЅРёСЏ С‚РµРєСѓС‰РµРіРѕ Р°Р»РіРѕСЂРёС‚РјР°...");
 
 	ListTestProgress->Items->Add(Str);
 
@@ -913,7 +911,7 @@ bool TFormMain::GraphToFile(graph_t *Graph,const AnsiString &file)
 
 			out << Graph->N << endl;
 
-			// нулевая строка пустая, ее не сохраняем
+			// РЅСѓР»РµРІР°СЏ СЃС‚СЂРѕРєР° РїСѓСЃС‚Р°СЏ, РµРµ РЅРµ СЃРѕС…СЂР°РЅСЏРµРј
 			for (register int i = 1; i <= Graph->N; ++i) {
 
 				out << Graph->Vertex[i].size() << endl;
@@ -954,19 +952,19 @@ void TFormMain::GraphToList(graph_t *Graph)
 
 void TFormMain::GraphToRichEdit(graph_t *Graph) {
 
-	// очищаем поле вывода
+	// РѕС‡РёС‰Р°РµРј РїРѕР»Рµ РІС‹РІРѕРґР°
 	RichEditGraph->Clear();
 
 	if (Graph->N > 0 && Graph->A > 1 && Graph->A <= 100 && Graph->E > 0) {
 
-		AnsiString Str = "ГРАФ : " + Graph->FileName + "\n\n";
+		AnsiString Str = "Р“Р РђР¤ : " + Graph->FileName + "\n\n";
 
-		Str += "  вершин\t- "    + IntToStr(Graph->N) + "\n";
-		Str += "  ребер\t\t- "   + IntToStr(Graph->E) + "\n";
-		Str += "  плотность\t- " + IntToStr(Graph->A);
+		Str += "  РІРµСЂС€РёРЅ\t- "    + IntToStr(Graph->N) + "\n";
+		Str += "  СЂРµР±РµСЂ\t\t- "   + IntToStr(Graph->E) + "\n";
+		Str += "  РїР»РѕС‚РЅРѕСЃС‚СЊ\t- " + IntToStr(Graph->A);
 
-		// отображаем десятичную матрицу смежности в виде таблицы
-		Str += "\n\nСПИСОК ВЕРШИН:\n\n";
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј РґРµСЃСЏС‚РёС‡РЅСѓСЋ РјР°С‚СЂРёС†Сѓ СЃРјРµР¶РЅРѕСЃС‚Рё РІ РІРёРґРµ С‚Р°Р±Р»РёС†С‹
+		Str += "\n\nРЎРџРРЎРћРљ Р’Р•Р РЁРРќ:\n\n";
 
 		for (int i = 1; i < Graph->Vertex.size(); i++) {
 
@@ -980,8 +978,8 @@ void TFormMain::GraphToRichEdit(graph_t *Graph) {
 			Str += "\n";
 		}
 
-		// отображаем граф дополнение
-		Str += "\n\nГРАФ ДОПОЛНЕНИЕ:\n\n";
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј РіСЂР°С„ РґРѕРїРѕР»РЅРµРЅРёРµ
+		Str += "\n\nР“Р РђР¤ Р”РћРџРћР›РќР•РќРР•:\n\n";
 
 		for (int i = 1; i < Graph->VertexAdd.size(); i++) {
 
@@ -995,8 +993,8 @@ void TFormMain::GraphToRichEdit(graph_t *Graph) {
 			Str += "\n";
 		}
 
-		// отображаем список всех ребер
-		Str += "\n\nСПИСОК РЕБЕР (";
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј СЃРїРёСЃРѕРє РІСЃРµС… СЂРµР±РµСЂ
+		Str += "\n\nРЎРџРРЎРћРљ Р Р•Р‘Р•Р  (";
 
 		Str += (IntToStr((int)Graph->Edges.size()) + "):\n\n");
 
@@ -1010,8 +1008,8 @@ void TFormMain::GraphToRichEdit(graph_t *Graph) {
 			Str += ")\n";
 		}
 
-		// отображаем двоичную матрицу смежности
-		Str += "\n\nМАТРИЦА СМЕЖНОСТИ:\n\nX\t";
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј РґРІРѕРёС‡РЅСѓСЋ РјР°С‚СЂРёС†Сѓ СЃРјРµР¶РЅРѕСЃС‚Рё
+		Str += "\n\nРњРђРўР РР¦Рђ РЎРњР•Р–РќРћРЎРўР:\n\nX\t";
 
 		for (int i = 1; i < Graph->Matrix.size(); ++i)
 			Str += (IntToStr(i) + "\t");
@@ -1045,7 +1043,7 @@ void __fastcall TFormMain::ListBoxGraphsClick(TObject *Sender)
 
 	if ((GraphIndex >= 0) && (GraphIndex < Graphs.size())) {
 
-		// отображаем граф выделенный в списке
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј РіСЂР°С„ РІС‹РґРµР»РµРЅРЅС‹Р№ РІ СЃРїРёСЃРєРµ
 		GraphToRichEdit(Graphs[GraphIndex]);
 
 		ParamCoversToListView();
@@ -1061,7 +1059,7 @@ void __fastcall TFormMain::ListBoxTestsClick(TObject *Sender)
 
 	if ((TestIndex >= 0) && (TestIndex < Tests.size())) {
 
-		// отображаем граф выделенный в списке
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј РіСЂР°С„ РІС‹РґРµР»РµРЅРЅС‹Р№ РІ СЃРїРёСЃРєРµ
 		TestToRichEdit(Tests.at(TestIndex));
 
 		RichEditTestResults->Lines->Clear();
@@ -1084,7 +1082,7 @@ void __fastcall TFormMain::ListViewAlgClick(TObject *Sender)
 
 	if (ActionAlgLogView->Checked) {
 
-		// выводим подробный отчет выбранного алгоритма
+		// РІС‹РІРѕРґРёРј РїРѕРґСЂРѕР±РЅС‹Р№ РѕС‚С‡РµС‚ РІС‹Р±СЂР°РЅРЅРѕРіРѕ Р°Р»РіРѕСЂРёС‚РјР°
 
 		if (ListViewAlg->Selected) {
 
@@ -1096,7 +1094,7 @@ void __fastcall TFormMain::ListViewAlgClick(TObject *Sender)
 		}
 
 	} else {
-		// выводим краткие отчеты всех алгоритмов
+		// РІС‹РІРѕРґРёРј РєСЂР°С‚РєРёРµ РѕС‚С‡РµС‚С‹ РІСЃРµС… Р°Р»РіРѕСЂРёС‚РјРѕРІ
 		ParamCoversToRichEdit();
 	}
 }
@@ -1108,11 +1106,11 @@ void __fastcall TFormMain::ListViewAlgDblClick(TObject *Sender)
 	int GraphIndex = ListBoxGraphs->ItemIndex;
 
 	if (GraphIndex < 0 || GraphIndex > ListBoxGraphs->Count) {
-		ToConsol("Невозможно выполнить алгоритм - не выбран граф!");
+		ToConsol("РќРµРІРѕР·РјРѕР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Р°Р»РіРѕСЂРёС‚Рј - РЅРµ РІС‹Р±СЂР°РЅ РіСЂР°С„!");
 		return;
 	}
 
-	// определяем какой алгоритм нужно выполнить и заносим его в вектор
+	// РѕРїСЂРµРґРµР»СЏРµРј РєР°РєРѕР№ Р°Р»РіРѕСЂРёС‚Рј РЅСѓР¶РЅРѕ РІС‹РїРѕР»РЅРёС‚СЊ Рё Р·Р°РЅРѕСЃРёРј РµРіРѕ РІ РІРµРєС‚РѕСЂ
 	v_t CheckedFunc;
 	if (ListViewAlg->Selected)
 		CheckedFunc.push_back(ListViewAlg->Selected->Indent);
@@ -1150,7 +1148,7 @@ void __fastcall TFormMain::ListViewTestTypeClick(TObject *Sender)
 
 void TFormMain::ParamCoversToListView()
 {
-	// очищаем список
+	// РѕС‡РёС‰Р°РµРј СЃРїРёСЃРѕРє
 	for (register int i = 0; i < ListViewAlg->Items->Count; ++i) {
 
 		ListViewAlg->Items->Item[i]->SubItems->Strings[0] = "";
@@ -1159,16 +1157,16 @@ void TFormMain::ParamCoversToListView()
 		ListViewAlg->Items->Item[i]->SubItems->Strings[3] = "";
 	}
 
-	// проверяем сущесвтует ли выделенный граф
+	// РїСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃРІС‚СѓРµС‚ Р»Рё РІС‹РґРµР»РµРЅРЅС‹Р№ РіСЂР°С„
 	unsigned int GraphIndex = ListBoxGraphs->ItemIndex;
 
 	if (GraphIndex < 0 || GraphIndex >= Graphs.size())
 		return;
 
-	// выводим данные по алгоритмам
+	// РІС‹РІРѕРґРёРј РґР°РЅРЅС‹Рµ РїРѕ Р°Р»РіРѕСЂРёС‚РјР°Рј
 	for (register int i = 0; i < ListViewAlg->Items->Count; ++i) {
 
-		int AlgId = ListViewAlg->Items->Item[i]->Indent;  // в Indent хранится id алгоритма
+		int AlgId = ListViewAlg->Items->Item[i]->Indent;  // РІ Indent С…СЂР°РЅРёС‚СЃСЏ id Р°Р»РіРѕСЂРёС‚РјР°
 
 		if (Graphs[GraphIndex]->ParamCovers.find(AlgId)
 			!= Graphs[GraphIndex]->ParamCovers.end())
@@ -1201,11 +1199,11 @@ void TFormMain::ParamCoversToRichEdit()
 
 		int AlgId = -1;
 
-		// отображаем только выбранные отчеты
+		// РѕС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ РІС‹Р±СЂР°РЅРЅС‹Рµ РѕС‚С‡РµС‚С‹
 		if (ListViewAlg->Items->Item[i]->Checked) {
-			AlgId = ListViewAlg->Items->Item[i]->Indent; // в Indent хранится id алгоритма
+			AlgId = ListViewAlg->Items->Item[i]->Indent; // РІ Indent С…СЂР°РЅРёС‚СЃСЏ id Р°Р»РіРѕСЂРёС‚РјР°
 
-			// проверяем существует ли отчет
+			// РїСЂРѕРІРµСЂСЏРµРј СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РѕС‚С‡РµС‚
 			if (ListViewAlg->Items->Item[i]->SubItems->Strings[0] != "") {
 
 				RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[AlgId].LogShort);
@@ -1238,7 +1236,7 @@ void TFormMain::TestResultToRichEdit(unsigned int Index,unsigned int TypeResult)
 
 	case TEST_COMP: return;
 
-	default: ToConsol("Неизвестный тип характеристик алгоритмов.");
+	default: ToConsol("РќРµРёР·РІРµСЃС‚РЅС‹Р№ С‚РёРї С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє Р°Р»РіРѕСЂРёС‚РјРѕРІ.");
 			 return;
 	}
 
@@ -1292,12 +1290,12 @@ void TFormMain::TestToList(test_t *Test)
 
 void TFormMain::TestToRichEdit(test_t *Test)
 {
-	// очищаем поле вывода
+	// РѕС‡РёС‰Р°РµРј РїРѕР»Рµ РІС‹РІРѕРґР°
 	RichEditTest->Clear();
 
-	AnsiString Str = "ТЕСТ : " + Test->FileName + "\n\n";
+	AnsiString Str = "РўР•РЎРў : " + Test->FileName + "\n\n";
 
-	// отображаем параметры размерностей тестируемых графов
+	// РѕС‚РѕР±СЂР°Р¶Р°РµРј РїР°СЂР°РјРµС‚СЂС‹ СЂР°Р·РјРµСЂРЅРѕСЃС‚РµР№ С‚РµСЃС‚РёСЂСѓРµРјС‹С… РіСЂР°С„РѕРІ
 
 	v_t ValueN;
 	v_t ValueA;
@@ -1327,7 +1325,7 @@ void TFormMain::TestToRichEdit(test_t *Test)
 	}
 
 	//
-	Str += "  -- значения вершин тестируемых графов (";
+	Str += "  -- Р·РЅР°С‡РµРЅРёСЏ РІРµСЂС€РёРЅ С‚РµСЃС‚РёСЂСѓРµРјС‹С… РіСЂР°С„РѕРІ (";
 	Str += IntToStr((int)ValueN.size()) + ") :\n\t";
 
 	for (unsigned int i = 0; i < ValueN.size(); ++i)
@@ -1336,7 +1334,7 @@ void TFormMain::TestToRichEdit(test_t *Test)
 	Str += "\n\n";
 
 	//
-	Str += "  -- значения плотностей тестируемых графов (";
+	Str += "  -- Р·РЅР°С‡РµРЅРёСЏ РїР»РѕС‚РЅРѕСЃС‚РµР№ С‚РµСЃС‚РёСЂСѓРµРјС‹С… РіСЂР°С„РѕРІ (";
 	Str += IntToStr((int)ValueA.size()) + ") :\n\t";
 
 	for (unsigned int i = 0; i < ValueA.size(); ++i)
@@ -1345,7 +1343,7 @@ void TFormMain::TestToRichEdit(test_t *Test)
 	Str += "\n\n";
 
 	//
-	Str += "  -- значения допустимого времени выполнения алгоритмов (";
+	Str += "  -- Р·РЅР°С‡РµРЅРёСЏ РґРѕРїСѓСЃС‚РёРјРѕРіРѕ РІСЂРµРјРµРЅРё РІС‹РїРѕР»РЅРµРЅРёСЏ Р°Р»РіРѕСЂРёС‚РјРѕРІ (";
 	Str += IntToStr((int)ValueT.size()) + ") : \n\t";
 
 	for (unsigned int i = 0; i < ValueT.size(); ++i)
@@ -1354,10 +1352,10 @@ void TFormMain::TestToRichEdit(test_t *Test)
 	Str += "\n\n";
 
 	//
-	Str += "  -- количество тестов:\n\t" + IntToStr((int)Test->Count) + "\n\n";
+	Str += "  -- РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµСЃС‚РѕРІ:\n\t" + IntToStr((int)Test->Count) + "\n\n";
 
 	//
-	Str += "  -- исследуемые алгоритмы:\n";
+	Str += "  -- РёСЃСЃР»РµРґСѓРµРјС‹Рµ Р°Р»РіРѕСЂРёС‚РјС‹:\n";
 
 	map<int,AnsiString> NameAlg = alg_t().Name;
 
@@ -1380,7 +1378,7 @@ void TFormMain::ToConsol(const AnsiString &Message)
 
 	int LastPos = Consol->Text.Length();
 	Consol->Perform(EM_SETSEL, LastPos, LastPos);
-//	Consol->Perform(EM_SCROLLCARET, 0, 0);
+	//Consol->Perform(EM_SCROLLCARET, 0, 0);
 	Consol->SetFocus();
 }
 //---------------------------------------------------------------------------

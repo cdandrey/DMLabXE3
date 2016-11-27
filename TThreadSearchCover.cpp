@@ -8,21 +8,23 @@
 #include <deque>
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
-//   Поток выполняет поиск миниматльного вершинного покрытия графа, одним
-//   из алгоритмов:
+//   РџРѕС‚РѕРє РІС‹РїРѕР»РЅСЏРµС‚ РїРѕРёСЃРє РјРёРЅРёРјР°С‚Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ РіСЂР°С„Р°, РѕРґРЅРёРј
+//   РёР· Р°Р»РіРѕСЂРёС‚РјРѕРІ:
 //
-//       1. SearchCoverRang - ранговый метод
-//       2. SearchCoverFull - метод быстрого полного перебора
-//       3. SearchCoverInds - метод независимых множеств
-//       4. SearchCoverFreq - частотный метод
-//       5. SearchCoverVert - метод вершин
-//       6. SearchCoverVpre - метод вершин с прогнозом
-//       7. SearchCoverVrec - метод вершин с прогнозом и рекурсией
-//       8. SearchCoverAbsb - метод поглащений
-//       9. SearchCoverEqua - метод уравнений
-//       10. SearchCoverNind - новый метод независимых множеств
+//       1. SearchCoverRang - СЂР°РЅРіРѕРІС‹Р№ РјРµС‚РѕРґ
+//       2. SearchCoverFull - РјРµС‚РѕРґ Р±С‹СЃС‚СЂРѕРіРѕ РїРѕР»РЅРѕРіРѕ РїРµСЂРµР±РѕСЂР°
+//       3. SearchCoverInds - РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
+//       4. SearchCoverNind - РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
+//       5. SearchCoverNinu - РЅРѕРІС‹Р№ РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ СЃ РѕР±СЉРµРґРёРЅРµРЅРёРµРј
+//       6. SearchCoverFreq - С‡Р°СЃС‚РѕС‚РЅС‹Р№ РјРµС‚РѕРґ
+//       7. SearchCoverVert - РјРµС‚РѕРґ РІРµСЂС€РёРЅ
+//       8. SearchCoverAbsb - РјРµС‚РѕРґ РїРѕРіР»Р°С‰РµРЅРёР№
+//       9. SearchCoverEqua - РјРµС‚РѕРґ СѓСЂР°РІРЅРµРЅРёР№
 //
-//    данные возвращаются с номер в списке GraphIndex
+//       . SearchCoverVpre - РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ РїСЂРѕРіРЅРѕР·РѕРј
+//       . SearchCoverVrec - РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ РїСЂРѕРіРЅРѕР·РѕРј Рё СЂРµРєСѓСЂСЃРёРµР№
+//
+//    РґР°РЅРЅС‹Рµ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ СЃ РЅРѕРјРµСЂ РІ СЃРїРёСЃРєРµ GraphIndex
 //---------------------------------------------------------------------------
 
 __fastcall TThreadSearchCover::TThreadSearchCover(bool CreateSuspended)
@@ -37,10 +39,9 @@ __fastcall TThreadSearchCover::TThreadSearchCover(bool CreateSuspended)
 	FuncPoint[INDS] = IndsSearchCover;
 	FuncPoint[RANG] = RangSearchCover;
 	FuncPoint[VERT] = VertSearchCover;
-	FuncPoint[VPRE] = VpreSearchCover;
-	FuncPoint[VREC] = VrecSearchCover;
 	FuncPoint[EQUA] = EquaSearchCover;
 	FuncPoint[NIND] = NindSearchCover;
+	FuncPoint[NINU] = NinuSearchCover;
 }
 //------------------------------------------------------------------------------
 
@@ -66,7 +67,7 @@ void __fastcall TThreadSearchCover::Execute()
 //---------------------------------------------------------------------------
 
 
-/**** функции взаимодействия потока с главной формой приложения ****/
+/**** С„СѓРЅРєС†РёРё РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ РїРѕС‚РѕРєР° СЃ РіР»Р°РІРЅРѕР№ С„РѕСЂРјРѕР№ РїСЂРёР»РѕР¶РµРЅРёСЏ ****/
 
 
 void __fastcall TThreadSearchCover::Lock()
@@ -115,28 +116,28 @@ void TThreadSearchCover::ToCover()
 		= LogShort;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
-		+= "  -- Количество операций:\t";
+		+= "  -- РљРѕР»РёС‡РµСЃС‚РІРѕ РѕРїРµСЂР°С†РёР№:\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Q;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
-		+= "\n  -- Время выполнения, мс:\t";
+		+= "\n  -- Р’СЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ, РјСЃ:\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].T;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
-		+= "\n  -- Длина множества:\t\t";
+		+= "\n  -- Р”Р»РёРЅР° РјРЅРѕР¶РµСЃС‚РІР°:\t\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LenCover;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
-		+= "\n  -- Максимальное независимое множество:\t";
+		+= "\n  -- РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ:\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Cover;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Log = Log;
 
-	// выводим отчеты в список и редактор
+	// РІС‹РІРѕРґРёРј РѕС‚С‡РµС‚С‹ РІ СЃРїРёСЃРѕРє Рё СЂРµРґР°РєС‚РѕСЂ
 	FormMain->ParamCoversToListView();
 
 	if (FormMain->ActionAlgLogView->Checked) {
@@ -165,15 +166,16 @@ v_t TThreadSearchCover::CoverToIndep(const v_t &cover)
 //------------------------------------------------------------------------------
 
 
-/**** функции преобразования данных в текст ****/
+/**** С„СѓРЅРєС†РёРё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РґР°РЅРЅС‹С… РІ С‚РµРєСЃС‚ ****/
 
 
 AnsiString __fastcall TThreadSearchCover::ToString(const vp_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (unsigned int i = 1; i < Data.size(); ++i)
-		Str += IntToStr((int)i) + "(" + IntToStr(Data.at(i).second) + ") ";
+		Str += Buffer.sprintf("%3d (%3d) ",i,Data.at(i).second);
 
 	Str += "\n";
 
@@ -185,40 +187,41 @@ AnsiString __fastcall TThreadSearchCover::ToString(const vp_t &Data)
 AnsiString __fastcall TThreadSearchCover::ToString(int ColCount,const vv_t &H)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int col = 1; col < ColCount; ++col) {
 
-		Str += "\n\tB" + IntToStr(col) + "\t=  ";
+		Str += Buffer.sprintf("\n\tB + %3d + \t= ",col);
 
 		int HSize = H.at(col).size();
 		for (int row = 1; row < HSize; ++row) {
 
 			if (H.at(col).at(row) != 0) {
-				Str += "0  ";
+				Str += Buffer.sprintf("%3d ",0);
 			} else {
-				Str += IntToStr(row) + "  ";
+				Str += Buffer.sprintf("%3d ",row);
 			}
 		}
 
-		Str += "\n\tH" + IntToStr(col) + "\t= ";
+		Str += Buffer.sprintf("\n\tH + %3d + \t= ",col);
 		for (int row = 1; row < HSize; ++row) {
 
 			if (H.at(col).at(row) != 0) {
 				if (H.at(col).at(row) != INFIN)
-					Str += IntToStr(H.at(col).at(row)) + "  ";
+					Str += Buffer.sprintf("%3d ",H.at(col).at(row));
 				else
-					Str += "#  ";
+					Str += Buffer.sprintf("%3s ",'#');
 			} else {
-				Str += "0  ";
+				Str += Buffer.sprintf("%3d ",0);
 			}
 		}
 
-		Str += "\n\td" + IntToStr(col) + "\t= ";
+		Str += Buffer.sprintf("\n\td + %3d + \t= ",col);
 
 		if (H.at(col).at(0) == INFIN)
 			Str += "#\n";
 		else
-			Str += IntToStr(H.at(col).at(0)) + "\n";
+			Str += Buffer.sprintf("%3d \n",H.at(col).at(0));
 	}
 
 	Str += "\n";
@@ -235,11 +238,11 @@ AnsiString __fastcall TThreadSearchCover::ToString(
 										  )
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (s_t::const_iterator it = SetData.begin(); it != SetData.end(); ++it) {
 
-		Str += Tab + IntToStr(*it);
-		Str += "(" + IntToStr((int)VecSetData.at(*it).size()) + ") : ";
+		Str += Tab + Buffer.sprintf("%3d (%3d) : ",*it,VecSetData.at(*it).size());
 		Str += ToString(VecSetData.at(*it)) + "\n";
 	}
 
@@ -254,12 +257,13 @@ AnsiString __fastcall TThreadSearchCover::ToString(
 AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const vs_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int i = 1; i < Data.size(); ++i) {
 
-		Str += Tab + IntToStr(i);
-			   + "(" + IntToStr((int)Data.at(i).size())
-			   + ") : " + ToString(Data.at(i)) + "\n";
+		Str += Tab
+				+ Buffer.sprintf("%3d (%3d) : ",i,Data.at(i).size())
+		   	    + ToString(Data.at(i)) + "\n";
 	}
 
 	return Str;
@@ -270,9 +274,10 @@ AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const vs_t &Da
 AnsiString __fastcall TThreadSearchCover::ToString(const v_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int i = 0; i < Data.size(); ++i)
-		Str += IntToStr(Data.at(i)) + "  ";
+		Str += Buffer.sprintf("%3d ",Data.at(i));
 
 	if (Str == "")
 		Str = "{}";
@@ -285,12 +290,13 @@ AnsiString __fastcall TThreadSearchCover::ToString(const v_t &Data)
 AnsiString __fastcall TThreadSearchCover::ToString(AnsiString infin,const v_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int i = 0; i < Data.size(); ++i)
 		if (Data.at(i) == INFIN)
 			Str += infin + " ";
 		else
-			Str += IntToStr(Data.at(i)) + "  ";
+			Str += Buffer.sprintf("%3d ",Data.at(i));
 
 	return Str.Trim();
 }
@@ -300,9 +306,10 @@ AnsiString __fastcall TThreadSearchCover::ToString(AnsiString infin,const v_t &D
 AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (s_t::const_iterator it = Data.begin(); it != Data.end(); ++it)
-		Str += IntToStr(*it) + "  ";
+        Str += Buffer.sprintf("%3d ",*it);
 
 	return Str.Trim();
 }
@@ -311,10 +318,12 @@ AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 
 AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 {
-	return ToString(Data.first) +
-		   " (" + IntToStr((int)Data.first.size()) + ")\t\t-\t\t" +
-		   ToString(Data.second) +
-		   " (" +  IntToStr((int)Data.second.size()) + ")\n";
+	AnsiString Buffer = "";
+
+	return   ToString(Data.first)
+		   + Buffer.sprintf(" (%3d) \t\t-\t\t",Data.first.size())
+		   + ToString(Data.second)
+		   + Buffer.sprintf(" (%3d)\n",Data.first.size());
 }
 //---------------------------------------------------------------------------
 
@@ -322,13 +331,12 @@ AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 AnsiString __fastcall TThreadSearchCover::ToString(const set<pair<s_t,s_t> > &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
-	int k = 1;
+	int k = 0;
 
-	for (set<pair<s_t,s_t> >::const_iterator it = Data.begin();it != Data.end(); ++it) {
-		Str += "\t" + IntToStr(k) + ".\t" +  ToString(*it);
-		++k;
-	}
+	for (set<pair<s_t,s_t> >::const_iterator it = Data.begin();it != Data.end(); ++it)
+		Str += Buffer.sprintf("   %3d.   ",++k) +  ToString(*it) + "\n";
 
 	return Str;
 }
@@ -403,7 +411,7 @@ AnsiString __fastcall TThreadSearchCover::ToStringVertex(const s_t  &VertexSet,
 
 
 
-/**** вспомогательные функции алгоритмов поиска вершинного покрытия ****/
+/**** РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё Р°Р»РіРѕСЂРёС‚РјРѕРІ РїРѕРёСЃРєР° РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ ****/
 
 
 inline v_t TThreadSearchCover::CoverFromIndep(s_t VertexSet,const v_t &Indep)
@@ -424,8 +432,8 @@ inline v_t TThreadSearchCover::CoverFromIndep(s_t VertexSet,const v_t &Indep)
 }
 //---------------------------------------------------------------------------
 
-// функция производит поиск экстримальных вершин(изолированные, висячие,
-// связанные со всеми) и включает их в вершинное покрытие
+// С„СѓРЅРєС†РёСЏ РїСЂРѕРёР·РІРѕРґРёС‚ РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ(РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹Рµ, РІРёСЃСЏС‡РёРµ,
+// СЃРІСЏР·Р°РЅРЅС‹Рµ СЃРѕ РІСЃРµРјРё) Рё РІРєР»СЋС‡Р°РµС‚ РёС… РІ РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ
 void __fastcall TThreadSearchCover::SearchExtremCover(
 										AnsiString  LogRowBegin,
 										s_t         &VertexSet_,
@@ -433,8 +441,8 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 										v_t         &Cover_
 									)
 {
-	// признак что были найдены связанные со всеми или висячие вершины
-	// что бы обновлять или не обновлять список вершин в логе
+	// РїСЂРёР·РЅР°Рє С‡С‚Рѕ Р±С‹Р»Рё РЅР°Р№РґРµРЅС‹ СЃРІСЏР·Р°РЅРЅС‹Рµ СЃРѕ РІСЃРµРјРё РёР»Рё РІРёСЃСЏС‡РёРµ РІРµСЂС€РёРЅС‹
+	// С‡С‚Рѕ Р±С‹ РѕР±РЅРѕРІР»СЏС‚СЊ РёР»Рё РЅРµ РѕР±РЅРѕРІР»СЏС‚СЊ СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ РІ Р»РѕРіРµ
 	bool IsExtrem = false;
 
 	if (VertexSet_.size() == 0)
@@ -451,14 +459,14 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 
 		if (Degree == 1) {
 
-			// 'висячая' вершина
+			// 'РІРёСЃСЏС‡Р°СЏ' РІРµСЂС€РёРЅР°
 			IsExtrem = true;
 
-			Log += (LogRowBegin + "  -- 'висячая' : "
-					+ IntToStr(Num) + " - удаляем\n");
-			Log += (LogRowBegin + "  -- смежная с 'висячей' : "
+			Log += (LogRowBegin + "  -- 'РІРёСЃСЏС‡Р°СЏ' : "
+					+ IntToStr(Num) + " - СѓРґР°Р»СЏРµРј\n");
+			Log += (LogRowBegin + "  -- СЃРјРµР¶РЅР°СЏ СЃ 'РІРёСЃСЏС‡РµР№' : "
 					+ IntToStr(*Vertex_.at(Num).begin())
-					+ " - включаем в вершинное покрытие\n");
+					+ " - РІРєР»СЋС‡Р°РµРј РІ РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ\n");
 
 			int NumAdjacent = *Vertex_.at(Num).begin();
 			Cover_.push_back(NumAdjacent);
@@ -468,13 +476,13 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 
 		} else if (Degree == VertexSet_.size() - 1) {
 
-			// вершина связанная со всеми вершинами графа
+			// РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР°СЏ СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р°
 
 			IsExtrem = true;
 
 			Log += (LogRowBegin
-					+ "  -- вершина связанна со всеми вершинами графа : "
-					+ IntToStr(Num) + " - добавляем в покрытие\n");
+					+ "  -- РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР° СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р° : "
+					+ IntToStr(Num) + " - РґРѕР±Р°РІР»СЏРµРј РІ РїРѕРєСЂС‹С‚РёРµ\n");
 
 			Cover_.push_back(Num);
 
@@ -489,12 +497,12 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 	}    // end while VertexSet
 
 //	if (IsExtrem && VertexSet_.size() > 0) {
-//		Log += (LogRowBegin + "  -- текущий подграф : \n");
+//		Log += (LogRowBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„ : \n");
 //		Log += ToString(LogRowBegin + "        ",VertexSet_,Vertex_);
 //	}
 
 	if (!IsExtrem)
-		Log += LogRowBegin + "  -- экстримальные вершины отсутсвуют\n";
+		Log += LogRowBegin + "  -- СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹Рµ РІРµСЂС€РёРЅС‹ РѕС‚СЃСѓС‚СЃРІСѓСЋС‚\n";
 }
 //---------------------------------------------------------------------------
 
@@ -519,7 +527,7 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 
 		if (Degree == 1) {
 
-			// 'висячая' вершина
+			// 'РІРёСЃСЏС‡Р°СЏ' РІРµСЂС€РёРЅР°
 			int NumAdjacent = *Vertex_.at(Num).begin();
 			Cover_.push_back(NumAdjacent);
 			VertexErase(NumAdjacent,VertexSet_,Vertex_);
@@ -528,7 +536,7 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 
 		} else if (Degree == VertexSet_.size() - 1) {
 
-			// вершина связанная со всеми вершинами графа
+			// РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР°СЏ СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р°
 
 			Cover_.push_back(Num);
 			VertexErase(Num,VertexSet_,Vertex_);
@@ -545,8 +553,8 @@ void __fastcall TThreadSearchCover::SearchExtremCover(
 //---------------------------------------------------------------------------
 
 
-// функция производит поиск экстримальных вершин(изолированные, висячие,
-// связанные со всеми) и включает их в независимое множество
+// С„СѓРЅРєС†РёСЏ РїСЂРѕРёР·РІРѕРґРёС‚ РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ(РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹Рµ, РІРёСЃСЏС‡РёРµ,
+// СЃРІСЏР·Р°РЅРЅС‹Рµ СЃРѕ РІСЃРµРјРё) Рё РІРєР»СЋС‡Р°РµС‚ РёС… РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 void __fastcall TThreadSearchCover::SearchExtremIndep(
 										AnsiString  LogRowBegin,
 										s_t         &_VertexSet,
@@ -554,8 +562,8 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 										v_t         &_Indep
 									)
 {
-	// признак что были найдены связанные со всеми или висячие вершины
-	// что бы обновлять или не обновлять список вершин в логе
+	// РїСЂРёР·РЅР°Рє С‡С‚Рѕ Р±С‹Р»Рё РЅР°Р№РґРµРЅС‹ СЃРІСЏР·Р°РЅРЅС‹Рµ СЃРѕ РІСЃРµРјРё РёР»Рё РІРёСЃСЏС‡РёРµ РІРµСЂС€РёРЅС‹
+	// С‡С‚Рѕ Р±С‹ РѕР±РЅРѕРІР»СЏС‚СЊ РёР»Рё РЅРµ РѕР±РЅРѕРІР»СЏС‚СЊ СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ РІ Р»РѕРіРµ
 	bool IsExtrem = false;
 
 	++Q;
@@ -563,7 +571,7 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 	if (_VertexSet.size() == 0)
 		return;
 
-	Log += LogRowBegin + "  -- находим эктримальные вершины\n";
+	Log += LogRowBegin + "  -- РЅР°С…РѕРґРёРј СЌРєС‚СЂРёРјР°Р»СЊРЅС‹Рµ РІРµСЂС€РёРЅС‹\n";
 
 	register int Degree = -1;;
 	register int Num = -1;
@@ -580,13 +588,13 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 
 		switch (Degree) {
 
-		// изолированная вершина
+		// РёР·РѕР»РёСЂРѕРІР°РЅРЅР°СЏ РІРµСЂС€РёРЅР°
 		case 0:
 
 			++Q;
 
-			Log += (LogRowBegin + "  -- изолированная вершина : "
-					+ IntToStr(Num) + " - включаем в независимое множество\n");
+			Log += (LogRowBegin + "  -- РёР·РѕР»РёСЂРѕРІР°РЅРЅР°СЏ РІРµСЂС€РёРЅР° : "
+					+ IntToStr(Num) + " - РІРєР»СЋС‡Р°РµРј РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n");
 
 			_Indep.push_back(Num);
 			_Vertex[Num].clear();
@@ -594,15 +602,15 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 
 			break;
 
-		// 'висячая' вершина
+		// 'РІРёСЃСЏС‡Р°СЏ' РІРµСЂС€РёРЅР°
 		case 1:
 
 			IsExtrem = true;
 
-			Log += (LogRowBegin + "  -- 'висячая' вершина : "
-					+ IntToStr(Num) + " - включаем в независимое множество\n");
-			Log += (LogRowBegin + "  -- вершина смежная с 'висячей' : "
-					+ IntToStr(*_Vertex.at(Num).begin()) + " - удаляем\n");
+			Log += (LogRowBegin + "  -- 'РІРёСЃСЏС‡Р°СЏ' РІРµСЂС€РёРЅР° : "
+					+ IntToStr(Num) + " - РІРєР»СЋС‡Р°РµРј РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n");
+			Log += (LogRowBegin + "  -- РІРµСЂС€РёРЅР° СЃРјРµР¶РЅР°СЏ СЃ 'РІРёСЃСЏС‡РµР№' : "
+					+ IntToStr(*_Vertex.at(Num).begin()) + " - СѓРґР°Р»СЏРµРј\n");
 
 			_Indep.push_back(Num);
 			NumAdjacent = *_Vertex.at(Num).begin();
@@ -620,12 +628,12 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 
 			if (Degree == _VertexSet.size() - 1) {
 
-				// вершина связанная со всеми вершинами графа
+				// РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР°СЏ СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р°
 
 				IsExtrem = true;
 
-				Log += (LogRowBegin + "  -- вершина связанна со всеми вершинами графа : "
-						+ IntToStr(Num) + " - удаляем\n");
+				Log += (LogRowBegin + "  -- РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР° СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р° : "
+						+ IntToStr(Num) + " - СѓРґР°Р»СЏРµРј\n");
 
 				VertexErase(Num,_Vertex);
 				_VertexSet.erase(Num);
@@ -639,7 +647,7 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 	}    // end while VertexSet
 
 	if (IsExtrem && _VertexSet.size() > 0) {
-		Log += (LogRowBegin + "  -- текущий подграф : \n");
+		Log += (LogRowBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„ : \n");
 		Log += ToString(LogRowBegin + "        ",_VertexSet,_Vertex);
 	}
 }
@@ -652,8 +660,8 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 										v_t         &_Indep
 									)
 {
-	// признак что были найдены связанные со всеми или висячие вершины
-	// что бы обновлять или не обновлять список вершин в логе
+	// РїСЂРёР·РЅР°Рє С‡С‚Рѕ Р±С‹Р»Рё РЅР°Р№РґРµРЅС‹ СЃРІСЏР·Р°РЅРЅС‹Рµ СЃРѕ РІСЃРµРјРё РёР»Рё РІРёСЃСЏС‡РёРµ РІРµСЂС€РёРЅС‹
+	// С‡С‚Рѕ Р±С‹ РѕР±РЅРѕРІР»СЏС‚СЊ РёР»Рё РЅРµ РѕР±РЅРѕРІР»СЏС‚СЊ СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ РІ Р»РѕРіРµ
 	bool IsExtrem = false;
 
 	++Q;
@@ -683,7 +691,7 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 
 		switch (Degree) {
 
-		// изолированная вершина
+		// РёР·РѕР»РёСЂРѕРІР°РЅРЅР°СЏ РІРµСЂС€РёРЅР°
 		case 0:
 
 			++Q;
@@ -694,7 +702,7 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 
 			break;
 
-		// 'висячая' вершина
+		// 'РІРёСЃСЏС‡Р°СЏ' РІРµСЂС€РёРЅР°
 		case 1:
 
 			IsExtrem = true;
@@ -711,7 +719,7 @@ void __fastcall TThreadSearchCover::SearchExtremIndep(
 
 		default:
 
-		// вершина связанная со всеми вершинами графа
+		// РІРµСЂС€РёРЅР° СЃРІСЏР·Р°РЅРЅР°СЏ СЃРѕ РІСЃРµРјРё РІРµСЂС€РёРЅР°РјРё РіСЂР°С„Р°
 
 			++Q;
 
@@ -777,20 +785,20 @@ inline void TThreadSearchCover::VertexAdjacentErase(
 									vs_t  &Vertex_
 								)
 {
-	// удаляем все вершины с которыми связана вершина I
+	// СѓРґР°Р»СЏРµРј РІСЃРµ РІРµСЂС€РёРЅС‹ СЃ РєРѕС‚РѕСЂС‹РјРё СЃРІСЏР·Р°РЅР° РІРµСЂС€РёРЅР° I
 	s_t VertexSetErase(Vertex_.at(I));
 	for (s_t::const_iterator itErase = VertexSetErase.begin();
 		 itErase != VertexSetErase.end(); ++itErase)
 	{
-		// удалим связь вершины itErase с вершиной I, что бы избежать пересечения
+		// СѓРґР°Р»РёРј СЃРІСЏР·СЊ РІРµСЂС€РёРЅС‹ itErase СЃ РІРµСЂС€РёРЅРѕР№ I, С‡С‚Рѕ Р±С‹ РёР·Р±РµР¶Р°С‚СЊ РїРµСЂРµСЃРµС‡РµРЅРёСЏ
 		++Q;
 		Vertex_[*itErase].erase(I);
 
-		// удаляем вершину itErase
+		// СѓРґР°Р»СЏРµРј РІРµСЂС€РёРЅСѓ itErase
 		VertexErase(*itErase,VertexSet_,Vertex_);
 	}
 
-	// удоляем вершину I
+	// СѓРґРѕР»СЏРµРј РІРµСЂС€РёРЅСѓ I
 	Vertex_[I].clear();
 	VertexSet_.erase(I);
 }
@@ -804,23 +812,23 @@ inline void TThreadSearchCover::VertexToIndep(
 									v_t   &_Indep
 								)
 {
-	// удаляем все вершины с которыми связана вершина I
+	// СѓРґР°Р»СЏРµРј РІСЃРµ РІРµСЂС€РёРЅС‹ СЃ РєРѕС‚РѕСЂС‹РјРё СЃРІСЏР·Р°РЅР° РІРµСЂС€РёРЅР° I
 	for (s_t::iterator itErase = _Vertex.at(I).begin();
 		 itErase != _Vertex.at(I).end(); ++itErase)
 	{
-		// удалим связь вершины itErase с вершиной I, что бы избежать пересечения
+		// СѓРґР°Р»РёРј СЃРІСЏР·СЊ РІРµСЂС€РёРЅС‹ itErase СЃ РІРµСЂС€РёРЅРѕР№ I, С‡С‚Рѕ Р±С‹ РёР·Р±РµР¶Р°С‚СЊ РїРµСЂРµСЃРµС‡РµРЅРёСЏ
 		++Q;
 		_Vertex[*itErase].erase(I);
 
-		// удаляем вершину itErase
+		// СѓРґР°Р»СЏРµРј РІРµСЂС€РёРЅСѓ itErase
 		VertexErase(*itErase,_Vertex);
 		_VertexSet.erase(*itErase);
 	}
 
-	// добовляем вершину I в независимое множество
+	// РґРѕР±РѕРІР»СЏРµРј РІРµСЂС€РёРЅСѓ I РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 	_Indep.push_back(I);
 
-	// удоляем вершину I
+	// СѓРґРѕР»СЏРµРј РІРµСЂС€РёРЅСѓ I
 	_Vertex[I].clear();
 	_VertexSet.erase(I);
 }
@@ -860,7 +868,7 @@ bool TThreadSearchCover::IsCovered(const vs_t &Edg,const v_t &Cov)
 //---------------------------------------------------------------------------
 
 
-/**** функции поиска минимального вершиного покрытия графа ****/
+/**** С„СѓРЅРєС†РёРё РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ РіСЂР°С„Р° ****/
 
 
 void __fastcall TThreadSearchCover::FreqSearchCover()
@@ -871,26 +879,26 @@ void __fastcall TThreadSearchCover::FreqSearchCover()
 		ToConsol("search-cover freq " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "ЧАСТОТНЫЙ МЕТОД\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "Р§РђРЎРўРћРўРќР«Р™ РњР•РўРћР”\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-		ToConsol("Формируются промежуточные данные...");
+		// РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
 
-		//создаем множество всех вершин графа
+		//СЃРѕР·РґР°РµРј РјРЅРѕР¶РµСЃС‚РІРѕ РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		s_t VertexSet;
 		for (unsigned i = 1; i <= N; ++i)
 			VertexSet.insert(i);
 
-		// переходим к поиску минимального вершинного покрытия
+		// РїРµСЂРµС…РѕРґРёРј Рє РїРѕРёСЃРєСѓ РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ
 		unsigned Step = 1;
 		AnsiString LogBegin = "";
 		vs_t VertexInc(Vertex);
@@ -898,30 +906,30 @@ void __fastcall TThreadSearchCover::FreqSearchCover()
 		while (VertexSet.size() > 0) {
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return;
 			}
 
-			// поиск экстримальных вершин
+			// РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ
 
 			LogBegin = "." + IntToStr((int)Step);
-			Log += LogBegin + "  -- текущий подграф: \n"
+			Log += LogBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„: \n"
 				   + ToString(LogBegin + "        ",VertexSet,VertexInc);
-			Log += LogBegin + "  -- поиск экстримальных вершин\n";
+			Log += LogBegin + "  -- РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ\n";
 
-			ToConsol("шаг " + LogBegin + " поиск экстримальных вершин");
+			ToConsol("С€Р°Рі " + LogBegin + " РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ");
 
 			SearchExtremCover(LogBegin,VertexSet,VertexInc,Cover);
-			Log += LogBegin + "  -- текущий подграф: \n"
+			Log += LogBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„: \n"
 				   + ToString(LogBegin + "        ",VertexSet,VertexInc);
 
 			if (VertexSet.size() == 0)
 				break;
 
-			// поиск вершины связаной с наибольшим числом вершин,
-			// которые имеют минимальную степень (частота)
-			ToConsol("шаг " + LogBegin
-					 + " поиск вершины с наибольшей частотой");
+			// РїРѕРёСЃРє РІРµСЂС€РёРЅС‹ СЃРІСЏР·Р°РЅРѕР№ СЃ РЅР°РёР±РѕР»СЊС€РёРј С‡РёСЃР»РѕРј РІРµСЂС€РёРЅ,
+			// РєРѕС‚РѕСЂС‹Рµ РёРјРµСЋС‚ РјРёРЅРёРјР°Р»СЊРЅСѓСЋ СЃС‚РµРїРµРЅСЊ (С‡Р°СЃС‚РѕС‚Р°)
+			ToConsol("С€Р°Рі " + LogBegin
+					 + " РїРѕРёСЃРє РІРµСЂС€РёРЅС‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ С‡Р°СЃС‚РѕС‚РѕР№");
 
 			vector<multiset<int> > Degree(N + 1,multiset<int>());
 
@@ -942,7 +950,7 @@ void __fastcall TThreadSearchCover::FreqSearchCover()
 			while (CountMax == 0) {
 
 				if (Terminated) {
-					ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+					ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 					return;
 				}
 
@@ -968,31 +976,31 @@ void __fastcall TThreadSearchCover::FreqSearchCover()
 			}
 
 			Log += LogBegin
-				   + "  -- вершина с максимальной частотой: "
-				   + IntToStr((int)VertexMax) + " - добавляем в покрытие\n";
+				   + "  -- РІРµСЂС€РёРЅР° СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ С‡Р°СЃС‚РѕС‚РѕР№: "
+				   + IntToStr((int)VertexMax) + " - РґРѕР±Р°РІР»СЏРµРј РІ РїРѕРєСЂС‹С‚РёРµ\n";
 
 			Cover.push_back(VertexMax);
 
 			VertexErase(VertexMax,VertexSet,VertexInc);
 
-			Log += LogBegin + "  -- текущее покрытие: ("
+			Log += LogBegin + "  -- С‚РµРєСѓС‰РµРµ РїРѕРєСЂС‹С‚РёРµ: ("
 				   + IntToStr((int)Cover.size()) + ") " + ToString(Cover) + "\n";
 
 			++Step;
 		}
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
 			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //------------------------------------------------------------------------------
@@ -1006,47 +1014,47 @@ void __fastcall TThreadSearchCover::FullSearchCover()
 		ToConsol("search-cover full " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД БЫСТРОГО ПОЛНОГО ПЕРЕБОРА\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РњР•РўРћР” Р‘Р«РЎРўР РћР“Рћ РџРћР›РќРћР“Рћ РџР•Р Р•Р‘РћР Рђ\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-		ToConsol("Формируются промежуточные данные...");
-		s_t VertexSet;    // множество номеров всех вершин графа
+		// РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
+		s_t VertexSet;    // РјРЅРѕР¶РµСЃС‚РІРѕ РЅРѕРјРµСЂРѕРІ РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		for (int i = 1; i <= N; ++i)
 			VertexSet.insert(i);
 
-		v_t MaxIndep;    // максимальное назависимое множество
+		v_t MaxIndep;    // РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅР°Р·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 
-		// начинаем поиск максимального независимого множество
-		// поочередно включая каждую вершину в нез.множество
-		// среди N множеств выбираем мкасимальное
+		// РЅР°С‡РёРЅР°РµРј РїРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РїРѕРѕС‡РµСЂРµРґРЅРѕ РІРєР»СЋС‡Р°СЏ РєР°Р¶РґСѓСЋ РІРµСЂС€РёРЅСѓ РІ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// СЃСЂРµРґРё N РјРЅРѕР¶РµСЃС‚РІ РІС‹Р±РёСЂР°РµРј РјРєР°СЃРёРјР°Р»СЊРЅРѕРµ
 
-		ToConsol("Поиск максимального независимого множества...");
+		ToConsol("РџРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР°...");
 		for (int i = 1; i <= N; ++i) {
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return;
 			}
 
 			AnsiString StrI = IntToStr(i);
-			Log += "\n  -- строим подграф G" + StrI + " :\n\n";
+			Log += "\n  -- СЃС‚СЂРѕРёРј РїРѕРґРіСЂР°С„ G" + StrI + " :\n\n";
 
-			ToConsol("шаг ." + StrI
-					 + " - поиск независимого множества для подграфа G" + StrI);
+			ToConsol("С€Р°Рі ." + StrI
+					 + " - РїРѕРёСЃРє РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ РїРѕРґРіСЂР°С„Р° G" + StrI);
 
-			// поиск максимального независимого множества для i-го подграфа G
+			// РїРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ i-РіРѕ РїРѕРґРіСЂР°С„Р° G
 			v_t Indep = FullSearchIndep("",i,VertexSet,Vertex,v_t());
 
-			Log += "\n  -- независимое множество подграфа G"
+			Log += "\n  -- РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РїРѕРґРіСЂР°С„Р° G"
 				   + StrI + " (" + IntToStr((int)Indep.size()) + ") "
 				   + ToString(Indep) + "\n";
 
@@ -1057,27 +1065,27 @@ void __fastcall TThreadSearchCover::FullSearchCover()
 
 		}    // for i <= N
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr((int)MaxIndep.size()) + ") "
 			   + ToString(MaxIndep) + "\n";
 
-		ToConsol("Максимальное независимое множество найденно, находим вершинное покрытие...");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅРѕ, РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ...");
 
-		// из независимого множесва получаем вершинное покрытие
+		// РёР· РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃРІР° РїРѕР»СѓС‡Р°РµРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ
 		Cover = CoverFromIndep(VertexSet,MaxIndep);
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
 			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1093,31 +1101,31 @@ v_t __fastcall TThreadSearchCover::FullSearchIndep(
 {
 	LogRowBegin += "." + IntToStr(I);
 
-	Log += LogRowBegin + "  -- включаем в независимое множество вершину: "
+	Log += LogRowBegin + "  -- РІРєР»СЋС‡Р°РµРј РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РІРµСЂС€РёРЅСѓ: "
 		   + IntToStr(I) + "\n";
 
-	ToConsol("шаг " + LogRowBegin
-			 + " - включаем вершину в независимое множество");
+	ToConsol("С€Р°Рі " + LogRowBegin
+			 + " - РІРєР»СЋС‡Р°РµРј РІРµСЂС€РёРЅСѓ РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ");
 
 	VertexToIndep(I,VertexSet,Vertex,Indep);
 
-	Log += LogRowBegin + "  -- текущий подграф: \n"
+	Log += LogRowBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„: \n"
 		   + ToString(LogRowBegin + "        ",VertexSet,Vertex);
 
-	ToConsol("шаг " + LogRowBegin
-			 + " - поиск экстримальных вершин");
+	ToConsol("С€Р°Рі " + LogRowBegin
+			 + " - РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ");
 
 	SearchExtremIndep(LogRowBegin,VertexSet,Vertex,Indep);
 
 	v_t MaxIndep(Indep);
 
-	Log += LogRowBegin + "  -- текущее независимое множество:  ("
+	Log += LogRowBegin + "  -- С‚РµРєСѓС‰РµРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ:  ("
 		   + IntToStr((int)Indep.size()) + ")  "
 		   + ToString(Indep) + "\n";
 
 	if (VertexSet.size() > 0)
-		 Log += LogRowBegin + "  -- оставшиеся вершины: "
-		        + ToString(VertexSet) + " - для каждой находим нез.множество\n";
+		 Log += LogRowBegin + "  -- РѕСЃС‚Р°РІС€РёРµСЃСЏ РІРµСЂС€РёРЅС‹: "
+		        + ToString(VertexSet) + " - РґР»СЏ РєР°Р¶РґРѕР№ РЅР°С…РѕРґРёРј РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ\n";
 
 	for (s_t::iterator it = VertexSet.begin();
 		 it != VertexSet.end(); ++it)
@@ -1145,31 +1153,27 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 		ToConsol("search-cover full " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РњР•РўРћР” РќР•Р—РђР’РРЎРРњР«РҐ РњРќРћР–Р•РЎРўР’\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
+		ToConsol("Р¤РѕСЂРјРёСЂСѓРµРј РїР°СЂС‹ - РїРѕРєСЂС‹С‚РёРµ / РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ...");
 
-		// формируем независимые множества
-		ToConsol("Формируем пары - покрытие / независимое множество...");
+		Log += ".1 Р¤РѕСЂРјРёСЂСѓРµРј РїР°СЂС‹ - РїРѕРєСЂС‹С‚РёРµ / РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n\n"
+			   "  -- СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РјРЅРѕР¶РµСЃС‚Р°:\n\n";
 
-		Log += ".1 Формируем пары - покрытие / независимое множество\n\n"
-			   "  -- сформированные множеста:\n\n";
-
-		// множество всех пар множеств - покрытие/нез.множество
-		// в паре множеств first - вершинные покрытия, second - независимое множесвтов
+		// РјРЅРѕР¶РµСЃС‚РІРѕ РІСЃРµС… РїР°СЂ РјРЅРѕР¶РµСЃС‚РІ - РїРѕРєСЂС‹С‚РёРµ/РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РІ РїР°СЂРµ РјРЅРѕР¶РµСЃС‚РІ first - РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ, second - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃРІС‚РѕРІ
 		set<pair<s_t,s_t> > Sets;
 
-		// множество всех пар множеств - покрытие/нез.множество,
-		// которые вместе являются множеством всех вершин графа
+		// РјРЅРѕР¶РµСЃС‚РІРѕ РІСЃРµС… РїР°СЂ РјРЅРѕР¶РµСЃС‚РІ - РїРѕРєСЂС‹С‚РёРµ/РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ,
+		// РєРѕС‚РѕСЂС‹Рµ РІРјРµСЃС‚Рµ СЏРІР»СЏСЋС‚СЃСЏ РјРЅРѕР¶РµСЃС‚РІРѕРј РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		set<pair<s_t,s_t> > FullSets;
 
 		AnsiString FullStr = "";
@@ -1179,6 +1183,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
+				++Q;
 				if (*it > i) {
 
 					pair<s_t,s_t> S;
@@ -1191,12 +1196,8 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 							  inserter(S.first, S.first.begin()));
 
 					AnsiString Str =  ToString(S);
-//									 "  (" + IntToStr((int)S.first.size()) + ")  " +
-//									 ToString(S.first) + "     -    (" +
-//									 "(" + IntToStr((int)S.second.size()) + ")  " +
-//									 ToString(S.second) + "\n";
 
-					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+					Q += max(Vertex.at(i).size(),Vertex.at(*it).size());
 
 					if ((S.first.size() + S.second.size()) == n) {
 						FullSets.insert(S);
@@ -1208,7 +1209,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 				}
 		   }
 
-		Log += "\n  -- найденные полные множества:  - "  +
+		Log += "\n  -- РЅР°Р№РґРµРЅРЅС‹Рµ РїРѕР»РЅС‹Рµ РјРЅРѕР¶РµСЃС‚РІР°:  - "  +
 				IntToStr((int)FullSets.size()) + "\n" + FullStr;
 
 		unsigned SetsSize = Sets.size();
@@ -1219,30 +1220,30 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 
 
 		bool Absorb = false;
-		ToConsol("Созданно " + IntToStr((int)SetsSize) + " независимых множеств");
-		ToConsol("Формируются непересекающиеся множества... ");
-		Log += "\n.2 Формируем множества у которых не пересекаются покрытие и независмое множество\n\n";
+		ToConsol("РЎРѕР·РґР°РЅРЅРѕ " + IntToStr((int)SetsSize) + " РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ");
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РЅРµРїРµСЂРµСЃРµРєР°СЋС‰РёРµСЃСЏ РјРЅРѕР¶РµСЃС‚РІР°... ");
+		Log += "\n.2 Р¤РѕСЂРјРёСЂСѓРµРј РјРЅРѕР¶РµСЃС‚РІР° Сѓ РєРѕС‚РѕСЂС‹С… РЅРµ РїРµСЂРµСЃРµРєР°СЋС‚СЃСЏ РїРѕРєСЂС‹С‚РёРµ Рё РЅРµР·Р°РІРёСЃРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n\n";
 
-		// формируем множества пока появляются новые множества
-		// и появляются новые полные множества
+		// С„РѕСЂРјРёСЂСѓРµРј РјРЅРѕР¶РµСЃС‚РІР° РїРѕРєР° РїРѕСЏРІР»СЏСЋС‚СЃСЏ РЅРѕРІС‹Рµ РјРЅРѕР¶РµСЃС‚РІР°
+		// Рё РїРѕСЏРІР»СЏСЋС‚СЃСЏ РЅРѕРІС‹Рµ РїРѕР»РЅС‹Рµ РјРЅРѕР¶РµСЃС‚РІР°
 		while (
 			   (SetsSize > 0) &&
 			   (SetsSize != SetsSizePrev) &&
 			   (FullSetsSize != FullSetsSizePrev || FullSetsSize == 0)
 			  )
 		{
-			//запоминаем старое количество множеств
+			//Р·Р°РїРѕРјРёРЅР°РµРј СЃС‚Р°СЂРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РјРЅРѕР¶РµСЃС‚РІ
 			SetsSizePrev = SetsSize;
 
-			//запоминаем старое количество полных множеств
+			//Р·Р°РїРѕРјРёРЅР°РµРј СЃС‚Р°СЂРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РЅС‹С… РјРЅРѕР¶РµСЃС‚РІ
 			FullSetsSizePrev = FullSetsSize;
 
 			//set<pair<s_t,s_t> > NewSets(Sets);
 
-			unsigned CompSets = 1;    //номер множества для отображения ходя процесса
+			unsigned CompSets = 1;    //РЅРѕРјРµСЂ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С…РѕРґСЏ РїСЂРѕС†РµСЃСЃР°
 			AnsiString SetsSizeStr = " / " + IntToStr((int)SetsSize);
 
-			// обееденяем пары у которых одинаковы вершинные покрытия - first
+			// РѕР±РµРµРґРµРЅСЏРµРј РїР°СЂС‹ Сѓ РєРѕС‚РѕСЂС‹С… РѕРґРёРЅР°РєРѕРІС‹ РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ - first
 
 			IndsUnionSets(n,&Sets,&FullSets);
 			set<pair<s_t,s_t> > NewSets;
@@ -1250,7 +1251,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			for (set<pair<s_t,s_t> >::iterator it = Sets.begin();
 				 it != --Sets.end(); ++it)
 			{
-				ToConsol("сравнение множеств: " + IntToStr((int)CompSets) + SetsSizeStr);
+				ToConsol("СЃСЂР°РІРЅРµРЅРёРµ РјРЅРѕР¶РµСЃС‚РІ: " + IntToStr((int)CompSets) + SetsSizeStr);
 
 				set<pair<s_t,s_t> >::iterator it_next = it;
 				++it_next;
@@ -1258,7 +1259,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 				for (;it_next != Sets.end(); ++it_next) {
 
 					if (Terminated) {
-						ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+						ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 						return;
 					}
 
@@ -1268,7 +1269,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 							it_next->second.begin(), it_next->second.end(),
 							inserter(intersect, intersect.begin()));
 
-					Q += (it->first.size() + it_next->second.size());
+					Q += max(it->first.size(),it_next->second.size());
 
 					if (intersect.size() == 0) {
 
@@ -1276,7 +1277,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 								it_next->first.begin(), it_next->first.end(),
 								inserter(intersect, intersect.begin()));
 
-						Q += (it->second.size() + it_next->first.size());
+						Q += max(it->second.size(),it_next->first.size());
 
 						if (intersect.size() == 0) {
 
@@ -1305,24 +1306,24 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			SetsSize = Sets.size();
 			FullSetsSize = FullSets.size();
 
-			ToConsol("сформированно " + IntToStr((int)SetsSize) + " множеств");
-			ToConsol("найдено " + IntToStr((int)(FullSetsSizePrev - FullSetsSize))
-					  + " полных множеств");
+			ToConsol("СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅРѕ " + IntToStr((int)SetsSize) + " РјРЅРѕР¶РµСЃС‚РІ");
+			ToConsol("РЅР°Р№РґРµРЅРѕ " + IntToStr((int)(FullSetsSizePrev - FullSetsSize))
+					  + " РїРѕР»РЅС‹С… РјРЅРѕР¶РµСЃС‚РІ");
 
-			Log += "  -- сформированно " + IntToStr((int)SetsSize) + " множеств\n"
-				   + "  -- найдено " + IntToStr((int)(FullSetsSizePrev - FullSetsSize))
-				   + " полных множеств\n\n";
+			Log += "  -- СЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅРѕ " + IntToStr((int)SetsSize) + " РјРЅРѕР¶РµСЃС‚РІ\n"
+				   + "  -- РЅР°Р№РґРµРЅРѕ " + IntToStr((int)(FullSetsSizePrev - FullSetsSize))
+				   + " РїРѕР»РЅС‹С… РјРЅРѕР¶РµСЃС‚РІ\n\n";
 
 		}    // end while
 
-		// сортируем покрытия в порядке возростания
+		// СЃРѕСЂС‚РёСЂСѓРµРј РїРѕРєСЂС‹С‚РёСЏ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
 		map<unsigned,vector<set<pair<s_t,s_t> >::iterator> > MapIterator;
 
 		for (set<pair<s_t,s_t> >::iterator it = FullSets.begin(); it != FullSets.end(); ++it)
 			MapIterator[it->first.size()].push_back(it);
 
-		AnsiString Str = "Все вершинные покрытия и независимые множества графа:\n\n";
-		Str += "(длина) покрытие - (длина) независимое множество\n";
+		AnsiString Str = "Р’СЃРµ РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ Рё РЅРµР·Р°РІРёСЃРёРјС‹Рµ РјРЅРѕР¶РµСЃС‚РІР° РіСЂР°С„Р°:\n\n";
+		Str += "(РґР»РёРЅР°) РїРѕРєСЂС‹С‚РёРµ - (РґР»РёРЅР°) РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n";
 		unsigned k = 1;
 		for (unsigned i = 1; i <= n; ++i)
 			if (MapIterator[i].size() > 0)
@@ -1345,20 +1346,20 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 
 		Log = Str + "\n" + Log;
 
-		Log += ".3 Максимальное независимое множество: \n\n  -- ("
+		Log += ".3 РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: \n\n  -- ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) +  ") "
 			   + ToString(CoverToIndep(Cover)) + "\n"
-			   + "  -- в графе всего " + IntToStr((int)FullSets.size())
-			   + " вершинных покрытия и независимых множеств.\n";
+			   + "  -- РІ РіСЂР°С„Рµ РІСЃРµРіРѕ " + IntToStr((int)FullSets.size())
+			   + " РІРµСЂС€РёРЅРЅС‹С… РїРѕРєСЂС‹С‚РёСЏ Рё РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ.\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1368,37 +1369,32 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 {
 	try {
 
-		ToConsol("search-cover full " + FileName);
+		ToConsol("search-cover nind " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "НОВЫЙ МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РќРћР’Р«Р™ РњР•РўРћР” РќР•Р—РђР’РРЎРРњР«РҐ РњРќРћР–Р•РЎРўР’\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-
-		// формируем независимые множества
-		ToConsol("\t--\tФормируем пары X - Y, где X - вершинное покрытие, Y - независимое множество...");
-
-		Log += "Шаг.1 Формируем пары X - Y, где X - вершинное покрытие, Y - независимое множество\n\n";
-
-
-		// множество всех пар множеств - покрытие/нез.множество
-		// в паре множеств first - вершинные покрытия, second - независимое множесвтов
+		// РјРЅРѕР¶РµСЃС‚РІРѕ РІСЃРµС… РїР°СЂ РјРЅРѕР¶РµСЃС‚РІ - РїРѕРєСЂС‹С‚РёРµ/РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РІ РїР°СЂРµ РјРЅРѕР¶РµСЃС‚РІ first - РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ, second - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃРІС‚РѕРІ
 		set<pair<s_t,s_t> > Sets;
 		set<pair<s_t,s_t> > FullSets;
+
+		ToConsol("\t--\tР¤РѕСЂРјРёСЂСѓРµРј РїР°СЂС‹ X - Y, РіРґРµ X - РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ, Y - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ...");
+		Log += "РЁР°Рі.1 Р¤РѕСЂРјРёСЂСѓРµРј РїР°СЂС‹ X - Y, РіРґРµ X - РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ, Y - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n\n";
 
 		for (unsigned i = 1; i <= N; ++i)
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
+				++Q;
 				if (*it > i) {
 
 					pair<s_t,s_t> S;
@@ -1410,7 +1406,7 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
 							  inserter(S.first, S.first.begin()));
 
-					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+					Q += max(Vertex.at(i).size(),Vertex.at(*it).size());
 
 					if ((S.first.size() + S.second.size()) == N)
 						FullSets.insert(S);
@@ -1419,37 +1415,51 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 				}
 		   }
 
-		Log += "\t--\tсформированные полные множеста: " + IntToStr((int)FullSets.size()) + "\n\n";
+		Log += "\t--\tСЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РїРѕР»РЅС‹Рµ РјРЅРѕР¶РµСЃС‚Р°: " + IntToStr((int)FullSets.size()) + "\n\n";
 		Log += ToString(FullSets) + "\n";
-		Log += "\t--\tсформированные множеста: " + IntToStr((int)Sets.size()) + "\n\n";
+		Log += "\t--\tСЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РјРЅРѕР¶РµСЃС‚Р°: " + IntToStr((int)Sets.size()) + "\n\n";
 		Log += ToString(Sets);
 
-		ToConsol("\t--\tСозданно " + IntToStr((int)Sets.size()) + " независимых множеств");
+		ToConsol("\t--\tРЎРѕР·РґР°РЅРЅРѕ " + IntToStr((int)Sets.size()) + " РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ");
 
-		Log += "\n\nШаг 2 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
+		// Log += "\n\nРЁР°Рі 2 РћР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ РјРЅРѕР¶РµСЃС‚РІ СЃ РѕРґРёРЅР°РєРѕРІС‹Рј РІРµСЂС€РёРЅРЅС‹Рј РїРѕРєСЂС‹С‚РёРµРј.\n\n";
 
-		IndsUnionSets(N,&Sets,&FullSets);
-		Log += ToString(Sets);
+		// IndsUnionSets(N,&Sets,&FullSets);
+		// Log += ToString(Sets);
 
-		Log += "\n\nШаг 3 Строим решения для каждой сфомированной пары.\n\n";
-		// строим решения для каждой сфомированной пары
+		Log += "\n\nРЁР°Рі 2 РЎС‚СЂРѕРёРј СЂРµС€РµРЅРёСЏ РґР»СЏ РєР°Р¶РґРѕР№ СЃС„РѕРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°СЂС‹.\n\n";
+		
+		// СЃС‚СЂРѕРёРј СЂРµС€РµРЅРёСЏ РґР»СЏ РєР°Р¶РґРѕР№ СЃС„РѕРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°СЂС‹
+		int cnt = 1;
+		AnsiString msg = "";
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
-			Log += "\n-- пара:\t" + ToString(it->second);
+			++Q;
+
+			if (Terminated) {
+				ToConsol("Р’С‹РїРѕР»РЅРµРЅРёРµ Р°Р»РіРѕСЂРёС‚РјР° СѓСЃРїРµС€РЅРѕ РѕСЃС‚Р°РЅРѕРІР»РµРЅРЅР°!");
+				return;
+			}
+
+			Log += "\n-- РїР°СЂР°:\t" + ToString(it->second);
 
 			pair<s_t,s_t> FullSetTmp = IndsBuildFullSet(N,*it,Sets);
+
 			if (FullSetTmp.first.size() + FullSetTmp.second.size() == N)
 				FullSets.insert(FullSetTmp);
+
+			ToConsol(msg.sprintf("\t%4d / %4d",cnt,Sets.size()));
+			++cnt;
 		}
 
-		// сортируем покрытия в порядке возростания
+		// СЃРѕСЂС‚РёСЂСѓРµРј РїРѕРєСЂС‹С‚РёСЏ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
 		map<unsigned,vector<set<pair<s_t,s_t> >::iterator> > MapIterator;
 
 		for (set<pair<s_t,s_t> >::iterator it = FullSets.begin(); it != FullSets.end(); ++it)
 			MapIterator[it->first.size()].push_back(it);
 
-		AnsiString Str = "Все вершинные покрытия и независимые множества графа:\n\n";
-		Str += "(длина) покрытие - (длина) независимое множество\n";
+		AnsiString Str = "Р’СЃРµ РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ Рё РЅРµР·Р°РІРёСЃРёРјС‹Рµ РјРЅРѕР¶РµСЃС‚РІР° РіСЂР°С„Р°:\n\n";
+		Str += "(РґР»РёРЅР°) РїРѕРєСЂС‹С‚РёРµ - (РґР»РёРЅР°) РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n";
 		unsigned k = 1;
 		for (unsigned i = 1; i <= N; ++i)
 			if (MapIterator[i].size() > 0)
@@ -1472,22 +1482,160 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 
 		Log = Str + "\n" + Log;
 
-		Log += "\n\nШаг 3 Результаты работы алгоритма: \n\n  -- максимальное независимое множество - "
+		Log += "\n\nРЁР°Рі 3 Р РµР·СѓР»СЊС‚Р°С‚С‹ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ - "
 			   + ToString(CoverToIndep(Cover))
 			   + " ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) +  ")\n"
-			   + "  -- количество вершинных покрытий и независимых множест в графе - "
+			   + "  -- РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅРЅС‹С… РїРѕРєСЂС‹С‚РёР№ Рё РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚ РІ РіСЂР°С„Рµ - "
 			   + IntToStr((int)FullSets.size())
 			   + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
+	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::NinuSearchCover()
+{
+	try {
+
+		ToConsol("search-cover ninu " + FileName);
+
+		if (Vertex.size() == 0) {
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
+			return;
+		}
+
+		Q        = 0;
+		Cover    = v_t();
+		LogShort = "РќРћР’Р«Р™ РњР•РўРћР” РќР•Р—РђР’РРЎРРњР«РҐ РњРќРћР–Р•РЎРўР’ РЈРџР РћР©Р•РќРќР«Р™\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
+		QueryPerformanceCounter(&TimeBegin);
+
+		// РјРЅРѕР¶РµСЃС‚РІРѕ РІСЃРµС… РїР°СЂ РјРЅРѕР¶РµСЃС‚РІ - РїРѕРєСЂС‹С‚РёРµ/РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РІ РїР°СЂРµ РјРЅРѕР¶РµСЃС‚РІ first - РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ, second - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃРІС‚РѕРІ
+		set<pair<s_t,s_t> > Sets;
+		set<pair<s_t,s_t> > FullSets;
+
+		ToConsol("\t--\tР¤РѕСЂРјРёСЂСѓРµРј РїР°СЂС‹ X - Y, РіРґРµ X - РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ, Y - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ...");
+		Log += "РЁР°Рі.1 Р¤РѕСЂРјРёСЂСѓРµРј РїР°СЂС‹ X - Y, РіРґРµ X - РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ, Y - РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n\n";
+
+		for (unsigned i = 1; i <= N; ++i)
+			for (s_t::iterator it = VertexAdd.at(i).begin();
+				 it != VertexAdd.at(i).end(); ++it)
+			{
+				++Q;
+				if (*it > i) {
+
+					pair<s_t,s_t> S;
+
+					S.second.insert(i);
+					S.second.insert(*it);
+
+					set_union(Vertex.at(i).begin(),Vertex.at(i).end(),
+							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
+							  inserter(S.first, S.first.begin()));
+
+					Q += max(Vertex.at(i).size(),Vertex.at(*it).size());
+
+					if ((S.first.size() + S.second.size()) == N)
+						FullSets.insert(S);
+					else
+						Sets.insert(S);
+				}
+		   }
+
+		Log += "\t--\tСЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РїРѕР»РЅС‹Рµ РјРЅРѕР¶РµСЃС‚Р°: " + IntToStr((int)FullSets.size()) + "\n\n";
+		Log += ToString(FullSets) + "\n";
+		Log += "\t--\tСЃС„РѕСЂРјРёСЂРѕРІР°РЅРЅС‹Рµ РјРЅРѕР¶РµСЃС‚Р°: " + IntToStr((int)Sets.size()) + "\n\n";
+		Log += ToString(Sets);
+
+		ToConsol("\t--\tРЎРѕР·РґР°РЅРЅРѕ " + IntToStr((int)Sets.size()) + " РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ");
+
+		Log += "\n\nРЁР°Рі 1.1 РћР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ РјРЅРѕР¶РµСЃС‚РІ СЃ РѕРґРёРЅР°РєРѕРІС‹Рј РІРµСЂС€РёРЅРЅС‹Рј РїРѕРєСЂС‹С‚РёРµРј.\n\n";
+
+		IndsUnionSetsAbsorb(N,&Sets,&FullSets);
+		Log += ToString(Sets);
+
+		Log += "\n\nРЁР°Рі 2 РЎС‚СЂРѕРёРј СЂРµС€РµРЅРёСЏ РґР»СЏ РєР°Р¶РґРѕР№ СЃС„РѕРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°СЂС‹.\n\n";
+
+		// СЃС‚СЂРѕРёРј СЂРµС€РµРЅРёСЏ РґР»СЏ РєР°Р¶РґРѕР№ СЃС„РѕРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°СЂС‹
+		int cnt = 1;
+		AnsiString msg = "";
+		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
+		{
+			++Q;
+			if (Terminated) {
+				ToConsol("Р’С‹РїРѕР»РЅРµРЅРёРµ Р°Р»РіРѕСЂРёС‚РјР° СѓСЃРїРµС€РЅРѕ РѕСЃС‚Р°РЅРѕРІР»РµРЅРЅР°!");
+				return;
+			}
+
+			Log += "\n-- РїР°СЂР°:\t" + ToString(it->second);
+
+			pair<s_t,s_t> FullSetTmp = IndsBuildFullSet(N,*it,Sets);
+
+			if (FullSetTmp.first.size() + FullSetTmp.second.size() == N)
+				FullSets.insert(FullSetTmp);
+
+			ToConsol(msg.sprintf("\t%4d / %4d",cnt,Sets.size()));
+			++cnt;
+		}
+
+		// СЃРѕСЂС‚РёСЂСѓРµРј РїРѕРєСЂС‹С‚РёСЏ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
+		map<unsigned,vector<sps_t::iterator> > MapIterator;
+
+		for (set<pair<s_t,s_t> >::iterator it = FullSets.begin(); it != FullSets.end(); ++it)
+			MapIterator[it->first.size()].push_back(it);
+
+		AnsiString Str = "Р’СЃРµ РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ Рё РЅРµР·Р°РІРёСЃРёРјС‹Рµ РјРЅРѕР¶РµСЃС‚РІР° РіСЂР°С„Р°:\n\n";
+		Str += "(РґР»РёРЅР°) РїРѕРєСЂС‹С‚РёРµ - (РґР»РёРЅР°) РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ\n";
+
+		unsigned k = 1;
+		for (unsigned i = 1; i <= N; ++i)
+			if (MapIterator[i].size() > 0)
+				for (unsigned j = 0; j < MapIterator[i].size(); ++j) {
+					Str += "  -- " + IntToStr((int)k) + ".\t"
+						   + ToString(MapIterator[i][j]->first)
+						   + " (" + IntToStr((int)MapIterator[i][j]->first.size())
+						   + ")\t\t-\t\t" + ToString(MapIterator[i][j]->second)
+						   + " (" + IntToStr((int)MapIterator[i][j]->second.size())
+						   + ")\n";
+
+					if (k == 1) {
+						s_t MinCover = MapIterator[i].at(j)->first;
+						for (s_t::iterator it = MinCover.begin();
+							 it !=  MinCover.end(); ++it)
+							Cover.push_back(*it);
+					}
+					++k;
+				}
+
+		Log = Str + "\n" + Log;
+
+		Log += "\n\nРЁР°Рі 3 Р РµР·СѓР»СЊС‚Р°С‚С‹ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ - "
+			   + ToString(CoverToIndep(Cover))
+			   + " ("
+			   + IntToStr(static_cast<int>(N - Cover.size())) +  ")\n"
+			   + "  -- РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅРЅС‹С… РїРѕРєСЂС‹С‚РёР№ Рё РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚ РІ РіСЂР°С„Рµ - "
+			   + IntToStr((int)FullSets.size())
+			   + "\n";
+
+		QueryPerformanceCounter(&TimeEnd);
+
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
+
+		ToCover();
+
+	} catch (...){
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1495,19 +1643,23 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 
 pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t> FullSet,set<pair<s_t,s_t> > Sets)
 {
-	try {
-
 	Sets.erase(FullSet);
 
 	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
+		
+		++Q;
 
-		Log += "\n\t--\tудаляем вершины:";
+		if (Terminated)
+			return FullSet;
+
+		Log += "\n\t--\tСѓРґР°Р»СЏРµРј РІРµСЂС€РёРЅС‹:";
 
 		IndsRemoveUsedVertex(FullSet,&Sets);
-		IndsUnionSets(&Sets);
+		//IndsUnionSets(&Sets);
 
-		Log += "\n\t--\tоставшиеся пары:\n" + ToString(Sets);
+		Log += "\n\t--\tРѕСЃС‚Р°РІС€РёРµСЃСЏ РїР°СЂС‹:\n" + ToString(Sets);
 
+		++Q;
 		if (Sets.size() > 0) {
 
 			// search maximum set
@@ -1522,10 +1674,10 @@ pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t
 				}
 			}
 
-			Log += "\n\t--\tмаксимальное множество: " + ToString(it_max->second);
+			Log += "\n\t--\tРјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: " + ToString(it_max->second);
 
-			Q += FullSet.first.size() + it_max->first.size();
-			Q += FullSet.second.size() + it_max->second.size();
+			//Q += max(FullSet.first.size(),it_max->first.size());
+			//Q += max(FullSet.second.size(),it_max->second.size());
 
 			set_union(FullSet.first.begin(),FullSet.first.end(),
 					it_max->first.begin(),it_max->first.end(),
@@ -1535,19 +1687,74 @@ pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t
 					  it_max->second.begin(),it_max->second.end(),
 					  inserter(FullSet.second,FullSet.second.begin()));
 
-			Log += "\n\t--\tобъединенное с предыдущим: " + ToString(FullSet);
+			Log += "\n\t--\tРѕР±СЉРµРґРёРЅРµРЅРЅРѕРµ СЃ РїСЂРµРґС‹РґСѓС‰РёРј: " + ToString(FullSet);
 		}
 
 	}
 
-	Log += "\n\t--\tполное максимальное независимое множество найдено: ";
+	Log += "\n\t--\tРїРѕР»РЅРѕРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ: ";
 	Log += ToString(FullSet.second);
 
 	return FullSet;
-	} catch (...) {
-		ToConsol("Error: " + IntToStr((int)Sets.size()) + ToString(FullSet));
-		return pair<s_t,s_t>();
+}
+//---------------------------------------------------------------------------
+
+
+pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSetAbsorb(int n,pair<s_t,s_t> FullSet,set<pair<s_t,s_t> > Sets)
+{
+	Sets.erase(FullSet);
+
+	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
+
+		++Q;	// РїРѕРґСЃС‡РµС‚ СѓР»СЃР»РѕРІРёСЏ С†РёРєР»Р°
+		
+		if (Terminated)
+			return FullSet;
+
+		Log += "\n\t--\tСѓРґР°Р»СЏРµРј РІРµСЂС€РёРЅС‹:";
+
+		IndsRemoveUsedVertex(FullSet,&Sets);
+		IndsUnionSetsAbsorb(&Sets);
+
+		Log += "\n\t--\tРѕСЃС‚Р°РІС€РёРµСЃСЏ РїР°СЂС‹:\n" + ToString(Sets);
+
+		++Q;
+		if (Sets.size() > 0) {
+
+			// search maximum set
+			set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
+			for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
+				++Q;
+				if (it_max->second.size() < it->second.size()) {
+					it_max = it;
+				} else if (it_max->second.size() == it->second.size()) {
+					if (it_max->first.size() > it->first.size())
+						it_max = it;
+				}
+			}
+
+			Log += "\n\t--\tРјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: " + ToString(it_max->second);
+
+			//Q += max(FullSet.first.size(),it_max->first.size());
+			//Q += max(FullSet.second.size(),it_max->second.size());
+
+			set_union(FullSet.first.begin(),FullSet.first.end(),
+					it_max->first.begin(),it_max->first.end(),
+					inserter(FullSet.first,FullSet.first.begin()));
+
+			set_union(FullSet.second.begin(),FullSet.second.end(),
+					  it_max->second.begin(),it_max->second.end(),
+					  inserter(FullSet.second,FullSet.second.begin()));
+
+			Log += "\n\t--\tРѕР±СЉРµРґРёРЅРµРЅРЅРѕРµ СЃ РїСЂРµРґС‹РґСѓС‰РёРј: " + ToString(FullSet);
+		}
+
 	}
+
+	Log += "\n\t--\tРїРѕР»РЅРѕРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ: ";
+	Log += ToString(FullSet.second);
+
+	return FullSet;
 }
 //---------------------------------------------------------------------------
 
@@ -1557,17 +1764,16 @@ void __fastcall TThreadSearchCover::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSe
 		bool Absorb = false;
 		set<pair<s_t,s_t> > NewSets(*pSets);
 
-		// обееденяем пары у которых одинаковы вершинные покрытия - first
+		// РѕР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ Сѓ РєРѕС‚РѕСЂС‹С… РѕРґРёРЅР°РєРѕРІС‹ РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ - first
 
-		for (set<pair<s_t,s_t> >::iterator it = pSets->begin();
-			it != pSets->end(); ++it)
+		for (sps_t::iterator it = pSets->begin();it != pSets->end(); ++it)
 		{
 
 			pair<s_t,s_t> S;
 			S.first = it->first;
 
 			unsigned CountIdent = 0;
-			set<pair<s_t,s_t> >::iterator it_next = it;
+			sps_t::iterator it_next = it;
 			++it_next;
 
 			for (; it_next != pSets->end(); ++it_next) {
@@ -1575,6 +1781,8 @@ void __fastcall TThreadSearchCover::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSe
 				if (Terminated)
 					return;
 
+				//Q += max(it->first.size(),it_next->first.size());
+				++Q;
 				if (it->first == it_next->first) {
 
 					Absorb = true;
@@ -1594,13 +1802,13 @@ void __fastcall TThreadSearchCover::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSe
 						Absorb = false;
 					}
 
-					Q += it->second.size() + it_next->second.size();
+					//Q += max(it->second.size(),it_next->second.size());
 
 					++CountIdent;
 
 				} else {
-					// так как множества упорядочены в порядке возростания
-					// то после первого несовпадения нужно переходить к следующему
+					// С‚Р°Рє РєР°Рє РјРЅРѕР¶РµСЃС‚РІР° СѓРїРѕСЂСЏРґРѕС‡РµРЅС‹ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
+					// С‚Рѕ РїРѕСЃР»Рµ РїРµСЂРІРѕРіРѕ РЅРµСЃРѕРІРїР°РґРµРЅРёСЏ РЅСѓР¶РЅРѕ РїРµСЂРµС…РѕРґРёС‚СЊ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ
 					break;
 				}
 			}
@@ -1622,7 +1830,7 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 		bool Absorb = false;
 		set<pair<s_t,s_t> > NewSets(*pSets);
 
-		// обееденяем пары у которых одинаковы вершинные покрытия - first
+		// РѕР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ Сѓ РєРѕС‚РѕСЂС‹С… РѕРґРёРЅР°РєРѕРІС‹ РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ - first
 
 		for (set<pair<s_t,s_t> >::iterator it = pSets->begin();
 			it != pSets->end(); ++it)
@@ -1640,6 +1848,8 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 				if (Terminated)
 					return;
 
+				//Q += max(it->first.size(),it_next->first.size());
+				++Q;
 				if (it->first == it_next->first) {
 
 					Absorb = true;
@@ -1653,13 +1863,13 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 							it_next->second.begin(), it_next->second.end(),
 							inserter(S.second, S.second.begin()));
 
-					Q += it->second.size() + it_next->second.size();
+					//Q += max(it->second.size(),it_next->second.size());
 
 					++CountIdent;
 
 				} else {
-					// так как множества упорядочены в порядке возростания
-					// то после первого несовпадения нужно переходить к следующему
+					// С‚Р°Рє РєР°Рє РјРЅРѕР¶РµСЃС‚РІР° СѓРїРѕСЂСЏРґРѕС‡РµРЅС‹ РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂРѕСЃС‚Р°РЅРёСЏ
+					// С‚Рѕ РїРѕСЃР»Рµ РїРµСЂРІРѕРіРѕ РЅРµСЃРѕРІРїР°РґРµРЅРёСЏ РЅСѓР¶РЅРѕ РїРµСЂРµС…РѕРґРёС‚СЊ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ
 					break;
 				}
 			}
@@ -1676,6 +1886,173 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 //---------------------------------------------------------------------------
 
 
+void __fastcall TThreadSearchCover::IndsUnionSetsAbsorb(int n,sps_t *pSets,sps_t *pFullSets)
+{
+	// РѕР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ Сѓ РєРѕС‚РѕСЂС‹С… РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ СЏРІР»СЏСЋС‚СЃСЏ РїРѕРґРјРЅРѕР¶РµСЃС‚РІРѕРј РґСЂСѓРіРѕР№ РїР°СЂС‹
+
+	v_t absorb(pSets->size(), 0);
+	vv_t absorb_sets(pSets->size(), v_t());
+
+	int i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != prev_it(pSets->end()); ++it) {
+
+		if (absorb[i] == 1) {
+			++i;
+			continue;
+		}
+
+		int j = i + 1;
+
+		for (sps_t::iterator jt = next_it(it); jt != pSets->end(); ++jt) {
+
+			if (Terminated)
+				return;
+
+			if (absorb[j] == 1) {
+				++j;
+				continue;
+			}
+
+			s_t union_res;
+			set_union(it->first.begin(), it->first.end(),
+				jt->first.begin(), jt->first.end(),
+				inserter(union_res,union_res.begin()));
+
+			//Q += max(it->first.size(),jt->first.size());
+			++Q;
+			if (it->first.size() == union_res.size()) {
+				absorb[j] = 1;
+				absorb_sets[i].push_back(j);
+			}
+			else if (jt->first.size() == union_res.size()) {
+				absorb[i] = 1;
+				copy(absorb_sets.at(i).begin(), absorb_sets.at(i).end(), back_inserter(absorb_sets[j]));
+				absorb_sets[j].push_back(i);
+				break;
+			}
+
+			++j;
+		}
+
+		++i;
+	}
+
+	sps_t sets_new;
+	i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != pSets->end(); ++it) {
+		if (absorb[i] != 1) {
+			if (absorb_sets[i].size() > 0) {
+				s_t second_new;
+				for (int j = 0; j < absorb_sets[i].size(); ++j) {
+					sps_t::iterator jt = pSets->begin();
+					advance(jt, absorb_sets[i][j]);
+					set_union(it->second.begin(), it->second.end(),
+						jt->second.begin(), jt->second.end(),
+						inserter(second_new, second_new.begin()));
+		
+					//Q += max(it->second.size(),jt->second.size());
+				}
+				
+				if (it->first.size() + second_new.size() == n)
+					pFullSets->insert(make_pair(it->first, second_new));
+				else
+					sets_new.insert(make_pair(it->first, second_new));
+			}
+			else {
+				sets_new.insert(*it);
+			}
+		}
+
+		++i;
+	}
+
+	pSets->swap(sets_new);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::IndsUnionSetsAbsorb(sps_t *pSets)
+{
+	// РѕР±СЉРµРґРµРЅСЏРµРј РїР°СЂС‹ Сѓ РєРѕС‚РѕСЂС‹С… РІРµСЂС€РёРЅРЅС‹Рµ РїРѕРєСЂС‹С‚РёСЏ СЏРІР»СЏСЋС‚СЃСЏ РїРѕРґРјРЅРѕР¶РµСЃС‚РІРѕРј РґСЂСѓРіРѕР№ РїР°СЂС‹
+
+	v_t absorb(pSets->size(), 0);
+	vv_t absorb_sets(pSets->size(), v_t());
+
+	int i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != prev_it(pSets->end()); ++it) {
+
+		if (absorb[i] == 1) {
+			++i;
+			continue;
+		}
+
+		int j = i + 1;
+
+		for (sps_t::iterator jt = next_it(it); jt != pSets->end(); ++jt) {
+
+			if (Terminated)
+				return;
+
+			if (absorb[j] == 1) {
+				++j;
+				continue;
+			}
+
+			s_t union_res;
+			set_union(it->first.begin(), it->first.end(),
+				jt->first.begin(), jt->first.end(),
+				inserter(union_res,union_res.begin()));
+
+			//Q += max(it->first.size(),jt->first.size());
+			++Q;
+			if (it->first.size() == union_res.size()) {
+				absorb[j] = 1;
+				absorb_sets[i].push_back(j);
+			}
+			else if (jt->first.size() == union_res.size()) {
+				absorb[i] = 1;
+				copy(absorb_sets.at(i).begin(), absorb_sets.at(i).end(), back_inserter(absorb_sets[j]));
+				absorb_sets[j].push_back(i);
+				break;
+			}
+
+			++j;
+		}
+
+		++i;
+	}
+
+	sps_t sets_new;
+	i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != pSets->end(); ++it) {
+		if (absorb[i] != 1) {
+			if (absorb_sets[i].size() > 0) {
+				s_t second_new;
+				for (int j = 0; j < absorb_sets[i].size(); ++j) {
+					sps_t::iterator jt = pSets->begin();
+					advance(jt, absorb_sets[i][j]);
+					set_union(it->second.begin(), it->second.end(),
+						jt->second.begin(), jt->second.end(),
+						inserter(second_new, second_new.begin()));
+
+					//Q += max(it->second.size(),jt->second.size());
+				}
+				
+				sets_new.insert(make_pair(it->first, second_new));
+			}
+			else {
+				sets_new.insert(*it);
+			}
+		}
+
+		++i;
+	}
+
+	pSets->swap(sets_new);
+}
+//---------------------------------------------------------------------------
+
+
 void __fastcall TThreadSearchCover::IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets)
 {
 	set<pair<s_t,s_t> > NewSets;
@@ -1686,7 +2063,7 @@ void __fastcall TThreadSearchCover::IndsRemoveUsedVertex(const pair<s_t,s_t> &Us
 		pair<s_t,s_t> NewPair(*itSets);
 
 		if (Terminated) {
-			ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+			ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
@@ -1718,36 +2095,36 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 		ToConsol("search-cover rang " + FileName);
 
 		if (Edges.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "РАНГОВЫЙ МЕТОД\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "Р РђРќР“РћР’Р«Р™ РњР•РўРћР”\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// формируем промежуточные данные
+		// С„РѕСЂРјРёСЂСѓРµРј РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
 
-		ToConsol("Создаются промежуточные данные...");
+		ToConsol("РЎРѕР·РґР°СЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
 
-		Log += "1. Формируем списко столбцов и строк: \n\n";
+		Log += "1. Р¤РѕСЂРјРёСЂСѓРµРј СЃРїРёСЃРєРѕ СЃС‚РѕР»Р±С†РѕРІ Рё СЃС‚СЂРѕРє: \n\n";
 
-		// количество строк в матрице инциденций - количество ребер
+		// РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє РІ РјР°С‚СЂРёС†Рµ РёРЅС†РёРґРµРЅС†РёР№ - РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР±РµСЂ
 		register int RowCount = Edges.size();
 
-		// количество столбцов в матрице инциденций - количество вершин
+		// РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚РѕР»Р±С†РѕРІ РІ РјР°С‚СЂРёС†Рµ РёРЅС†РёРґРµРЅС†РёР№ - РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ
 		register int ColCount = N;
 
-		// инциденции строк, индекс - номер строки,
-		// множество - номера стобцов которые покрывают эту строку
+		// РёРЅС†РёРґРµРЅС†РёРё СЃС‚СЂРѕРє, РёРЅРґРµРєСЃ - РЅРѕРјРµСЂ СЃС‚СЂРѕРєРё,
+		// РјРЅРѕР¶РµСЃС‚РІРѕ - РЅРѕРјРµСЂР° СЃС‚РѕР±С†РѕРІ РєРѕС‚РѕСЂС‹Рµ РїРѕРєСЂС‹РІР°СЋС‚ СЌС‚Сѓ СЃС‚СЂРѕРєСѓ
 		vs_t Rows(RowCount + 1,s_t());
 		Rows.reserve(RowCount + 1);
 
-		// инциденции столбцов, индекс - номер столбца,
-		// множество - номера строк которые покрывает этот столбец
+		// РёРЅС†РёРґРµРЅС†РёРё СЃС‚РѕР»Р±С†РѕРІ, РёРЅРґРµРєСЃ - РЅРѕРјРµСЂ СЃС‚РѕР»Р±С†Р°,
+		// РјРЅРѕР¶РµСЃС‚РІРѕ - РЅРѕРјРµСЂР° СЃС‚СЂРѕРє РєРѕС‚РѕСЂС‹Рµ РїРѕРєСЂС‹РІР°РµС‚ СЌС‚РѕС‚ СЃС‚РѕР»Р±РµС†
 		vs_t Cols(ColCount + 1,s_t());
 		Cols.reserve(ColCount + 1);
 
@@ -1761,51 +2138,51 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 			Rows[i + 1] = Edges[i];
 		}
 
-		Log += "  -- список строк:\n" + ToString("     ",Cols) + "\n";
-		Log += "  -- список столбцов:\n" + ToString("     ",Rows) + "\n";
+		Log += "  -- СЃРїРёСЃРѕРє СЃС‚СЂРѕРє:\n" + ToString("     ",Cols) + "\n";
+		Log += "  -- СЃРїРёСЃРѕРє СЃС‚РѕР»Р±С†РѕРІ:\n" + ToString("     ",Rows) + "\n";
 
-		// формируем промежуточные переменные
+		// С„РѕСЂРјРёСЂСѓРµРј РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ
 
-		// сортируем столбцы в порядке убывания степени
-		Log += "2. Соритруем столбцы в порядке убывания:\n\n";
+		// СЃРѕСЂС‚РёСЂСѓРµРј СЃС‚РѕР»Р±С†С‹ РІ РїРѕСЂСЏРґРєРµ СѓР±С‹РІР°РЅРёСЏ СЃС‚РµРїРµРЅРё
+		Log += "2. РЎРѕСЂРёС‚СЂСѓРµРј СЃС‚РѕР»Р±С†С‹ РІ РїРѕСЂСЏРґРєРµ СѓР±С‹РІР°РЅРёСЏ:\n\n";
 
 		Q = ColCount;
 
 		vp_t ColsSort(ColCount + 1,p_t(0,0));
 		for (i = 1; i <= ColCount; ++i) {
-			ColsSort[i].first = Cols[i].size();    // степень i-го столбца
-			ColsSort[i].second = i;                // i - номер столбца
+			ColsSort[i].first = Cols[i].size();    // СЃС‚РµРїРµРЅСЊ i-РіРѕ СЃС‚РѕР»Р±С†Р°
+			ColsSort[i].second = i;                // i - РЅРѕРјРµСЂ СЃС‚РѕР»Р±С†Р°
 		}
 
 		Q += (2 * ColCount);
 
-		// функция сортирует по first в порядке возрастания
+		// С„СѓРЅРєС†РёСЏ СЃРѕСЂС‚РёСЂСѓРµС‚ РїРѕ first РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂР°СЃС‚Р°РЅРёСЏ
 		stable_sort(ColsSort.begin() + 1,ColsSort.end());
 
-		// функция меняет порядок в векторе, нулевой элемент оставляем на месте
+		// С„СѓРЅРєС†РёСЏ РјРµРЅСЏРµС‚ РїРѕСЂСЏРґРѕРє РІ РІРµРєС‚РѕСЂРµ, РЅСѓР»РµРІРѕР№ СЌР»РµРјРµРЅС‚ РѕСЃС‚Р°РІР»СЏРµРј РЅР° РјРµСЃС‚Рµ
 		reverse(ColsSort.begin() + 1,ColsSort.end());
 
-		Log += "  -- новый номер (старый) :  " + ToString(ColsSort) + "\n";
+		Log += "  -- РЅРѕРІС‹Р№ РЅРѕРјРµСЂ (СЃС‚Р°СЂС‹Р№) :  " + ToString(ColsSort) + "\n";
 
-		// вектор путей (сочетаний столбцов)
+		// РІРµРєС‚РѕСЂ РїСѓС‚РµР№ (СЃРѕС‡РµС‚Р°РЅРёР№ СЃС‚РѕР»Р±С†РѕРІ)
 		vvs_t ColsUnion(ColCount + 1,vs_t(2,s_t()));
 		ColsUnion.reserve(ColCount + 1);
 
-		// создаем начальные пути для каждого столбца
+		// СЃРѕР·РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РїСѓС‚Рё РґР»СЏ РєР°Р¶РґРѕРіРѕ СЃС‚РѕР»Р±С†Р°
 		for (i = 1; i <= ColCount; ++i)
 		ColsUnion[i][1].insert(ColsSort[i].second);
 
-		// вектор калибровочных векторов
-		Log += "3. Формируем калибровочные вектора и пути:\n\n";
+		// РІРµРєС‚РѕСЂ РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹С… РІРµРєС‚РѕСЂРѕРІ
+		Log += "3. Р¤РѕСЂРјРёСЂСѓРµРј РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Рµ РІРµРєС‚РѕСЂР° Рё РїСѓС‚Рё:\n\n";
 
 		vv_t HeightBegin(ColCount + 1,v_t(RowCount + 1, 0));
 		HeightBegin.reserve(ColCount + 1);
 
-		// вектор сочетаний калибровочных векторов - калибровочные вектора путей (сочетания калибровочных векторов столбцов)
+		// РІРµРєС‚РѕСЂ СЃРѕС‡РµС‚Р°РЅРёР№ РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹С… РІРµРєС‚РѕСЂРѕРІ - РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Рµ РІРµРєС‚РѕСЂР° РїСѓС‚РµР№ (СЃРѕС‡РµС‚Р°РЅРёСЏ РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹С… РІРµРєС‚РѕСЂРѕРІ СЃС‚РѕР»Р±С†РѕРІ)
 		vvv_t HeightUnion(ColCount + 1,vv_t(2,v_t(RowCount + 1,0)));
 		HeightUnion.reserve(ColCount + 1);
 
-		// создаем калибровочный вектор последнего столбца
+		// СЃРѕР·РґР°РµРј РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Р№ РІРµРєС‚РѕСЂ РїРѕСЃР»РµРґРЅРµРіРѕ СЃС‚РѕР»Р±С†Р°
 		Q += RowCount;
 
 		for (i = 1; i <= RowCount; ++i) {
@@ -1823,7 +2200,7 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 			}
 		}
 
-		// создаем калибровочные вектора остальных столбцов
+		// СЃРѕР·РґР°РµРј РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Рµ РІРµРєС‚РѕСЂР° РѕСЃС‚Р°Р»СЊРЅС‹С… СЃС‚РѕР»Р±С†РѕРІ
 		for (int col = ColCount - 1; col >= 1; --col) {
 
 			s_t weight;
@@ -1845,7 +2222,7 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 
 					if (HeightBegin[col + 1][row] == INFIN) {
 						HeightBegin[col][row] = INFIN;
-						HeightBegin[col][0] = INFIN;    // [0] - в нулевом элементе вес калибровочного вектора
+						HeightBegin[col][0] = INFIN;    // [0] - РІ РЅСѓР»РµРІРѕРј СЌР»РµРјРµРЅС‚Рµ РІРµСЃ РєР°Р»РёР±СЂРѕРІРѕС‡РЅРѕРіРѕ РІРµРєС‚РѕСЂР°
 
 						HeightUnion[col][1][row] = INFIN;
 						HeightUnion[col][1][0] = INFIN;
@@ -1865,7 +2242,7 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 			}    // for row
 		}    // for col
 
-		Log += "  -- B - пути, H - калибровочные вектора, d - длина пути, # - знак бесконечности\n\n"
+		Log += "  -- B - РїСѓС‚Рё, H - РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Рµ РІРµРєС‚РѕСЂР°, d - РґР»РёРЅР° РїСѓС‚Рё, # - Р·РЅР°Рє Р±РµСЃРєРѕРЅРµС‡РЅРѕСЃС‚Рё\n\n"
 		       + ToString(Cols.size(),HeightBegin);
 
 		for (i = 1; i <= ColCount; ++i)
@@ -1875,10 +2252,10 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 				if (i != ColCount)
 					Cover.push_back(ColsSort[i + 1].second);
 
-				Log += "  -- кратчайший путь найден;\n\nАлгоритм завершил работу,";
-				Log += "кратчайший путь является минимальным покрытием.\n";
+				Log += "  -- РєСЂР°С‚С‡Р°Р№С€РёР№ РїСѓС‚СЊ РЅР°Р№РґРµРЅ;\n\nРђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ,";
+				Log += "РєСЂР°С‚С‡Р°Р№С€РёР№ РїСѓС‚СЊ СЏРІР»СЏРµС‚СЃСЏ РјРёРЅРёРјР°Р»СЊРЅС‹Рј РїРѕРєСЂС‹С‚РёРµРј.\n";
 
-				ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+				ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 				ToCover();
 
@@ -1887,20 +2264,20 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 
 		Q += ColCount;
 
-		// минимальная степень калибровочного вектора пути, равная количеству различных значений в векторе
-		// если есть хотя бы один такой элемент вектора равен INFIN равна INFIN - это означает что с этого пути не существует столбца
-		// который даст покрытие всех строк, и равна 0 если все элементы вектора равны 0, это означает что путь покрыл все строки матрицы
-		// путь у которого калибровочный вектор имеет наименьшую степерь, является минимальным покрытием
-		Log += "4. Формируем все возможные кратчайшие пути:\n\n";
+		// РјРёРЅРёРјР°Р»СЊРЅР°СЏ СЃС‚РµРїРµРЅСЊ РєР°Р»РёР±СЂРѕРІРѕС‡РЅРѕРіРѕ РІРµРєС‚РѕСЂР° РїСѓС‚Рё, СЂР°РІРЅР°СЏ РєРѕР»РёС‡РµСЃС‚РІСѓ СЂР°Р·Р»РёС‡РЅС‹С… Р·РЅР°С‡РµРЅРёР№ РІ РІРµРєС‚РѕСЂРµ
+		// РµСЃР»Рё РµСЃС‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ С‚Р°РєРѕР№ СЌР»РµРјРµРЅС‚ РІРµРєС‚РѕСЂР° СЂР°РІРµРЅ INFIN СЂР°РІРЅР° INFIN - СЌС‚Рѕ РѕР·РЅР°С‡Р°РµС‚ С‡С‚Рѕ СЃ СЌС‚РѕРіРѕ РїСѓС‚Рё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ СЃС‚РѕР»Р±С†Р°
+		// РєРѕС‚РѕСЂС‹Р№ РґР°СЃС‚ РїРѕРєСЂС‹С‚РёРµ РІСЃРµС… СЃС‚СЂРѕРє, Рё СЂР°РІРЅР° 0 РµСЃР»Рё РІСЃРµ СЌР»РµРјРµРЅС‚С‹ РІРµРєС‚РѕСЂР° СЂР°РІРЅС‹ 0, СЌС‚Рѕ РѕР·РЅР°С‡Р°РµС‚ С‡С‚Рѕ РїСѓС‚СЊ РїРѕРєСЂС‹Р» РІСЃРµ СЃС‚СЂРѕРєРё РјР°С‚СЂРёС†С‹
+		// РїСѓС‚СЊ Сѓ РєРѕС‚РѕСЂРѕРіРѕ РєР°Р»РёР±СЂРѕРІРѕС‡РЅС‹Р№ РІРµРєС‚РѕСЂ РёРјРµРµС‚ РЅР°РёРјРµРЅСЊС€СѓСЋ СЃС‚РµРїРµСЂСЊ, СЏРІР»СЏРµС‚СЃСЏ РјРёРЅРёРјР°Р»СЊРЅС‹Рј РїРѕРєСЂС‹С‚РёРµРј
+		Log += "4. Р¤РѕСЂРјРёСЂСѓРµРј РІСЃРµ РІРѕР·РјРѕР¶РЅС‹Рµ РєСЂР°С‚С‡Р°Р№С€РёРµ РїСѓС‚Рё:\n\n";
 
-		ToConsol("Строим все возможные пути и определяем кратчайший из них...\n");
+		ToConsol("РЎС‚СЂРѕРёРј РІСЃРµ РІРѕР·РјРѕР¶РЅС‹Рµ РїСѓС‚Рё Рё РѕРїСЂРµРґРµР»СЏРµРј РєСЂР°С‚С‡Р°Р№С€РёР№ РёР· РЅРёС…...\n");
 
 		AnsiString StrRang;
 		AnsiString StrCol;
 
 		for (register int rang = 1; rang < ColCount; ++rang) {
 
-			StrRang = "ранг: " + IntToStr(rang) + " / " + IntToStr((int)ColCount - 1);
+			StrRang = "СЂР°РЅРі: " + IntToStr(rang) + " / " + IntToStr((int)ColCount - 1);
 
 			vvv_t HeightNewUnion(ColCount + 1,vv_t(1,v_t(RowCount + 1,0)));
 			HeightNewUnion.reserve(ColCount + 1);
@@ -1910,31 +2287,31 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 
 			for (register int col = rang + 1; col <= ColCount; ++col) {
 
-				StrCol = "  столбец: " + IntToStr(col) + " / " + IntToStr((int)ColCount - 1);
+				StrCol = "  СЃС‚РѕР»Р±РµС†: " + IntToStr(col) + " / " + IntToStr((int)ColCount - 1);
 
 				int num_curr_union = 0;
 
-				Log += "  --    ранг: " + IntToStr(rang);
-				Log += "    столбец: " + IntToStr(ColsSort[col].second) +"\n\n";
+				Log += "  --    СЂР°РЅРі: " + IntToStr(rang);
+				Log += "    СЃС‚РѕР»Р±РµС†: " + IntToStr(ColsSort[col].second) +"\n\n";
 
 				for (register int col_prev = rang; col_prev < col; ++col_prev) {
 
-					ToConsol(StrRang + StrCol + "  множество: "
+					ToConsol(StrRang + StrCol + "  РјРЅРѕР¶РµСЃС‚РІРѕ: "
 							 + IntToStr(col_prev) + " / " + IntToStr(col - 1));
 
 					for (register int union_i = 1; union_i < HeightUnion[col_prev].size(); ++union_i) {
 
 						if (Terminated) {
-							ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+							ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 							return;
 						}
 
-						// формируем новое обьединение col столбца с обьединением col_prev,union_i
+						// С„РѕСЂРјРёСЂСѓРµРј РЅРѕРІРѕРµ РѕР±СЊРµРґРёРЅРµРЅРёРµ col СЃС‚РѕР»Р±С†Р° СЃ РѕР±СЊРµРґРёРЅРµРЅРёРµРј col_prev,union_i
 						ColsNewUnion[col].push_back(ColsUnion[col_prev][union_i]);
 						num_curr_union = ColsNewUnion[col].size() - 1;
 						ColsNewUnion[col][num_curr_union].insert(ColsSort[col].second);
 
-						// формируем новое обьединение калибровочного вектора col столбца с обьединением col_prev,union_i
+						// С„РѕСЂРјРёСЂСѓРµРј РЅРѕРІРѕРµ РѕР±СЊРµРґРёРЅРµРЅРёРµ РєР°Р»РёР±СЂРѕРІРѕС‡РЅРѕРіРѕ РІРµРєС‚РѕСЂР° col СЃС‚РѕР»Р±С†Р° СЃ РѕР±СЊРµРґРёРЅРµРЅРёРµРј col_prev,union_i
 						HeightNewUnion[col].push_back(v_t(RowCount + 1,0));
 
 						s_t ValuesHeight;    //
@@ -1979,10 +2356,10 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 								Log += "        d = 0        H -  ";
 								Log += ToString("#",HeightNewUnion[col][num_curr_union]) + "\n\n";
 
-								Log += "  -- кратчайший путь найден;\n\nАлгоритм завершил работу, ";
-								Log += "кратчайший путь является минимальным покрытием.\n";
+								Log += "  -- РєСЂР°С‚С‡Р°Р№С€РёР№ РїСѓС‚СЊ РЅР°Р№РґРµРЅ;\n\nРђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ, ";
+								Log += "РєСЂР°С‚С‡Р°Р№С€РёР№ РїСѓС‚СЊ СЏРІР»СЏРµС‚СЃСЏ РјРёРЅРёРјР°Р»СЊРЅС‹Рј РїРѕРєСЂС‹С‚РёРµРј.\n";
 
-								ToConsol("Минимальное покрытие найдено! Алгоритм завершил работу.");
+								ToConsol("РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 								ToCover();
 
@@ -2015,7 +2392,7 @@ void __fastcall TThreadSearchCover::RangSearchCover()
 		} // end for rang
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2028,49 +2405,49 @@ void __fastcall TThreadSearchCover::VertSearchCover()
 		ToConsol("search-cover full " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД ВЕРШИН\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РњР•РўРћР” Р’Р•Р РЁРРќ\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-		ToConsol("Формируются промежуточные данные...");
-		s_t VertexSet;    // множество номеров всех вершин графа
+		// РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
+		s_t VertexSet;    // РјРЅРѕР¶РµСЃС‚РІРѕ РЅРѕРјРµСЂРѕРІ РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		for (int i = 1; i <= N; ++i)
 			VertexSet.insert(i);
 
-		v_t Indep;    // максимальное назависимое множество
+		v_t Indep;    // РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅР°Р·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 
-		// начинаем поиск максимального независимого множество
-		// поочередно включая каждую вершину в нез.множество
-		// среди N множеств выбираем мкасимальное
+		// РЅР°С‡РёРЅР°РµРј РїРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РїРѕРѕС‡РµСЂРµРґРЅРѕ РІРєР»СЋС‡Р°СЏ РєР°Р¶РґСѓСЋ РІРµСЂС€РёРЅСѓ РІ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// СЃСЂРµРґРё N РјРЅРѕР¶РµСЃС‚РІ РІС‹Р±РёСЂР°РµРј РјРєР°СЃРёРјР°Р»СЊРЅРѕРµ
 
-		ToConsol("Поиск максимального независимого множества...");
+		ToConsol("РџРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР°...");
 		for (int i = 1; i <= N; ++i) {
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return;
 			}
 
 			AnsiString StrI = IntToStr(i);
-			Log += "\n." + StrI + "  -- строим подграф по вершине:"
+			Log += "\n." + StrI + "  -- СЃС‚СЂРѕРёРј РїРѕРґРіСЂР°С„ РїРѕ РІРµСЂС€РёРЅРµ:"
 				   + StrI + "\n";
 
-			ToConsol("шаг ." + StrI
-					 + " поиск независимого множества для подграфа G" + StrI);
+			ToConsol("С€Р°Рі ." + StrI
+					 + " РїРѕРёСЃРє РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ РїРѕРґРіСЂР°С„Р° G" + StrI);
 
 			s_t  _VertexSet(VertexSet);
 			vs_t _Vertex(Vertex);
 			v_t  _Indep;
 
-			// добавляем вершину в независимое множество
+			// РґРѕР±Р°РІР»СЏРµРј РІРµСЂС€РёРЅСѓ РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 			VertexToIndep(i,_VertexSet,_Vertex,_Indep);
 
 			int Step = 1;
@@ -2079,22 +2456,22 @@ void __fastcall TThreadSearchCover::VertSearchCover()
 			while (_VertexSet.size() > 0) {
 
 				LogRowBegin = "." + StrI + "." + IntToStr(Step);
-				Log += LogRowBegin + "  -- текущий подграф: \n"
+				Log += LogRowBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„: \n"
 					   + ToString(LogRowBegin + "        ",_VertexSet,_Vertex);
 
-				ToConsol("шаг " + LogRowBegin
-					 + " поиск изолированных вершин, висячих и связанных со всеми");
+				ToConsol("С€Р°Рі " + LogRowBegin
+					 + " РїРѕРёСЃРє РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹С… РІРµСЂС€РёРЅ, РІРёСЃСЏС‡РёС… Рё СЃРІСЏР·Р°РЅРЅС‹С… СЃРѕ РІСЃРµРјРё");
 
-				// ищем изолированные и висячие вершины
+				// РёС‰РµРј РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹Рµ Рё РІРёСЃСЏС‡РёРµ РІРµСЂС€РёРЅС‹
 				SearchExtremIndep(LogRowBegin,_VertexSet,_Vertex,_Indep);
 
 				if (_VertexSet.size() == 0)
 					break;
 
-				ToConsol("шаг " + LogRowBegin
-						 + " поиск вершины дающей наибольшее число висячих вершин");
+				ToConsol("С€Р°Рі " + LogRowBegin
+						 + " РїРѕРёСЃРє РІРµСЂС€РёРЅС‹ РґР°СЋС‰РµР№ РЅР°РёР±РѕР»СЊС€РµРµ С‡РёСЃР»Рѕ РІРёСЃСЏС‡РёС… РІРµСЂС€РёРЅ");
 
-				// находим вершины с наибольшей степенью
+				// РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅС‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃС‚РµРїРµРЅСЊСЋ
 
 				int Max = 0;
 				int MaxNum = 0;
@@ -2114,11 +2491,11 @@ void __fastcall TThreadSearchCover::VertSearchCover()
 				}
 
 				Log += LogRowBegin
-					   + "  -- вершины с наибольшей степенью: "
+					   + "  -- РІРµСЂС€РёРЅС‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃС‚РµРїРµРЅСЊСЋ: "
 					   + ToString(MaxSet) + "\n";
 
-				// из вершин с наибольшей степенью берем ту которая
-				// даст наибольшее число 'крайних'
+				// РёР· РІРµСЂС€РёРЅ СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃС‚РµРїРµРЅСЊСЋ Р±РµСЂРµРј С‚Сѓ РєРѕС‚РѕСЂР°СЏ
+				// РґР°СЃС‚ РЅР°РёР±РѕР»СЊС€РµРµ С‡РёСЃР»Рѕ 'РєСЂР°Р№РЅРёС…'
 
 				if (MaxSet.size() > 1) {
 
@@ -2146,20 +2523,20 @@ void __fastcall TThreadSearchCover::VertSearchCover()
 				}
 
 				Log += LogRowBegin
-					   + "  -- вершина дающая наибольшее число 'висячих' вершин: "
-					   + IntToStr(MaxNum) + " - удаляем\n";
+					   + "  -- РІРµСЂС€РёРЅР° РґР°СЋС‰Р°СЏ РЅР°РёР±РѕР»СЊС€РµРµ С‡РёСЃР»Рѕ 'РІРёСЃСЏС‡РёС…' РІРµСЂС€РёРЅ: "
+					   + IntToStr(MaxNum) + " - СѓРґР°Р»СЏРµРј\n";
 
-				// удаляем найденную вершину из графа
+				// СѓРґР°Р»СЏРµРј РЅР°Р№РґРµРЅРЅСѓСЋ РІРµСЂС€РёРЅСѓ РёР· РіСЂР°С„Р°
 				VertexErase(MaxNum,_Vertex);
 				_VertexSet.erase(MaxNum);
 
-				Log += LogRowBegin + "  -- текущее независимое множество: ("
+				Log += LogRowBegin + "  -- С‚РµРєСѓС‰РµРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 					   + IntToStr((int)_Indep.size()) + ") " + ToString(_Indep) + "\n";
 
 				++Step;
 			}    // while _VertexSet.size > 0
 
-			Log += "\n" + StrI + "  -- найденное независимое множество: ("
+			Log += "\n" + StrI + "  -- РЅР°Р№РґРµРЅРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 				   + IntToStr((int)_Indep.size()) + ") "
 				   + ToString(_Indep) + "\n";
 
@@ -2168,27 +2545,27 @@ void __fastcall TThreadSearchCover::VertSearchCover()
 
 		}    // for i <= N
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr((int)Indep.size()) + ") "
 			   + ToString(Indep) + "\n";
 
-		ToConsol("Максимальное независимое множество найденно, находим вершинное покрытие...");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅРѕ, РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ...");
 
-		// из независимого множесва получаем вершинное покрытие
+		// РёР· РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃРІР° РїРѕР»СѓС‡Р°РµРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ
 		Cover = CoverFromIndep(VertexSet,Indep);
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
 			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2201,51 +2578,51 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 		ToConsol("search-cover full " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД ВЕРШИН С ПРОГНОЗОМ\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РњР•РўРћР” Р’Р•Р РЁРРќ РЎ РџР РћР“РќРћР—РћРњ\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-		ToConsol("Формируются промежуточные данные...");
-		s_t VertexSet;    // множество номеров всех вершин графа
+		// РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
+		s_t VertexSet;    // РјРЅРѕР¶РµСЃС‚РІРѕ РЅРѕРјРµСЂРѕРІ РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		for (int i = 1; i <= N; ++i)
 			VertexSet.insert(i);
 
-		v_t Indep;    // максимальное назависимое множество
+		v_t Indep;    // РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅР°Р·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 
-		// начинаем поиск максимального независимого множество
-		// поочередно включая каждую вершину в нез.множество
-		// среди N множеств выбираем мкасимальное
+		// РЅР°С‡РёРЅР°РµРј РїРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РїРѕРѕС‡РµСЂРµРґРЅРѕ РІРєР»СЋС‡Р°СЏ РєР°Р¶РґСѓСЋ РІРµСЂС€РёРЅСѓ РІ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// СЃСЂРµРґРё N РјРЅРѕР¶РµСЃС‚РІ РІС‹Р±РёСЂР°РµРј РјРєР°СЃРёРјР°Р»СЊРЅРѕРµ
 
-		ToConsol("Поиск максимального независимого множества...");
+		ToConsol("РџРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР°...");
 		for (int i = 1; i <= N; ++i) {
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return;
 			}
 
 			AnsiString StrI = IntToStr(i);
-			Log += "\n  -- строим подграф G" + StrI + " :\n\n";
+			Log += "\n  -- СЃС‚СЂРѕРёРј РїРѕРґРіСЂР°С„ G" + StrI + " :\n\n";
 
-			ToConsol("шаг ." + StrI
-					 + " - поиск независимого множества для подграфа G" + StrI);
+			ToConsol("С€Р°Рі ." + StrI
+					 + " - РїРѕРёСЃРє РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ РїРѕРґРіСЂР°С„Р° G" + StrI);
 
 			s_t  _VertexSet(VertexSet);
 			vs_t _Vertex(Vertex);
 			v_t  _Indep;
 
-			// максимальное независимое множество W1
-			// оно может отличатся от _Indep так как мы выбираем вершину дающую
-			// не максимальную W1 а максимальную сумму W1 и W2, в дальнейшем это может дать
-			// либо большее либо меньшее W1, поэтому запоминаем максимальное MaxW1
+			// РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ W1
+			// РѕРЅРѕ РјРѕР¶РµС‚ РѕС‚Р»РёС‡Р°С‚СЃСЏ РѕС‚ _Indep С‚Р°Рє РєР°Рє РјС‹ РІС‹Р±РёСЂР°РµРј РІРµСЂС€РёРЅСѓ РґР°СЋС‰СѓСЋ
+			// РЅРµ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ W1 Р° РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ СЃСѓРјРјСѓ W1 Рё W2, РІ РґР°Р»СЊРЅРµР№С€РµРј СЌС‚Рѕ РјРѕР¶РµС‚ РґР°С‚СЊ
+			// Р»РёР±Рѕ Р±РѕР»СЊС€РµРµ Р»РёР±Рѕ РјРµРЅСЊС€РµРµ W1, РїРѕСЌС‚РѕРјСѓ Р·Р°РїРѕРјРёРЅР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ MaxW1
 			v_t  MaxW1;
 
 			int VertexInclud = i;
@@ -2255,41 +2632,41 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 
 				AnsiString LogRowBegin = "." + StrI + "." + IntToStr(Step);
 
-				Log += LogRowBegin + "  -- включаем в независимое множество вершину: "
+				Log += LogRowBegin + "  -- РІРєР»СЋС‡Р°РµРј РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РІРµСЂС€РёРЅСѓ: "
 					   + IntToStr(VertexInclud) + "\n";
 
-				ToConsol("шаг " + LogRowBegin
-				         + " - включаем вершину в независимое множество");
+				ToConsol("С€Р°Рі " + LogRowBegin
+				         + " - РІРєР»СЋС‡Р°РµРј РІРµСЂС€РёРЅСѓ РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ");
 
 				VertexToIndep(VertexInclud,_VertexSet,_Vertex,_Indep);
 
-				Log += LogRowBegin + "  -- текущий подграф: \n"
+				Log += LogRowBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„: \n"
 					   + ToString(LogRowBegin + "        ",_VertexSet,_Vertex);
 
-				ToConsol("шаг " + LogRowBegin + " - поиск экстримальных вершин");
+				ToConsol("С€Р°Рі " + LogRowBegin + " - РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ");
 
 				SearchExtremIndep(LogRowBegin,_VertexSet,_Vertex,_Indep);
 
-				Log += LogRowBegin + "  -- текущее независимое множество:  ("
+				Log += LogRowBegin + "  -- С‚РµРєСѓС‰РµРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ:  ("
 					   + IntToStr((int)_Indep.size()) + ")  "
 					   + ToString(_Indep) + "\n";
 
-				int VertexMaxW1 = 0;    // вершина давшая максимальное нез.множество (MaxW1)
+				int VertexMaxW1 = 0;    // РІРµСЂС€РёРЅР° РґР°РІС€Р°СЏ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ (MaxW1)
 				int MaxWeightW2 = 0;
-				int MaxSumW = 0;       // максимальная сумма W1 и W2
+				int MaxSumW = 0;       // РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ СЃСѓРјРјР° W1 Рё W2
 
 				if (_VertexSet.size() > 0) {
 
-					Log += LogRowBegin + "  -- находим вершины с наибольшей суммой W1 и W2\n";
+					Log += LogRowBegin + "  -- РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅС‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃСѓРјРјРѕР№ W1 Рё W2\n";
 
-					ToConsol("шаг " + LogRowBegin + " - строятся прогнозы");
+					ToConsol("С€Р°Рі " + LogRowBegin + " - СЃС‚СЂРѕСЏС‚СЃСЏ РїСЂРѕРіРЅРѕР·С‹");
 				}
 
 				for (s_t::iterator it = _VertexSet.begin();
 					 it != _VertexSet.end(); ++it)
 				{
 					if (Terminated) {
-						ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+						ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 						return;
 					}
 
@@ -2297,17 +2674,17 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 					vs_t W2(_Vertex);
 					v_t  W1(_Indep);
 
-					// включаем вершину в независимое множество
+					// РІРєР»СЋС‡Р°РµРј РІРµСЂС€РёРЅСѓ РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 					VertexToIndep(*it,VertexW2,W2,W1);
 
-					// ищем изолированные и "висячие" вершины
+					// РёС‰РµРј РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹Рµ Рё "РІРёСЃСЏС‡РёРµ" РІРµСЂС€РёРЅС‹
 					SearchExtremIndep(VertexW2,W2,W1);
 
-					// находим вершину которая дает решение с наибольшим независимым множеством
+					// РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅСѓ РєРѕС‚РѕСЂР°СЏ РґР°РµС‚ СЂРµС€РµРЅРёРµ СЃ РЅР°РёР±РѕР»СЊС€РёРј РЅРµР·Р°РІРёСЃРёРјС‹Рј РјРЅРѕР¶РµСЃС‚РІРѕРј
 					int WeightW2 = VpreMinDegree(VertexW2,W2);
 					int SumW   = W1.size() + WeightW2;
 
-					Log += LogRowBegin + "  -- проверяем вершину " + IntToStr(*it);
+					Log += LogRowBegin + "  -- РїСЂРѕРІРµСЂСЏРµРј РІРµСЂС€РёРЅСѓ " + IntToStr(*it);
 					Log += " : W1 (" + IntToStr((int)W1.size());
 					Log += ")   W2 (" + IntToStr(WeightW2);
 					Log += ") - " + IntToStr(SumW) + "\n";
@@ -2331,7 +2708,7 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 						}
 					}
 
-					// запоминаем максимальное независимое множество
+					// Р·Р°РїРѕРјРёРЅР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 					++Q;
 					if (W1.size() > MaxW1.size()) {
 
@@ -2341,14 +2718,14 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 				}    // end for it
 
 				if (_VertexSet.size() > 0)
-					Log += LogRowBegin + "  -- вершина с наибольшей суммой W1 и W2: "
+					Log += LogRowBegin + "  -- РІРµСЂС€РёРЅР° СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃСѓРјРјРѕР№ W1 Рё W2: "
 						   + IntToStr(VertexInclud) + "\n";
 
 				if (VertexMaxW1 > 0) {
 					Log += LogRowBegin
-						   + "  -- вершина дающая наибольшее W1 : "
+						   + "  -- РІРµСЂС€РёРЅР° РґР°СЋС‰Р°СЏ РЅР°РёР±РѕР»СЊС€РµРµ W1 : "
 						   + IntToStr(VertexMaxW1)+ "\n"
-						   + LogRowBegin + "  -- запоминаем наибольшее W1: ("
+						   + LogRowBegin + "  -- Р·Р°РїРѕРјРёРЅР°РµРј РЅР°РёР±РѕР»СЊС€РµРµ W1: ("
 						   + IntToStr((int)MaxW1.size()) + ") "
 						   + ToString(MaxW1) +"\n";
 				}
@@ -2361,12 +2738,12 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 
 				_Indep = MaxW1;
 
-				Log += "." + StrI + "  -- максимальное множество W1: ("
+				Log += "." + StrI + "  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ W1: ("
 					   + IntToStr((int)MaxW1.size()) + ")  "
-					   + ToString(MaxW1) + " - больше найденного оставляем его\n";
+					   + ToString(MaxW1) + " - Р±РѕР»СЊС€Рµ РЅР°Р№РґРµРЅРЅРѕРіРѕ РѕСЃС‚Р°РІР»СЏРµРј РµРіРѕ\n";
 			}
 
-			Log += "\n  -- независимое множество подграфа G"
+			Log += "\n  -- РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РїРѕРґРіСЂР°С„Р° G"
 				   + StrI + " (" + IntToStr((int)_Indep.size()) + ") "
 				   + ToString(_Indep) + "\n";
 
@@ -2375,27 +2752,27 @@ void __fastcall TThreadSearchCover::VpreSearchCover()
 
 		}    // for i <= N
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr((int)Indep.size()) + ") "
 			   + ToString(Indep) + "\n";
 
-		ToConsol("Максимальное независимое множество найденно, находим вершинное покрытие...");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅРѕ, РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ...");
 
-		// из независимого множесва получаем вершинное покрытие
+		// РёР· РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃРІР° РїРѕР»СѓС‡Р°РµРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ
 		Cover = CoverFromIndep(VertexSet,Indep);
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
 			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2435,47 +2812,47 @@ void __fastcall TThreadSearchCover::VrecSearchCover()
 		ToConsol("search-cover full " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД ВЕРШИН С РЕКУРСИЕЙ\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РњР•РўРћР” Р’Р•Р РЁРРќ РЎ Р Р•РљРЈР РЎРР•Р™\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-		ToConsol("Формируются промежуточные данные...");
-		s_t VertexSet;    // множество номеров всех вершин графа
+		// РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
+		s_t VertexSet;    // РјРЅРѕР¶РµСЃС‚РІРѕ РЅРѕРјРµСЂРѕРІ РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		for (int i = 1; i <= N; ++i)
 			VertexSet.insert(i);
 
-		v_t MaxIndep;    // максимальное назависимое множество
+		v_t MaxIndep;    // РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅР°Р·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 
-		// начинаем поиск максимального независимого множество
-		// поочередно включая каждую вершину в нез.множество
-		// среди N множеств выбираем мкасимальное
+		// РЅР°С‡РёРЅР°РµРј РїРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІРѕ
+		// РїРѕРѕС‡РµСЂРµРґРЅРѕ РІРєР»СЋС‡Р°СЏ РєР°Р¶РґСѓСЋ РІРµСЂС€РёРЅСѓ РІ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ
+		// СЃСЂРµРґРё N РјРЅРѕР¶РµСЃС‚РІ РІС‹Р±РёСЂР°РµРј РјРєР°СЃРёРјР°Р»СЊРЅРѕРµ
 
-		ToConsol("Поиск максимального независимого множества...");
+		ToConsol("РџРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР°...");
 		for (int i = 1; i <= N; ++i) {
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return;
 			}
 
 			AnsiString StrI = IntToStr(i);
-			Log += "\n  -- строим подграф G" + StrI + " :\n\n";
+			Log += "\n  -- СЃС‚СЂРѕРёРј РїРѕРґРіСЂР°С„ G" + StrI + " :\n\n";
 
-			ToConsol("шаг ." + StrI
-					 + " - поиск независимого множества для подграфа G" + StrI);
+			ToConsol("С€Р°Рі ." + StrI
+					 + " - РїРѕРёСЃРє РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ РїРѕРґРіСЂР°С„Р° G" + StrI);
 
-			// поиск максимального независимого множества для i-го подграфа G
+			// РїРѕРёСЃРє РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РґР»СЏ i-РіРѕ РїРѕРґРіСЂР°С„Р° G
 			v_t Indep = VrecSearchIndep("",i,VertexSet,Vertex,v_t());
 
-			Log += "\n  -- независимое множество подграфа G"
+			Log += "\n  -- РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РїРѕРґРіСЂР°С„Р° G"
 				   + StrI + " (" + IntToStr((int)Indep.size()) + ") "
 				   + ToString(Indep) + "\n";
 
@@ -2484,27 +2861,27 @@ void __fastcall TThreadSearchCover::VrecSearchCover()
 
 		}    // for i <= N
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr((int)MaxIndep.size()) + ") "
 			   + ToString(MaxIndep) + "\n";
 
-		ToConsol("Максимальное независимое множество найденно, находим вершинное покрытие...");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅРѕ, РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ...");
 
-		// из независимого множесва получаем вершинное покрытие
+		// РёР· РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РјРЅРѕР¶РµСЃРІР° РїРѕР»СѓС‡Р°РµРј РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ
 		Cover = CoverFromIndep(VertexSet,MaxIndep);
 
-		Log += "\n  -- максимальное независимое множество: ("
+		Log += "\n  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: ("
 			   + IntToStr(static_cast<int>(N - Cover.size())) + ") "
 			   + ToString(CoverToIndep(Cover)) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
@@ -2520,50 +2897,50 @@ v_t __fastcall TThreadSearchCover::VrecSearchIndep(
 {
 	LogRowBegin += "." + IntToStr(I);
 
-	Log += LogRowBegin + "  -- включаем в независимое множество вершину: "
+	Log += LogRowBegin + "  -- РІРєР»СЋС‡Р°РµРј РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РІРµСЂС€РёРЅСѓ: "
 		   + IntToStr(I) + "\n";
 
-	ToConsol("шаг " + LogRowBegin
-			 + " - включаем вершину в независимое множество");
+	ToConsol("С€Р°Рі " + LogRowBegin
+			 + " - РІРєР»СЋС‡Р°РµРј РІРµСЂС€РёРЅСѓ РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ");
 
 	VertexToIndep(I,VertexSet,Vertex,Indep);
 
-	Log += LogRowBegin + "  -- текущий подграф: \n"
+	Log += LogRowBegin + "  -- С‚РµРєСѓС‰РёР№ РїРѕРґРіСЂР°С„: \n"
 		   + ToString(LogRowBegin + "        ",VertexSet,Vertex);
 
-	ToConsol("шаг " + LogRowBegin
-			 + " - поиск экстримальных вершин");
+	ToConsol("С€Р°Рі " + LogRowBegin
+			 + " - РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ");
 
 	SearchExtremIndep(LogRowBegin,VertexSet,Vertex,Indep);
 
 	v_t MaxIndep(Indep);
 
-	Log += LogRowBegin + "  -- текущее независимое множество:  ("
+	Log += LogRowBegin + "  -- С‚РµРєСѓС‰РµРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ:  ("
 		   + IntToStr((int)Indep.size()) + ")  "
 		   + ToString(Indep) + "\n";
 
 	if (VertexSet.size() > 0) {
 
-		Log += LogRowBegin + "  -- находим вершины с наибольшей суммой W1 и W2\n";
+		Log += LogRowBegin + "  -- РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅС‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃСѓРјРјРѕР№ W1 Рё W2\n";
 
-		ToConsol("шаг " + LogRowBegin
-				 + " - строятся прогнозы");
+		ToConsol("С€Р°Рі " + LogRowBegin
+				 + " - СЃС‚СЂРѕСЏС‚СЃСЏ РїСЂРѕРіРЅРѕР·С‹");
 
-		// максимальное независимое множество W1
-		// оно может отличатся от _Indep так как мы выбираем вершину дающую
-		// не максимальную W1 а максимальную сумму W1 и W2, в дальнейшем это может дать
-		// либо большее либо меньшее W1, поэтому запоминаем максимальное MaxW1
+		// РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ W1
+		// РѕРЅРѕ РјРѕР¶РµС‚ РѕС‚Р»РёС‡Р°С‚СЃСЏ РѕС‚ _Indep С‚Р°Рє РєР°Рє РјС‹ РІС‹Р±РёСЂР°РµРј РІРµСЂС€РёРЅСѓ РґР°СЋС‰СѓСЋ
+		// РЅРµ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ W1 Р° РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ СЃСѓРјРјСѓ W1 Рё W2, РІ РґР°Р»СЊРЅРµР№С€РµРј СЌС‚Рѕ РјРѕР¶РµС‚ РґР°С‚СЊ
+		// Р»РёР±Рѕ Р±РѕР»СЊС€РµРµ Р»РёР±Рѕ РјРµРЅСЊС€РµРµ W1, РїРѕСЌС‚РѕРјСѓ Р·Р°РїРѕРјРёРЅР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ MaxW1
 		v_t  MaxW1;
-		int VertexMaxW1 = 0;    // вершина давшая максимальное нез.множество (MaxW1)
+		int VertexMaxW1 = 0;    // РІРµСЂС€РёРЅР° РґР°РІС€Р°СЏ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ (MaxW1)
 
-		int MaxSumW = 0;       // максимальная сумма W1 и W2
-		s_t VertexMaxSumW;        // номера вершин дающие наибольшую сумму W1 и W2
+		int MaxSumW = 0;       // РјР°РєСЃРёРјР°Р»СЊРЅР°СЏ СЃСѓРјРјР° W1 Рё W2
+		s_t VertexMaxSumW;        // РЅРѕРјРµСЂР° РІРµСЂС€РёРЅ РґР°СЋС‰РёРµ РЅР°РёР±РѕР»СЊС€СѓСЋ СЃСѓРјРјСѓ W1 Рё W2
 
 		for (s_t::iterator it = VertexSet.begin();
 			 it != VertexSet.end(); ++it)
 		{
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return v_t();
 			}
 
@@ -2571,17 +2948,17 @@ v_t __fastcall TThreadSearchCover::VrecSearchIndep(
 			vs_t W2(Vertex);
 			v_t  W1(Indep);
 
-			// включаем вершину в независимое множество
+			// РІРєР»СЋС‡Р°РµРј РІРµСЂС€РёРЅСѓ РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 			VertexToIndep(*it,VertexW2,W2,W1);
 
-			// ищем изолированные и "висячие" вершины
+			// РёС‰РµРј РёР·РѕР»РёСЂРѕРІР°РЅРЅС‹Рµ Рё "РІРёСЃСЏС‡РёРµ" РІРµСЂС€РёРЅС‹
 			SearchExtremIndep(VertexW2,W2,W1);
 
-			// находим вершину которая дает решение с наибольшим независимым множеством
+			// РЅР°С…РѕРґРёРј РІРµСЂС€РёРЅСѓ РєРѕС‚РѕСЂР°СЏ РґР°РµС‚ СЂРµС€РµРЅРёРµ СЃ РЅР°РёР±РѕР»СЊС€РёРј РЅРµР·Р°РІРёСЃРёРјС‹Рј РјРЅРѕР¶РµСЃС‚РІРѕРј
 			int WeightW2 = VpreMinDegree(VertexW2,W2);
 			int SumW = W1.size() + WeightW2;
 
-			Log += LogRowBegin + "  -- проверяем вершину " + IntToStr(*it);
+			Log += LogRowBegin + "  -- РїСЂРѕРІРµСЂСЏРµРј РІРµСЂС€РёРЅСѓ " + IntToStr(*it);
 			Log += " : W1 (" + IntToStr((int)W1.size());
 			Log += ")   W2 (" + IntToStr(WeightW2);
 			Log += ") - " + IntToStr(SumW) + "\n";
@@ -2600,7 +2977,7 @@ v_t __fastcall TThreadSearchCover::VrecSearchIndep(
 					VertexMaxSumW.insert(*it);
 			}
 
-			// запоминаем максимальное независимое множество
+			// Р·Р°РїРѕРјРёРЅР°РµРј РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
 			++Q;
 			if (W1.size() > MaxW1.size()) {
 
@@ -2610,14 +2987,14 @@ v_t __fastcall TThreadSearchCover::VrecSearchIndep(
 		}    // end for it
 
 		Log += LogRowBegin
-			   + "  -- вершина дающая наибольшее W1 : "
+			   + "  -- РІРµСЂС€РёРЅР° РґР°СЋС‰Р°СЏ РЅР°РёР±РѕР»СЊС€РµРµ W1 : "
 			   + IntToStr(VertexMaxW1)+ "\n"
-			   + LogRowBegin + "  -- запоминаем наибольшее W1: ("
+			   + LogRowBegin + "  -- Р·Р°РїРѕРјРёРЅР°РµРј РЅР°РёР±РѕР»СЊС€РµРµ W1: ("
 			   + IntToStr((int)MaxW1.size()) + ") "
 			   + ToString(MaxW1) +"\n";
 
-		Log += LogRowBegin + "  -- вершины с наибольшей суммой W1 и W2: "
-			   + ToString(VertexMaxSumW) + " - для каждой находим нез.множество\n";
+		Log += LogRowBegin + "  -- РІРµСЂС€РёРЅС‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ СЃСѓРјРјРѕР№ W1 Рё W2: "
+			   + ToString(VertexMaxSumW) + " - РґР»СЏ РєР°Р¶РґРѕР№ РЅР°С…РѕРґРёРј РЅРµР·.РјРЅРѕР¶РµСЃС‚РІРѕ\n";
 
 		for (s_t::iterator it = VertexMaxSumW.begin();
 			 it != VertexMaxSumW.end(); ++it)
@@ -2632,9 +3009,9 @@ v_t __fastcall TThreadSearchCover::VrecSearchIndep(
 
 			MaxIndep = MaxW1;
 
-			Log += LogRowBegin + "  -- максимальное множество W1: ("
+			Log += LogRowBegin + "  -- РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ W1: ("
 				   + IntToStr((int)MaxW1.size()) + ")  "
-				   + ToString(MaxW1) + " - больше найденного оставляем его\n";
+				   + ToString(MaxW1) + " - Р±РѕР»СЊС€Рµ РЅР°Р№РґРµРЅРЅРѕРіРѕ РѕСЃС‚Р°РІР»СЏРµРј РµРіРѕ\n";
 		}
 	}
 
@@ -2650,20 +3027,20 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 		ToConsol("search-cover equa " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("РћС€РёР±РєР°! РќРµ Р·Р°РґР°РЅ РіСЂР°С„. РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
+		// Р·Р°РґР°РµРј РЅР°С‡Р°Р»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°Рј Р°Р»РіРѕСЂРёС‚РјР°
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "МЕТОД УРАВНЕНИЙ\n\n";
-		Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		LogShort = "РњР•РўРћР” РЈР РђР’РќР•РќРР™\n\n";
+		Log      = "РџРѕС€Р°РіРѕРІС‹Р№ РѕС‚С‡РµС‚ СЂР°Р±РѕС‚С‹ Р°Р»РіРѕСЂРёС‚РјР°: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-		ToConsol("Формируются промежуточные данные...");
-		s_t VertexSet;    // множество номеров всех вершин графа
+		// РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ
+		ToConsol("Р¤РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ...");
+		s_t VertexSet;    // РјРЅРѕР¶РµСЃС‚РІРѕ РЅРѕРјРµСЂРѕРІ РІСЃРµС… РІРµСЂС€РёРЅ РіСЂР°С„Р°
 		for (int i = 1; i <= N; ++i)
 			VertexSet.insert(i);
 
@@ -2684,24 +3061,24 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 
 			AnsiString StrStep = IntToStr(Step);
 
-			ToConsol(StrStep + " поиск экстримальных вершин графа");
+			ToConsol(StrStep + " РїРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ РіСЂР°С„Р°");
 
-			Log += StrStep + " Текущий граф:\n";
-			Log += "\t-- вершины (" + IntToStr((int)VertexSet.size()) + ") : \n\t-- "
+			Log += StrStep + " РўРµРєСѓС‰РёР№ РіСЂР°С„:\n";
+			Log += "\t-- РІРµСЂС€РёРЅС‹ (" + IntToStr((int)VertexSet.size()) + ") : \n\t-- "
 				   + ToStringVertex(VertexSet,Vertex_,"\n\t-- ") + "\n";
-			Log += "\t-- ребра: " + ToStringEdges(VertexSet,Vertex_,"   ") + "\n";
-			Log += "\t-- покрытие: " + ToString(Cover) + "\n\n";
+			Log += "\t-- СЂРµР±СЂР°: " + ToStringEdges(VertexSet,Vertex_,"   ") + "\n";
+			Log += "\t-- РїРѕРєСЂС‹С‚РёРµ: " + ToString(Cover) + "\n\n";
 
-			Log += StrStep + ".1. Поиск экстримальных вершин:\n\n";
+			Log += StrStep + ".1. РџРѕРёСЃРє СЌРєСЃС‚СЂРёРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ:\n\n";
 			SearchExtremCover("",VertexSet,Vertex_,Cover);
 
 			if (Terminated) {
-				ToConsol("Процесс остановлен! Минимальное покрытие не найдено.");
+				ToConsol("РџСЂРѕС†РµСЃСЃ РѕСЃС‚Р°РЅРѕРІР»РµРЅ! РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 				return;
 			}
 
-			// находим пару вершин связанных ребром максимально суммарной степенью
-			ToConsol(StrStep + " поиск вершин с максимальной суммарной степенью");
+			// РЅР°С…РѕРґРёРј РїР°СЂСѓ РІРµСЂС€РёРЅ СЃРІСЏР·Р°РЅРЅС‹С… СЂРµР±СЂРѕРј РјР°РєСЃРёРјР°Р»СЊРЅРѕ СЃСѓРјРјР°СЂРЅРѕР№ СЃС‚РµРїРµРЅСЊСЋ
+			ToConsol(StrStep + " РїРѕРёСЃРє РІРµСЂС€РёРЅ СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ СЃСѓРјРјР°СЂРЅРѕР№ СЃС‚РµРїРµРЅСЊСЋ");
 
 			int v1 = Max(VertexSet,Vertex_);
 			VertexSet.erase(v1);
@@ -2712,55 +3089,55 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 
 			VertexSet.insert(v1);
 
-			Log += "\n" + StrStep + ".2. Вершины с максимальной суммарной степенью:\n";
+			Log += "\n" + StrStep + ".2. Р’РµСЂС€РёРЅС‹ СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ СЃСѓРјРјР°СЂРЅРѕР№ СЃС‚РµРїРµРЅСЊСЋ:\n";
 			Log += "\t-- " + IntToStr(v1) + " : " + IntToStr(v2) + "\n";
 
-			// строим систему из трех уровнений,
-			ToConsol(StrStep + " решается система уравнений 00 01 10");
+			// СЃС‚СЂРѕРёРј СЃРёСЃС‚РµРјСѓ РёР· С‚СЂРµС… СѓСЂРѕРІРЅРµРЅРёР№,
+			ToConsol(StrStep + " СЂРµС€Р°РµС‚СЃСЏ СЃРёСЃС‚РµРјР° СѓСЂР°РІРЅРµРЅРёР№ 00 01 10");
 
-			Log += "\n" + StrStep + ".3 Прогнозы системы трех уравнений:\n";
+			Log += "\n" + StrStep + ".3 РџСЂРѕРіРЅРѕР·С‹ СЃРёСЃС‚РµРјС‹ С‚СЂРµС… СѓСЂР°РІРЅРµРЅРёР№:\n";
 
 			vs_t HVertexSet(3,VertexSet);
 			vvs_t HVertex(3,Vertex_);
 			vv_t HCover(3,Cover);
 
-			// первое уравнение обе вершины принадлежат мин.покрытию
-			Log += "\n\t-- прогноз 00:\n";
+			// РїРµСЂРІРѕРµ СѓСЂР°РІРЅРµРЅРёРµ РѕР±Рµ РІРµСЂС€РёРЅС‹ РїСЂРёРЅР°РґР»РµР¶Р°С‚ РјРёРЅ.РїРѕРєСЂС‹С‚РёСЋ
+			Log += "\n\t-- РїСЂРѕРіРЅРѕР· 00:\n";
 			HCover[0].push_back(v1);
 			HCover[0].push_back(v2);
 			VertexErase(v1,HVertexSet[0],HVertex[0]);
 			VertexErase(v2,HVertexSet[0],HVertex[0]);
 			SearchExtremCover("\t-- 00",HVertexSet[0],HVertex[0],HCover[0]);
 
-			Log += "\t-- 00 ребра (" + IntToStr(EdgesCalculate(HVertexSet[0],HVertex[0])) + ") : "
+			Log += "\t-- 00 СЂРµР±СЂР° (" + IntToStr(EdgesCalculate(HVertexSet[0],HVertex[0])) + ") : "
 				   + ToStringEdges(HVertexSet[0],HVertex[0],"   ") + "\n";
-			Log += "\t-- 00 покрытие (" + IntToStr((int)HCover[0].size())
+			Log += "\t-- 00 РїРѕРєСЂС‹С‚РёРµ (" + IntToStr((int)HCover[0].size())
 				   + ") : " + ToString(HCover[0]) + "\n";
 
-			// второе уравнение 1-я вершина принадлежит 2-я не принадлежит
-			Log += "\n\t-- прогноз 01:\n";
+			// РІС‚РѕСЂРѕРµ СѓСЂР°РІРЅРµРЅРёРµ 1-СЏ РІРµСЂС€РёРЅР° РїСЂРёРЅР°РґР»РµР¶РёС‚ 2-СЏ РЅРµ РїСЂРёРЅР°РґР»РµР¶РёС‚
+			Log += "\n\t-- РїСЂРѕРіРЅРѕР· 01:\n";
 			HCover[1].push_back(v1);
 			VertexErase(v1,HVertexSet[1],HVertex[1]);
 			copy(HVertex.at(1).at(v2).begin(),HVertex.at(1).at(v2).end(),back_inserter(HCover[1]));
 			VertexAdjacentErase(v2,HVertexSet[1],HVertex[1]);
 			SearchExtremCover("\t-- 01",HVertexSet[1],HVertex[1],HCover[1]);
 
-			Log += "\t-- 01 ребра (" + IntToStr(EdgesCalculate(HVertexSet[1],HVertex[1])) + ") : "
+			Log += "\t-- 01 СЂРµР±СЂР° (" + IntToStr(EdgesCalculate(HVertexSet[1],HVertex[1])) + ") : "
 				   + ToStringEdges(HVertexSet[1],HVertex[1],"   ") + "\n";
-			Log += "\t-- 01 покрытие (" + IntToStr((int)HCover[1].size())
+			Log += "\t-- 01 РїРѕРєСЂС‹С‚РёРµ (" + IntToStr((int)HCover[1].size())
 					+ ") : " + ToString(HCover[1]) + "\n";
 
-			// третье уравнение 1-я не принадлежит 2-я принадлежит
-			Log += "\n\t-- прогноз 10:\n";
+			// С‚СЂРµС‚СЊРµ СѓСЂР°РІРЅРµРЅРёРµ 1-СЏ РЅРµ РїСЂРёРЅР°РґР»РµР¶РёС‚ 2-СЏ РїСЂРёРЅР°РґР»РµР¶РёС‚
+			Log += "\n\t-- РїСЂРѕРіРЅРѕР· 10:\n";
 			HCover[2].push_back(v2);
 			VertexErase(v2,HVertexSet[2],HVertex[2]);
 			copy(HVertex.at(2).at(v1).begin(),HVertex.at(2).at(v1).end(),back_inserter(HCover[2]));
 			VertexAdjacentErase(v1,HVertexSet[2],HVertex[2]);
 			SearchExtremCover("\t-- 10",HVertexSet[2],HVertex[2],HCover[2]);
 
-			Log += "\t-- 10 ребра (" + IntToStr(EdgesCalculate(HVertexSet[2],HVertex[2])) + ") : "
+			Log += "\t-- 10 СЂРµР±СЂР° (" + IntToStr(EdgesCalculate(HVertexSet[2],HVertex[2])) + ") : "
 				   + ToStringEdges(HVertexSet[2],HVertex[2],"   ") + "\n";
-			Log += "\t-- 10 покрытие (" + IntToStr((int)HCover[2].size())
+			Log += "\t-- 10 РїРѕРєСЂС‹С‚РёРµ (" + IntToStr((int)HCover[2].size())
 					+ ") : " + ToString(HCover[2]) + "\n";
 
 			for (unsigned int i = 0; i < HEdgesCount.size(); ++i){
@@ -2770,15 +3147,15 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 					CoverTemp.push_back(HCover.at(i));
 			}
 
-			// находим уравнение дающее максимальное количество ребер
-			// и минимальное вершинное покрытие после преобразований
+			// РЅР°С…РѕРґРёРј СѓСЂР°РІРЅРµРЅРёРµ РґР°СЋС‰РµРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР±РµСЂ
+			// Рё РјРёРЅРёРјР°Р»СЊРЅРѕРµ РІРµСЂС€РёРЅРЅРѕРµ РїРѕРєСЂС‹С‚РёРµ РїРѕСЃР»Рµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёР№
 			int HMax = Max(Edges.size(),0,1,HEdgesCount,HCoverLen);
 			HMax = Max(Edges.size(),HMax,2,HEdgesCount,HCoverLen);
 
-			Log += "\n\t-- применяем решение " + HLog.at(HMax) + "\n\n";
+			Log += "\n\t-- РїСЂРёРјРµРЅСЏРµРј СЂРµС€РµРЅРёРµ " + HLog.at(HMax) + "\n\n";
 
-			// применяем преобразования в зависимости от полученного прогноза
-			ToConsol(StrStep + " преобразование графа");
+			// РїСЂРёРјРµРЅСЏРµРј РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ РїСЂРѕРіРЅРѕР·Р°
+			ToConsol(StrStep + " РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РіСЂР°С„Р°");
 
 			VertexSet.swap(HVertexSet.at(HMax));
 			Vertex_.swap(HVertex.at(HMax));
@@ -2787,12 +3164,12 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 			++Step;
 		}
 
-		Log += "Найденные полные решения: \n\n";
+		Log += "РќР°Р№РґРµРЅРЅС‹Рµ РїРѕР»РЅС‹Рµ СЂРµС€РµРЅРёСЏ: \n\n";
 		for (int i = 0; i < CoverTemp.size(); ++i)
 			Log += "\t-- " + IntToStr(i + 1) + ". (" + IntToStr((int)CoverTemp.at(i).size())
 					+ ") : " + ToString(CoverTemp.at(i)) + "\n";
 
-		// проверяем избыточность найденных покрытий
+		// РїСЂРѕРІРµСЂСЏРµРј РёР·Р±С‹С‚РѕС‡РЅРѕСЃС‚СЊ РЅР°Р№РґРµРЅРЅС‹С… РїРѕРєСЂС‹С‚РёР№
 		for (unsigned i = 0; i < CoverTemp.size(); ++i){
 
 			v_t ICover(CoverTemp.at(i));
@@ -2814,12 +3191,12 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 
 //			Log += "\n";
 		}
-		Log += "\nИсключаем из покрытия избыточные вершины:\n\n";
+		Log += "\nРСЃРєР»СЋС‡Р°РµРј РёР· РїРѕРєСЂС‹С‚РёСЏ РёР·Р±С‹С‚РѕС‡РЅС‹Рµ РІРµСЂС€РёРЅС‹:\n\n";
 		for (int i = 0; i < CoverTemp.size(); ++i)
 			Log += "\t-- " + IntToStr(i + 1) + ". (" + IntToStr((int)CoverTemp.at(i).size())
 					+ ") : " + ToString(CoverTemp.at(i)) + "\n";
 
-		// поиск наименьшего решения
+		// РїРѕРёСЃРє РЅР°РёРјРµРЅСЊС€РµРіРѕ СЂРµС€РµРЅРёСЏ
 		int MinCoverLen = INFIN;
 		int MinIndex = -1;
 		for (int i = 0; i < CoverTemp.size(); ++i)
@@ -2831,19 +3208,19 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 			CoverTemp.push_back(Cover),
 			MinIndex = 0;
 
-		Log += "\nМаксимальное независимое множество: (" + IntToStr(static_cast<int>(N - CoverTemp.at(MinIndex).size()))
+		Log += "\nРњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ: (" + IntToStr(static_cast<int>(N - CoverTemp.at(MinIndex).size()))
 				+ ") : " + ToString(CoverToIndep(CoverTemp.at(MinIndex))) + "\n";
 
 		Cover.swap(CoverTemp.at(MinIndex));
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+		ToConsol("РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРѕ! РђР»РіРѕСЂРёС‚Рј Р·Р°РІРµСЂС€РёР» СЂР°Р±РѕС‚Сѓ.");
 
 		ToCover();
 
 	} catch (...){
-		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+		ToConsol("РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°! РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.");
 	}
 }
 //---------------------------------------------------------------------------
