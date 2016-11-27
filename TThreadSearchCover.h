@@ -55,8 +55,9 @@ private:
 
 	inline void 		  ToConsol(const AnsiString &Message);    // добовляем сообщение в Consol главной формы
 		   void 		  ToCover();     // добовляет найденное минимальное покрытие в MapCovers
-		   v_t            CoverToIndep(const v_t &cover);
 
+		   v_t            CoverToIndep(const v_t &cover);
+		   
 	       void __fastcall Lock();
 		   void __fastcall UnLock();
 
@@ -104,8 +105,11 @@ private:
 	void __fastcall NinuSearchCover();
 	void __fastcall IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,set<pair<s_t,s_t> > *pFullSets);
 	void __fastcall IndsUnionSets(set<pair<s_t,s_t> > *pSets);
+	void __fastcall IndsUnionSetsAbsorb(int n,set<pair<s_t,s_t> > *pSets,set<pair<s_t,s_t> > *pFullSets);
+	void __fastcall IndsUnionSetsAbsorb(set<pair<s_t,s_t> > *pSets);
 	void __fastcall IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets);
 	ps_t __fastcall IndsBuildFullSet(int n,ps_t FullSet,sps_t Sets);
+	ps_t __fastcall IndsBuildFullSetAbsorb(int n,ps_t FullSet,sps_t Sets);
 
 	// ранговый метод
 	void __fastcall RangSearchCover();

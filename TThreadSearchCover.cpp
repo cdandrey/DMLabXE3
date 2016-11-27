@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -172,9 +172,10 @@ v_t TThreadSearchCover::CoverToIndep(const v_t &cover)
 AnsiString __fastcall TThreadSearchCover::ToString(const vp_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (unsigned int i = 1; i < Data.size(); ++i)
-		Str += IntToStr((int)i) + "(" + IntToStr(Data.at(i).second) + ") ";
+		Str += Buffer.sprintf("%3d (%3d) ",i,Data.at(i).second);
 
 	Str += "\n";
 
@@ -186,40 +187,41 @@ AnsiString __fastcall TThreadSearchCover::ToString(const vp_t &Data)
 AnsiString __fastcall TThreadSearchCover::ToString(int ColCount,const vv_t &H)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int col = 1; col < ColCount; ++col) {
 
-		Str += "\n\tB" + IntToStr(col) + "\t=  ";
+		Str += Buffer.sprintf("\n\tB + %3d + \t= ",col);
 
 		int HSize = H.at(col).size();
 		for (int row = 1; row < HSize; ++row) {
 
 			if (H.at(col).at(row) != 0) {
-				Str += "0  ";
+				Str += Buffer.sprintf("%3d ",0);
 			} else {
-				Str += IntToStr(row) + "  ";
+				Str += Buffer.sprintf("%3d ",row);
 			}
 		}
 
-		Str += "\n\tH" + IntToStr(col) + "\t= ";
+		Str += Buffer.sprintf("\n\tH + %3d + \t= ",col);
 		for (int row = 1; row < HSize; ++row) {
 
 			if (H.at(col).at(row) != 0) {
 				if (H.at(col).at(row) != INFIN)
-					Str += IntToStr(H.at(col).at(row)) + "  ";
+					Str += Buffer.sprintf("%3d ",H.at(col).at(row));
 				else
-					Str += "#  ";
+					Str += Buffer.sprintf("%3s ",'#');
 			} else {
-				Str += "0  ";
+				Str += Buffer.sprintf("%3d ",0);
 			}
 		}
 
-		Str += "\n\td" + IntToStr(col) + "\t= ";
+		Str += Buffer.sprintf("\n\td + %3d + \t= ",col);
 
 		if (H.at(col).at(0) == INFIN)
 			Str += "#\n";
 		else
-			Str += IntToStr(H.at(col).at(0)) + "\n";
+			Str += Buffer.sprintf("%3d \n",H.at(col).at(0));
 	}
 
 	Str += "\n";
@@ -236,11 +238,11 @@ AnsiString __fastcall TThreadSearchCover::ToString(
 										  )
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (s_t::const_iterator it = SetData.begin(); it != SetData.end(); ++it) {
 
-		Str += Tab + IntToStr(*it);
-		Str += "(" + IntToStr((int)VecSetData.at(*it).size()) + ") : ";
+		Str += Tab + Buffer.sprintf("%3d (%3d) : ",*it,VecSetData.at(*it).size());
 		Str += ToString(VecSetData.at(*it)) + "\n";
 	}
 
@@ -255,12 +257,13 @@ AnsiString __fastcall TThreadSearchCover::ToString(
 AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const vs_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int i = 1; i < Data.size(); ++i) {
 
-		Str += Tab + IntToStr(i);
-			   + "(" + IntToStr((int)Data.at(i).size())
-			   + ") : " + ToString(Data.at(i)) + "\n";
+		Str += Tab
+				+ Buffer.sprintf("%3d (%3d) : ",i,Data.at(i).size())
+		   	    + ToString(Data.at(i)) + "\n";
 	}
 
 	return Str;
@@ -271,9 +274,10 @@ AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const vs_t &Da
 AnsiString __fastcall TThreadSearchCover::ToString(const v_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int i = 0; i < Data.size(); ++i)
-		Str += IntToStr(Data.at(i)) + "  ";
+		Str += Buffer.sprintf("%3d ",Data.at(i));
 
 	if (Str == "")
 		Str = "{}";
@@ -286,12 +290,13 @@ AnsiString __fastcall TThreadSearchCover::ToString(const v_t &Data)
 AnsiString __fastcall TThreadSearchCover::ToString(AnsiString infin,const v_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (int i = 0; i < Data.size(); ++i)
 		if (Data.at(i) == INFIN)
 			Str += infin + " ";
 		else
-			Str += IntToStr(Data.at(i)) + "  ";
+			Str += Buffer.sprintf("%3d ",Data.at(i));
 
 	return Str.Trim();
 }
@@ -301,9 +306,10 @@ AnsiString __fastcall TThreadSearchCover::ToString(AnsiString infin,const v_t &D
 AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
 	for (s_t::const_iterator it = Data.begin(); it != Data.end(); ++it)
-		Str += IntToStr(*it) + "  ";
+        Str += Buffer.sprintf("%3d ",*it);
 
 	return Str.Trim();
 }
@@ -312,10 +318,12 @@ AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 
 AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 {
-	return ToString(Data.first) +
-		   " (" + IntToStr((int)Data.first.size()) + ")\t\t-\t\t" +
-		   ToString(Data.second) +
-		   " (" +  IntToStr((int)Data.second.size()) + ")\n";
+	AnsiString Buffer = "";
+
+	return   ToString(Data.first)
+		   + Buffer.sprintf(" (%3d) \t\t-\t\t",Data.first.size())
+		   + ToString(Data.second)
+		   + Buffer.sprintf(" (%3d)\n",Data.first.size());
 }
 //---------------------------------------------------------------------------
 
@@ -323,13 +331,12 @@ AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 AnsiString __fastcall TThreadSearchCover::ToString(const set<pair<s_t,s_t> > &Data)
 {
 	AnsiString Str = "";
+	AnsiString Buffer = "";
 
-	int k = 1;
+	int k = 0;
 
-	for (set<pair<s_t,s_t> >::const_iterator it = Data.begin();it != Data.end(); ++it) {
-		Str += "\t" + IntToStr(k) + ".\t" +  ToString(*it);
-		++k;
-	}
+	for (set<pair<s_t,s_t> >::const_iterator it = Data.begin();it != Data.end(); ++it)
+		Str += Buffer.sprintf("   %3d.   ",++k) +  ToString(*it) + "\n";
 
 	return Str;
 }
@@ -1150,16 +1157,12 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
 		Q        = 0;
 		Cover    = v_t();
 		LogShort = "МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
 		Log      = "Пошаговый отчет работы алгоритма: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-
-		// формируем независимые множества
 		ToConsol("Формируем пары - покрытие / независимое множество...");
 
 		Log += ".1 Формируем пары - покрытие / независимое множество\n\n"
@@ -1180,6 +1183,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
+				++Q;
 				if (*it > i) {
 
 					pair<s_t,s_t> S;
@@ -1192,12 +1196,8 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 							  inserter(S.first, S.first.begin()));
 
 					AnsiString Str =  ToString(S);
-//									 "  (" + IntToStr((int)S.first.size()) + ")  " +
-//									 ToString(S.first) + "     -    (" +
-//									 "(" + IntToStr((int)S.second.size()) + ")  " +
-//									 ToString(S.second) + "\n";
 
-					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+					Q += max(Vertex.at(i).size(),Vertex.at(*it).size());
 
 					if ((S.first.size() + S.second.size()) == n) {
 						FullSets.insert(S);
@@ -1269,7 +1269,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 							it_next->second.begin(), it_next->second.end(),
 							inserter(intersect, intersect.begin()));
 
-					Q += (it->first.size() + it_next->second.size());
+					Q += max(it->first.size(),it_next->second.size());
 
 					if (intersect.size() == 0) {
 
@@ -1277,7 +1277,7 @@ void __fastcall TThreadSearchCover::IndsSearchCover()
 								it_next->first.begin(), it_next->first.end(),
 								inserter(intersect, intersect.begin()));
 
-						Q += (it->second.size() + it_next->first.size());
+						Q += max(it->second.size(),it_next->first.size());
 
 						if (intersect.size() == 0) {
 
@@ -1369,37 +1369,32 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 {
 	try {
 
-		ToConsol("search-cover full " + FileName);
+		ToConsol("search-cover nind " + FileName);
 
 		if (Vertex.size() == 0) {
 			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
 		Q        = 0;
 		Cover    = v_t();
 		LogShort = "НОВЫЙ МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ\n\n";
 		Log      = "Пошаговый отчет работы алгоритма: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
 
-		// промежуточные данные
-
-		// формируем независимые множества
-		ToConsol("\t--\tФормируем пары X - Y, где X - вершинное покрытие, Y - независимое множество...");
-
-		Log += "Шаг.1 Формируем пары X - Y, где X - вершинное покрытие, Y - независимое множество\n\n";
-
-
 		// множество всех пар множеств - покрытие/нез.множество
 		// в паре множеств first - вершинные покрытия, second - независимое множесвтов
 		set<pair<s_t,s_t> > Sets;
 		set<pair<s_t,s_t> > FullSets;
 
+		ToConsol("\t--\tФормируем пары X - Y, где X - вершинное покрытие, Y - независимое множество...");
+		Log += "Шаг.1 Формируем пары X - Y, где X - вершинное покрытие, Y - независимое множество\n\n";
+
 		for (unsigned i = 1; i <= N; ++i)
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
+				++Q;
 				if (*it > i) {
 
 					pair<s_t,s_t> S;
@@ -1411,7 +1406,7 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
 							  inserter(S.first, S.first.begin()));
 
-					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+					Q += max(Vertex.at(i).size(),Vertex.at(*it).size());
 
 					if ((S.first.size() + S.second.size()) == N)
 						FullSets.insert(S);
@@ -1427,20 +1422,34 @@ void __fastcall TThreadSearchCover::NindSearchCover()
 
 		ToConsol("\t--\tСозданно " + IntToStr((int)Sets.size()) + " независимых множеств");
 
-		Log += "\n\nШаг 2 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
+		// Log += "\n\nШаг 2 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
 
-		IndsUnionSets(N,&Sets,&FullSets);
-		Log += ToString(Sets);
+		// IndsUnionSets(N,&Sets,&FullSets);
+		// Log += ToString(Sets);
 
-		Log += "\n\nШаг 3 Строим решения для каждой сфомированной пары.\n\n";
+		Log += "\n\nШаг 2 Строим решения для каждой сфомированной пары.\n\n";
+		
 		// строим решения для каждой сфомированной пары
+		int cnt = 1;
+		AnsiString msg = "";
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
+			++Q;
+
+			if (Terminated) {
+				ToConsol("Выполнение алгоритма успешно остановленна!");
+				return;
+			}
+
 			Log += "\n-- пара:\t" + ToString(it->second);
 
 			pair<s_t,s_t> FullSetTmp = IndsBuildFullSet(N,*it,Sets);
+
 			if (FullSetTmp.first.size() + FullSetTmp.second.size() == N)
 				FullSets.insert(FullSetTmp);
+
+			ToConsol(msg.sprintf("\t%4d / %4d",cnt,Sets.size()));
+			++cnt;
 		}
 
 		// сортируем покрытия в порядке возростания
@@ -1498,37 +1507,32 @@ void __fastcall TThreadSearchCover::NinuSearchCover()
 {
 	try {
 
-		ToConsol("search-cover full " + FileName);
+		ToConsol("search-cover ninu " + FileName);
 
 		if (Vertex.size() == 0) {
 			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
 			return;
 		}
 
-		// задаем начальные данные характеристикам алгоритма
 		Q        = 0;
 		Cover    = v_t();
-		LogShort = "НОВЫЙ МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ С ОБЪЕДЕНЕНИЕМ\n\n";
+		LogShort = "НОВЫЙ МЕТОД НЕЗАВИСИМЫХ МНОЖЕСТВ УПРОЩЕННЫЙ\n\n";
 		Log      = "Пошаговый отчет работы алгоритма: \n\n";
 		QueryPerformanceCounter(&TimeBegin);
-
-		// промежуточные данные
-
-		// формируем независимые множества
-		ToConsol("\t--\tФормируем пары X - Y, где X - вершинное покрытие, Y - независимое множество...");
-
-		Log += "Шаг.1 Формируем пары X - Y, где X - вершинное покрытие, Y - независимое множество\n\n";
-
 
 		// множество всех пар множеств - покрытие/нез.множество
 		// в паре множеств first - вершинные покрытия, second - независимое множесвтов
 		set<pair<s_t,s_t> > Sets;
 		set<pair<s_t,s_t> > FullSets;
 
+		ToConsol("\t--\tФормируем пары X - Y, где X - вершинное покрытие, Y - независимое множество...");
+		Log += "Шаг.1 Формируем пары X - Y, где X - вершинное покрытие, Y - независимое множество\n\n";
+
 		for (unsigned i = 1; i <= N; ++i)
 			for (s_t::iterator it = VertexAdd.at(i).begin();
 				 it != VertexAdd.at(i).end(); ++it)
 			{
+				++Q;
 				if (*it > i) {
 
 					pair<s_t,s_t> S;
@@ -1540,7 +1544,7 @@ void __fastcall TThreadSearchCover::NinuSearchCover()
 							  Vertex.at(*it).begin(),Vertex.at(*it).end(),
 							  inserter(S.first, S.first.begin()));
 
-					Q += (Vertex.at(i).size() + Vertex.at(*it).size());
+					Q += max(Vertex.at(i).size(),Vertex.at(*it).size());
 
 					if ((S.first.size() + S.second.size()) == N)
 						FullSets.insert(S);
@@ -1556,30 +1560,44 @@ void __fastcall TThreadSearchCover::NinuSearchCover()
 
 		ToConsol("\t--\tСозданно " + IntToStr((int)Sets.size()) + " независимых множеств");
 
-		Log += "\n\nШаг 2 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
+		Log += "\n\nШаг 1.1 Объеденяем пары множеств с одинаковым вершинным покрытием.\n\n";
 
-		IndsUnionSets(N,&Sets,&FullSets);
+		IndsUnionSetsAbsorb(N,&Sets,&FullSets);
 		Log += ToString(Sets);
 
-		Log += "\n\nШаг 3 Строим решения для каждой сфомированной пары.\n\n";
+		Log += "\n\nШаг 2 Строим решения для каждой сфомированной пары.\n\n";
+
 		// строим решения для каждой сфомированной пары
+		int cnt = 1;
+		AnsiString msg = "";
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
+			++Q;
+			if (Terminated) {
+				ToConsol("Выполнение алгоритма успешно остановленна!");
+				return;
+			}
+
 			Log += "\n-- пара:\t" + ToString(it->second);
 
 			pair<s_t,s_t> FullSetTmp = IndsBuildFullSet(N,*it,Sets);
+
 			if (FullSetTmp.first.size() + FullSetTmp.second.size() == N)
 				FullSets.insert(FullSetTmp);
+
+			ToConsol(msg.sprintf("\t%4d / %4d",cnt,Sets.size()));
+			++cnt;
 		}
 
 		// сортируем покрытия в порядке возростания
-		map<unsigned,vector<set<pair<s_t,s_t> >::iterator> > MapIterator;
+		map<unsigned,vector<sps_t::iterator> > MapIterator;
 
 		for (set<pair<s_t,s_t> >::iterator it = FullSets.begin(); it != FullSets.end(); ++it)
 			MapIterator[it->first.size()].push_back(it);
 
 		AnsiString Str = "Все вершинные покрытия и независимые множества графа:\n\n";
 		Str += "(длина) покрытие - (длина) независимое множество\n";
+
 		unsigned k = 1;
 		for (unsigned i = 1; i <= N; ++i)
 			if (MapIterator[i].size() > 0)
@@ -1625,19 +1643,23 @@ void __fastcall TThreadSearchCover::NinuSearchCover()
 
 pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t> FullSet,set<pair<s_t,s_t> > Sets)
 {
-	try {
-
 	Sets.erase(FullSet);
 
 	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
+		
+		++Q;
+
+		if (Terminated)
+			return FullSet;
 
 		Log += "\n\t--\tудаляем вершины:";
 
 		IndsRemoveUsedVertex(FullSet,&Sets);
-		IndsUnionSets(&Sets);
+		//IndsUnionSets(&Sets);
 
 		Log += "\n\t--\tоставшиеся пары:\n" + ToString(Sets);
 
+		++Q;
 		if (Sets.size() > 0) {
 
 			// search maximum set
@@ -1654,8 +1676,8 @@ pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t
 
 			Log += "\n\t--\tмаксимальное множество: " + ToString(it_max->second);
 
-			Q += FullSet.first.size() + it_max->first.size();
-			Q += FullSet.second.size() + it_max->second.size();
+			//Q += max(FullSet.first.size(),it_max->first.size());
+			//Q += max(FullSet.second.size(),it_max->second.size());
 
 			set_union(FullSet.first.begin(),FullSet.first.end(),
 					it_max->first.begin(),it_max->first.end(),
@@ -1674,10 +1696,65 @@ pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSet(int n,pair<s_t,s_t
 	Log += ToString(FullSet.second);
 
 	return FullSet;
-	} catch (...) {
-		ToConsol("Error: " + IntToStr((int)Sets.size()) + ToString(FullSet));
-		return pair<s_t,s_t>();
+}
+//---------------------------------------------------------------------------
+
+
+pair<s_t,s_t> __fastcall TThreadSearchCover::IndsBuildFullSetAbsorb(int n,pair<s_t,s_t> FullSet,set<pair<s_t,s_t> > Sets)
+{
+	Sets.erase(FullSet);
+
+	while (FullSet.first.size() + FullSet.second.size() < n && Sets.size() > 0) {
+
+		++Q;	// подсчет улсловия цикла
+		
+		if (Terminated)
+			return FullSet;
+
+		Log += "\n\t--\tудаляем вершины:";
+
+		IndsRemoveUsedVertex(FullSet,&Sets);
+		IndsUnionSetsAbsorb(&Sets);
+
+		Log += "\n\t--\tоставшиеся пары:\n" + ToString(Sets);
+
+		++Q;
+		if (Sets.size() > 0) {
+
+			// search maximum set
+			set<pair<s_t,s_t> >::iterator it_max = Sets.begin();
+			for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it){
+				++Q;
+				if (it_max->second.size() < it->second.size()) {
+					it_max = it;
+				} else if (it_max->second.size() == it->second.size()) {
+					if (it_max->first.size() > it->first.size())
+						it_max = it;
+				}
+			}
+
+			Log += "\n\t--\tмаксимальное множество: " + ToString(it_max->second);
+
+			//Q += max(FullSet.first.size(),it_max->first.size());
+			//Q += max(FullSet.second.size(),it_max->second.size());
+
+			set_union(FullSet.first.begin(),FullSet.first.end(),
+					it_max->first.begin(),it_max->first.end(),
+					inserter(FullSet.first,FullSet.first.begin()));
+
+			set_union(FullSet.second.begin(),FullSet.second.end(),
+					  it_max->second.begin(),it_max->second.end(),
+					  inserter(FullSet.second,FullSet.second.begin()));
+
+			Log += "\n\t--\tобъединенное с предыдущим: " + ToString(FullSet);
+		}
+
 	}
+
+	Log += "\n\t--\tполное максимальное независимое множество найдено: ";
+	Log += ToString(FullSet.second);
+
+	return FullSet;
 }
 //---------------------------------------------------------------------------
 
@@ -1687,17 +1764,16 @@ void __fastcall TThreadSearchCover::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSe
 		bool Absorb = false;
 		set<pair<s_t,s_t> > NewSets(*pSets);
 
-		// обееденяем пары у которых одинаковы вершинные покрытия - first
+		// объеденяем пары у которых одинаковы вершинные покрытия - first
 
-		for (set<pair<s_t,s_t> >::iterator it = pSets->begin();
-			it != pSets->end(); ++it)
+		for (sps_t::iterator it = pSets->begin();it != pSets->end(); ++it)
 		{
 
 			pair<s_t,s_t> S;
 			S.first = it->first;
 
 			unsigned CountIdent = 0;
-			set<pair<s_t,s_t> >::iterator it_next = it;
+			sps_t::iterator it_next = it;
 			++it_next;
 
 			for (; it_next != pSets->end(); ++it_next) {
@@ -1705,6 +1781,8 @@ void __fastcall TThreadSearchCover::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSe
 				if (Terminated)
 					return;
 
+				//Q += max(it->first.size(),it_next->first.size());
+				++Q;
 				if (it->first == it_next->first) {
 
 					Absorb = true;
@@ -1724,7 +1802,7 @@ void __fastcall TThreadSearchCover::IndsUnionSets(int n,set<pair<s_t,s_t> > *pSe
 						Absorb = false;
 					}
 
-					Q += it->second.size() + it_next->second.size();
+					//Q += max(it->second.size(),it_next->second.size());
 
 					++CountIdent;
 
@@ -1752,7 +1830,7 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 		bool Absorb = false;
 		set<pair<s_t,s_t> > NewSets(*pSets);
 
-		// обееденяем пары у которых одинаковы вершинные покрытия - first
+		// объеденяем пары у которых одинаковы вершинные покрытия - first
 
 		for (set<pair<s_t,s_t> >::iterator it = pSets->begin();
 			it != pSets->end(); ++it)
@@ -1770,6 +1848,8 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 				if (Terminated)
 					return;
 
+				//Q += max(it->first.size(),it_next->first.size());
+				++Q;
 				if (it->first == it_next->first) {
 
 					Absorb = true;
@@ -1783,7 +1863,7 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 							it_next->second.begin(), it_next->second.end(),
 							inserter(S.second, S.second.begin()));
 
-					Q += it->second.size() + it_next->second.size();
+					//Q += max(it->second.size(),it_next->second.size());
 
 					++CountIdent;
 
@@ -1802,6 +1882,173 @@ void __fastcall TThreadSearchCover::IndsUnionSets(set<pair<s_t,s_t> > *pSets)
 		}
 
 		pSets->swap(NewSets);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::IndsUnionSetsAbsorb(int n,sps_t *pSets,sps_t *pFullSets)
+{
+	// объеденяем пары у которых вершинные покрытия являются подмножеством другой пары
+
+	v_t absorb(pSets->size(), 0);
+	vv_t absorb_sets(pSets->size(), v_t());
+
+	int i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != prev_it(pSets->end()); ++it) {
+
+		if (absorb[i] == 1) {
+			++i;
+			continue;
+		}
+
+		int j = i + 1;
+
+		for (sps_t::iterator jt = next_it(it); jt != pSets->end(); ++jt) {
+
+			if (Terminated)
+				return;
+
+			if (absorb[j] == 1) {
+				++j;
+				continue;
+			}
+
+			s_t union_res;
+			set_union(it->first.begin(), it->first.end(),
+				jt->first.begin(), jt->first.end(),
+				inserter(union_res,union_res.begin()));
+
+			//Q += max(it->first.size(),jt->first.size());
+			++Q;
+			if (it->first.size() == union_res.size()) {
+				absorb[j] = 1;
+				absorb_sets[i].push_back(j);
+			}
+			else if (jt->first.size() == union_res.size()) {
+				absorb[i] = 1;
+				copy(absorb_sets.at(i).begin(), absorb_sets.at(i).end(), back_inserter(absorb_sets[j]));
+				absorb_sets[j].push_back(i);
+				break;
+			}
+
+			++j;
+		}
+
+		++i;
+	}
+
+	sps_t sets_new;
+	i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != pSets->end(); ++it) {
+		if (absorb[i] != 1) {
+			if (absorb_sets[i].size() > 0) {
+				s_t second_new;
+				for (int j = 0; j < absorb_sets[i].size(); ++j) {
+					sps_t::iterator jt = pSets->begin();
+					advance(jt, absorb_sets[i][j]);
+					set_union(it->second.begin(), it->second.end(),
+						jt->second.begin(), jt->second.end(),
+						inserter(second_new, second_new.begin()));
+		
+					//Q += max(it->second.size(),jt->second.size());
+				}
+				
+				if (it->first.size() + second_new.size() == n)
+					pFullSets->insert(make_pair(it->first, second_new));
+				else
+					sets_new.insert(make_pair(it->first, second_new));
+			}
+			else {
+				sets_new.insert(*it);
+			}
+		}
+
+		++i;
+	}
+
+	pSets->swap(sets_new);
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::IndsUnionSetsAbsorb(sps_t *pSets)
+{
+	// объеденяем пары у которых вершинные покрытия являются подмножеством другой пары
+
+	v_t absorb(pSets->size(), 0);
+	vv_t absorb_sets(pSets->size(), v_t());
+
+	int i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != prev_it(pSets->end()); ++it) {
+
+		if (absorb[i] == 1) {
+			++i;
+			continue;
+		}
+
+		int j = i + 1;
+
+		for (sps_t::iterator jt = next_it(it); jt != pSets->end(); ++jt) {
+
+			if (Terminated)
+				return;
+
+			if (absorb[j] == 1) {
+				++j;
+				continue;
+			}
+
+			s_t union_res;
+			set_union(it->first.begin(), it->first.end(),
+				jt->first.begin(), jt->first.end(),
+				inserter(union_res,union_res.begin()));
+
+			//Q += max(it->first.size(),jt->first.size());
+			++Q;
+			if (it->first.size() == union_res.size()) {
+				absorb[j] = 1;
+				absorb_sets[i].push_back(j);
+			}
+			else if (jt->first.size() == union_res.size()) {
+				absorb[i] = 1;
+				copy(absorb_sets.at(i).begin(), absorb_sets.at(i).end(), back_inserter(absorb_sets[j]));
+				absorb_sets[j].push_back(i);
+				break;
+			}
+
+			++j;
+		}
+
+		++i;
+	}
+
+	sps_t sets_new;
+	i = 0;
+	for (sps_t::iterator it = pSets->begin(); it != pSets->end(); ++it) {
+		if (absorb[i] != 1) {
+			if (absorb_sets[i].size() > 0) {
+				s_t second_new;
+				for (int j = 0; j < absorb_sets[i].size(); ++j) {
+					sps_t::iterator jt = pSets->begin();
+					advance(jt, absorb_sets[i][j]);
+					set_union(it->second.begin(), it->second.end(),
+						jt->second.begin(), jt->second.end(),
+						inserter(second_new, second_new.begin()));
+
+					//Q += max(it->second.size(),jt->second.size());
+				}
+				
+				sets_new.insert(make_pair(it->first, second_new));
+			}
+			else {
+				sets_new.insert(*it);
+			}
+		}
+
+		++i;
+	}
+
+	pSets->swap(sets_new);
 }
 //---------------------------------------------------------------------------
 

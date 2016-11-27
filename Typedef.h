@@ -1,4 +1,4 @@
-﻿#ifndef Unit_TypedefH
+#ifndef Unit_TypedefH
 #define Unit_TypedefH
 
 #include <algorithm>
@@ -14,10 +14,8 @@
 #include <numeric>
 #include <random>
 #include <set>
-#include <stdio.h>
 #include <string>
 #include <StrUtils.hpp>
-#include <vcl.h>
 #include <vector>
 
 
@@ -64,7 +62,7 @@
 #define STR_FULL  "Быстрый полный перебор"
 #define STR_INDS  "Метод независимых множеств"
 #define STR_NIND  "Новый метод независимых множеств"
-#define STR_NINU  "Новый метод независимых множеств с объединением"
+#define STR_NINU  "Новый метод независимых множеств упрощенный"
 #define STR_FREQ  "Частотный метод"
 #define STR_VERT  "Метод вершин"
 #define STR_VPRE  "Метод вершин с прогнозом"
@@ -130,6 +128,20 @@ typedef vector<p_t>             vp_t;
 typedef pair<s_t,s_t>           ps_t;
 typedef vector<pair<s_t,s_t> >  vps_t;
 typedef set<pair<s_t,s_t> >     sps_t;
+
+template <class T>
+T next_it(T iter)
+{
+	T iter_next = iter;
+	return ++iter_next;
+}
+
+template <class T>
+T prev_it(T iter)
+{
+	T iter_next = iter;
+	return --iter_next;
+}
 
 typedef void __fastcall (__closure *func_t)(void);
 

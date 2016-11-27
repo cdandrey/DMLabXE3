@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 
 #ifndef TFormMainH
 #define TFormMainH
@@ -138,8 +138,8 @@ public:
 	void ActionsLock();
 	void ActionsUnLock();
 
-	bool GraphFromFile(graph_t *Graph,const AnsiString &File);  // открывает граф из файла FileName
-	bool GraphToFile(graph_t *Graph,const AnsiString &File);    // записывает созданный граф в файл FileName
+	bool GraphFromFile(graph_t *Graph,const AnsiString &File);  // РѕС‚РєСЂС‹РІР°РµС‚ РіСЂР°С„ РёР· С„Р°Р№Р»Р° FileName
+	bool GraphToFile(graph_t *Graph,const AnsiString &File);    // Р·Р°РїРёСЃС‹РІР°РµС‚ СЃРѕР·РґР°РЅРЅС‹Р№ РіСЂР°С„ РІ С„Р°Р№Р» FileName
 
 	void GraphToList(graph_t *Graph);
 	void GraphToRichEdit(graph_t *Graph);

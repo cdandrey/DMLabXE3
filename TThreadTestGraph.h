@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------
+п»ї// ---------------------------------------------------------------------------
 
 #ifndef TThreadTestGraphH
 #define TThreadTestGraphH
@@ -12,31 +12,31 @@ class TThreadTestGraph : public TThread {
 
 private:
 
-	/* промежуточные переменные */
+	/* РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ */
 
 	ofstream AutoSaveFile;
 
-	LARGE_INTEGER Freq;	   // тактовая частота процессара, необходима для измерения времени выполнения
+	LARGE_INTEGER Freq;	   // С‚Р°РєС‚РѕРІР°СЏ С‡Р°СЃС‚РѕС‚Р° РїСЂРѕС†РµСЃСЃР°СЂР°, РЅРµРѕР±С…РѕРґРёРјР° РґР»СЏ РёР·РјРµСЂРµРЅРёСЏ РІСЂРµРјРµРЅРё РІС‹РїРѕР»РЅРµРЅРёСЏ
 
-	vs_t Edges;            // список ребер графа
-	vv_t Matrix;           // матрица смежности в двоичном виде
-	vs_t Vertex;           // матрица смежности в десятичном виде
-	vs_t VertexAdd;        // граф дополнение
+	vs_t Edges;            // СЃРїРёСЃРѕРє СЂРµР±РµСЂ РіСЂР°С„Р°
+	vv_t Matrix;           // РјР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё РІ РґРІРѕРёС‡РЅРѕРј РІРёРґРµ
+	vs_t Vertex;           // РјР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё РІ РґРµСЃСЏС‚РёС‡РЅРѕРј РІРёРґРµ
+	vs_t VertexAdd;        // РіСЂР°С„ РґРѕРїРѕР»РЅРµРЅРёРµ
 
-	double Q;   	   	         // количество операций затраченное алгоритмом
-	double TimeExecut;     		 // время выполнения алгоритма
-	unsigned int LenCover; 		 // длина вершинного покрытия
-	unsigned int LenMinCover;    // длина минимальное вершинного покрытия, вычисляется RANG и FULL
-	unsigned int NumMinCovers; 	 // количество минимальных покрытий ( для методов независимых множеств)
+	double Q;   	   	         // РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРїРµСЂР°С†РёР№ Р·Р°С‚СЂР°С‡РµРЅРЅРѕРµ Р°Р»РіРѕСЂРёС‚РјРѕРј
+	double TimeExecut;     		 // РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р°Р»РіРѕСЂРёС‚РјР°
+	unsigned int LenCover; 		 // РґР»РёРЅР° РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ
+	unsigned int LenMinCover;    // РґР»РёРЅР° РјРёРЅРёРјР°Р»СЊРЅРѕРµ РІРµСЂС€РёРЅРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ, РІС‹С‡РёСЃР»СЏРµС‚СЃСЏ RANG Рё FULL
+	unsigned int NumMinCovers; 	 // РєРѕР»РёС‡РµСЃС‚РІРѕ РјРёРЅРёРјР°Р»СЊРЅС‹С… РїРѕРєСЂС‹С‚РёР№ ( РґР»СЏ РјРµС‚РѕРґРѕРІ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ)
 
 
-	map<int,func_t> Algorithms;  // указатели на функции поиска минимального покрытия, которые необходимо тестировать
+	map<int,func_t> Algorithms;  // СѓРєР°Р·Р°С‚РµР»Рё РЅР° С„СѓРЅРєС†РёРё РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ С‚РµСЃС‚РёСЂРѕРІР°С‚СЊ
 
-	/* выходные данные */
+	/* РІС‹С…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ */
 
 	map<int,vvvd_t> Result;
 
-	/* функции взаимодействия потока с главной формой приложения */
+	/* С„СѓРЅРєС†РёРё РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ РїРѕС‚РѕРєР° СЃ РіР»Р°РІРЅРѕР№ С„РѕСЂРјРѕР№ РїСЂРёР»РѕР¶РµРЅРёСЏ */
 	inline void __fastcall Lock();
 	inline void __fastcall UnLock();
 
@@ -48,27 +48,27 @@ private:
 
 		   void __fastcall ReturnErrorGraph();
 
-	inline void __fastcall ToConsol(const AnsiString &Message);  // добовляем сообщение в Consol главной формы
+	inline void __fastcall ToConsol(const AnsiString &Message);  // РґРѕР±РѕРІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ Consol РіР»Р°РІРЅРѕР№ С„РѕСЂРјС‹
 
 	inline void __fastcall OpenAutoSaveFile(const AnsiString &Name);
 	inline void __fastcall ToAutoSaveFile(const AnsiString &Data);
 	inline void __fastcall ToAutoSaveFile(double Data);
 	inline void __fastcall ToAutoSaveFile(const vd_t &Data);
 
-	/* функции создания графа */
+	/* С„СѓРЅРєС†РёРё СЃРѕР·РґР°РЅРёСЏ РіСЂР°С„Р° */
 		   void __fastcall CreateGraph(unsigned int n,unsigned int a);
 	inline int 	__fastcall UniformFromVectorErase(v_t &_Vector);
 
-	/* функции поиска минимального покрытия */
+	/* С„СѓРЅРєС†РёРё РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ */
 		   void __fastcall SearchExtremCover(s_t &VertexSet_,vs_t &Vertex_,v_t &Cover_);
-		   void __fastcall SearchExtremIndep(s_t &VertexSet_,vs_t &Vertex_,v_t &Indep_);    // функция поиска экстирмальных вершин
-	inline void 		   VertexErase(int I, vs_t &Vertex_);							    // функция удаления вершины с графа
-	inline void 		   VertexErase(int I,s_t  &VertexSet_,vs_t &Vertex_);			    // функция удаления вершины с графа
-	inline void 		   VertexAdjacentErase(int   I,s_t   &VertexSet_,vs_t  &Vertex_);	// функция удаляет все смежные с I вершины из графа
-	inline void 		   VertexToIndep(int I,s_t &VertexSet_,vs_t &Vertex_,v_t &Indep_);	// функция включения вершины графа в независимое множество
-	inline int 			   VpreMinDegree(const s_t &VertexSet,const vs_t &Vertex);			// функция поиска вершины с минимальной степенью по заданному параметру
+		   void __fastcall SearchExtremIndep(s_t &VertexSet_,vs_t &Vertex_,v_t &Indep_);    // С„СѓРЅРєС†РёСЏ РїРѕРёСЃРєР° СЌРєСЃС‚РёСЂРјР°Р»СЊРЅС‹С… РІРµСЂС€РёРЅ
+	inline void 		   VertexErase(int I, vs_t &Vertex_);							    // С„СѓРЅРєС†РёСЏ СѓРґР°Р»РµРЅРёСЏ РІРµСЂС€РёРЅС‹ СЃ РіСЂР°С„Р°
+	inline void 		   VertexErase(int I,s_t  &VertexSet_,vs_t &Vertex_);			    // С„СѓРЅРєС†РёСЏ СѓРґР°Р»РµРЅРёСЏ РІРµСЂС€РёРЅС‹ СЃ РіСЂР°С„Р°
+	inline void 		   VertexAdjacentErase(int   I,s_t   &VertexSet_,vs_t  &Vertex_);	// С„СѓРЅРєС†РёСЏ СѓРґР°Р»СЏРµС‚ РІСЃРµ СЃРјРµР¶РЅС‹Рµ СЃ I РІРµСЂС€РёРЅС‹ РёР· РіСЂР°С„Р°
+	inline void 		   VertexToIndep(int I,s_t &VertexSet_,vs_t &Vertex_,v_t &Indep_);	// С„СѓРЅРєС†РёСЏ РІРєР»СЋС‡РµРЅРёСЏ РІРµСЂС€РёРЅС‹ РіСЂР°С„Р° РІ РЅРµР·Р°РІРёСЃРёРјРѕРµ РјРЅРѕР¶РµСЃС‚РІРѕ
+	inline int 			   VpreMinDegree(const s_t &VertexSet,const vs_t &Vertex);			// С„СѓРЅРєС†РёСЏ РїРѕРёСЃРєР° РІРµСЂС€РёРЅС‹ СЃ РјРёРЅРёРјР°Р»СЊРЅРѕР№ СЃС‚РµРїРµРЅСЊСЋ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РїР°СЂР°РјРµС‚СЂСѓ
 	       bool            IsCovered(const vs_t &Edg,const v_t &Cov);
-	// функция подсчета количества ребер в графе по вектору инциденций
+	// С„СѓРЅРєС†РёСЏ РїРѕРґСЃС‡РµС‚Р° РєРѕР»РёС‡РµСЃС‚РІР° СЂРµР±РµСЂ РІ РіСЂР°С„Рµ РїРѕ РІРµРєС‚РѕСЂСѓ РёРЅС†РёРґРµРЅС†РёР№
 	int EdgesCalculate(const s_t &VertexSet,const vs_t &Vertex_) const {
 		int num = 0;
 		for (s_t::const_iterator it = VertexSet.begin();
@@ -78,34 +78,37 @@ private:
 	}
 
 	//		   void __fastcall RsrvSearchCover(); - reserve
-		   void __fastcall EquaSearchCover();	 // метод уравнений
+		   void __fastcall EquaSearchCover();	 // РјРµС‚РѕРґ СѓСЂР°РІРЅРµРЅРёР№
 	inline int			   EdgesCountRemove(int I,const vs_t &Vertex_);
 	inline int 			   Max(const s_t &VertexSet,const vs_t &Vertex);
 	inline int 			   Max(int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);
 	inline int 			   Max(int EdgesCountBegin,int I1,int I2,const v_t &EdgesCount,const v_t &CoverLen);
 
-		   void __fastcall FreqSearchCover();	// частотный метод
+		   void __fastcall FreqSearchCover();	// С‡Р°СЃС‚РѕС‚РЅС‹Р№ РјРµС‚РѕРґ
 
-		   void __fastcall FullSearchCover(); 	//  метод быстрого полного перебора
+		   void __fastcall FullSearchCover(); 	//  РјРµС‚РѕРґ Р±С‹СЃС‚СЂРѕРіРѕ РїРѕР»РЅРѕРіРѕ РїРµСЂРµР±РѕСЂР°
 		   v_t  __fastcall FullSearchIndep(int  I,s_t  VertexSet,vs_t Vertex,v_t  Indep);
 
-		   void     __fastcall IndsSearchCover();	// метод независимых множеств
+		   void     __fastcall IndsSearchCover();	// РјРµС‚РѕРґ РЅРµР·Р°РІРёСЃРёРјС‹С… РјРЅРѕР¶РµСЃС‚РІ
 		   void     __fastcall NindSearchCover();
+		   void     __fastcall NinuSearchCover();
 		   void     __fastcall IndsUnionSets(int n,set<pair<s_t,s_t> > *pSets,unsigned *pLenCover);
 		   void     __fastcall IndsUnionSets(set<pair<s_t,s_t> > *pSets);
+		   void     __fastcall IndsUnionSetsAbsorb(int n,set<pair<s_t,s_t> > *pSets,unsigned *pLenCover);
+
 		   void     __fastcall IndsRemoveUsedVertex(const pair<s_t,s_t> &UsedSet,set<pair<s_t,s_t> > *pSets);
 		   unsigned __fastcall IndsBuildFullSet(int n,ps_t FullSet,sps_t Sets);
 
-		   void __fastcall RangSearchCover();   // ранговый алгоритм поиска покртия
+		   void __fastcall RangSearchCover();   // СЂР°РЅРіРѕРІС‹Р№ Р°Р»РіРѕСЂРёС‚Рј РїРѕРёСЃРєР° РїРѕРєСЂС‚РёСЏ
 
-		   void __fastcall VertSearchCover();	// метод вершин
+		   void __fastcall VertSearchCover();	// РјРµС‚РѕРґ РІРµСЂС€РёРЅ
 
-		   void __fastcall VpreSearchCover();   // метод вершин с прогнозом
+		   void __fastcall VpreSearchCover();   // РјРµС‚РѕРґ РІРµСЂС€РёРЅ СЃ РїСЂРѕРіРЅРѕР·РѕРј
 
-		   void __fastcall VrecSearchCover();	// вершинный метод поиска минимального покрытия с рекурсией
+		   void __fastcall VrecSearchCover();	// РІРµСЂС€РёРЅРЅС‹Р№ РјРµС‚РѕРґ РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ РїРѕРєСЂС‹С‚РёСЏ СЃ СЂРµРєСѓСЂСЃРёРµР№
 		   v_t  __fastcall VrecSearchIndep(int I,s_t VertexSet,vs_t Vertex,v_t Indep);
 
-	/* функции тестирования алгоритмов поиска минимальных покрытий графа*/
+	/* С„СѓРЅРєС†РёРё С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ Р°Р»РіРѕСЂРёС‚РјРѕРІ РїРѕРёСЃРєР° РјРёРЅРёРјР°Р»СЊРЅС‹С… РїРѕРєСЂС‹С‚РёР№ РіСЂР°С„Р°*/
 		   void __fastcall TestMO();
 		   void __fastcall TestCOMP();
 
@@ -120,24 +123,24 @@ public:
     __property Terminated;
 
 
-	/* входные параметры тестирования */
+	/* РІС…РѕРґРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ */
 
-	unsigned int TestIndex;     // номер теста в списке
+	unsigned int TestIndex;     // РЅРѕРјРµСЂ С‚РµСЃС‚Р° РІ СЃРїРёСЃРєРµ
 
 	AnsiString FileName;
 
-	unsigned int TypeParams;    // вариант изменяющихся параметров
-	unsigned int TypeTest;      // тип вычислений: МО, СКО или сравнение двух алгоритмов
+	unsigned int TypeParams;    // РІР°СЂРёР°РЅС‚ РёР·РјРµРЅСЏСЋС‰РёС…СЃСЏ РїР°СЂР°РјРµС‚СЂРѕРІ
+	unsigned int TypeTest;      // С‚РёРї РІС‹С‡РёСЃР»РµРЅРёР№: РњРћ, РЎРљРћ РёР»Рё СЃСЂР°РІРЅРµРЅРёРµ РґРІСѓС… Р°Р»РіРѕСЂРёС‚РјРѕРІ
 
-	unsigned int Count;         // количество тестов
-	unsigned int ParamConst;    // неизменяющийся параметр
+	unsigned int Count;         // РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµСЃС‚РѕРІ
+	unsigned int ParamConst;    // РЅРµРёР·РјРµРЅСЏСЋС‰РёР№СЃСЏ РїР°СЂР°РјРµС‚СЂ
 
-	v_t ParamFirst;             // диапозон значений первого параметра
-	v_t ParamSecond;            // диапозон значений второго параметра
+	v_t ParamFirst;             // РґРёР°РїРѕР·РѕРЅ Р·РЅР°С‡РµРЅРёР№ РїРµСЂРІРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°
+	v_t ParamSecond;            // РґРёР°РїРѕР·РѕРЅ Р·РЅР°С‡РµРЅРёР№ РІС‚РѕСЂРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°
 
-	v_t Alg;                    // тестируемые алгоритмы
+	v_t Alg;                    // С‚РµСЃС‚РёСЂСѓРµРјС‹Рµ Р°Р»РіРѕСЂРёС‚РјС‹
 
-	bool AutoSave;              // автосохранение результатов тестирования
+	bool AutoSave;              // Р°РІС‚РѕСЃРѕС…СЂР°РЅРµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ
 };
 // ---------------------------------------------------------------------------
 #endif

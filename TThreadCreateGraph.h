@@ -10,35 +10,35 @@
 class TThreadCreateGraph : public TThread
 {
 private:
-	/**** переменные потока ****/
+	/**** РїРµСЂРµРјРµРЅРЅС‹Рµ РїРѕС‚РѕРєР° ****/
 
-	map<int,func_t> FuncPoint;    // указатели на функции потока
+	map<int,func_t> FuncPoint;    // СѓРєР°Р·Р°С‚РµР»Рё РЅР° С„СѓРЅРєС†РёРё РїРѕС‚РѕРєР°
 
-	/**** выходные данные ****/
+	/**** РІС‹С…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ ****/
 
-	int E;                          // количество ребер
+	int E;                          // РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР±РµСЂ
 
-	vs_t  Edges;            // список ребер
-	vv_t  Matrix;                   // матрица смежности
-	vs_t  VertexAdd;                // список вершин графа дополнения
-	vs_t  Vertex;           // список вершин
+	vs_t  Edges;            // СЃРїРёСЃРѕРє СЂРµР±РµСЂ
+	vv_t  Matrix;                   // РјР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё
+	vs_t  VertexAdd;                // СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ РіСЂР°С„Р° РґРѕРїРѕР»РЅРµРЅРёСЏ
+	vs_t  Vertex;           // СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ
 
-	/**** функции отправки сообщений и вывода данных в главную форму ****/
+	/**** С„СѓРЅРєС†РёРё РѕС‚РїСЂР°РІРєРё СЃРѕРѕР±С‰РµРЅРёР№ Рё РІС‹РІРѕРґР° РґР°РЅРЅС‹С… РІ РіР»Р°РІРЅСѓСЋ С„РѕСЂРјСѓ ****/
 
-	inline void __fastcall ToConsol(const AnsiString &Message);    // добовляем сообщение в Consol главной формы
+	inline void __fastcall ToConsol(const AnsiString &Message);    // РґРѕР±РѕРІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ Consol РіР»Р°РІРЅРѕР№ С„РѕСЂРјС‹
 
-	       void __fastcall ToGraph();       // добовляет созданный граф в Graphs и ListBoxGraphs
+	       void __fastcall ToGraph();       // РґРѕР±РѕРІР»СЏРµС‚ СЃРѕР·РґР°РЅРЅС‹Р№ РіСЂР°С„ РІ Graphs Рё ListBoxGraphs
 
 	inline void __fastcall Lock();
 	inline void __fastcall UnLock();
 
-	/**** функции генерации графа ****/
+	/**** С„СѓРЅРєС†РёРё РіРµРЅРµСЂР°С†РёРё РіСЂР°С„Р° ****/
 
 	void __fastcall GenerateRand();
 	void __fastcall GenerateHand();
 
 	inline int __fastcall UniformFromVectorErase(v_t &_Vector);
-	vs_t       __fastcall ToInt(const vstr_t &Str);    // функция преобразует строковый список вершин в десятичный
+	vs_t       __fastcall ToInt(const vstr_t &Str);    // С„СѓРЅРєС†РёСЏ РїСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєРѕРІС‹Р№ СЃРїРёСЃРѕРє РІРµСЂС€РёРЅ РІ РґРµСЃСЏС‚РёС‡РЅС‹Р№
 
 protected:
 
@@ -48,18 +48,18 @@ public:
 
 	__fastcall TThreadCreateGraph(bool CreateSuspended);
 
-	__property Terminated;  // сигнал прерывания работы потока
+	__property Terminated;  // СЃРёРіРЅР°Р» РїСЂРµСЂС‹РІР°РЅРёСЏ СЂР°Р±РѕС‚С‹ РїРѕС‚РѕРєР°
 
-	/**** входные данные потока ****/
+	/**** РІС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ РїРѕС‚РѕРєР° ****/
 
-	int FuncExecut;         // метод создания графа
+	int FuncExecut;         // РјРµС‚РѕРґ СЃРѕР·РґР°РЅРёСЏ РіСЂР°С„Р°
 
-	AnsiString FileName;    // имя файла графа
+	AnsiString FileName;    // РёРјСЏ С„Р°Р№Р»Р° РіСЂР°С„Р°
 
-	int N;                  // количество вершин
-	int A;                  // плотность
+	int N;                  // РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ
+	int A;                  // РїР»РѕС‚РЅРѕСЃС‚СЊ
 
-	vstr_t VertexStr;       // списко вершин в строковом формате
+	vstr_t VertexStr;       // СЃРїРёСЃРєРѕ РІРµСЂС€РёРЅ РІ СЃС‚СЂРѕРєРѕРІРѕРј С„РѕСЂРјР°С‚Рµ
 };
 //---------------------------------------------------------------------------
 #endif
