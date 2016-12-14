@@ -1418,6 +1418,8 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 		//IndsUnionSets(n,&Sets,&LenCover);
 
 		// build solver for each pair
+		int cnt = 0;
+		AnsiString msg = "";
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
 			++Q;
@@ -1428,6 +1430,9 @@ void __fastcall TThreadTestGraph::NindSearchCover()
 			} else if (iLenCover == LenCover) {
 				++NumMinCovers;
 			}
+
+			++cnt;
+			ToConsol(msg.sprintf("\t%4d / %4d",cnt,Sets.size()));
 		}
 
 		if (LenMinCover == 0)
@@ -1496,6 +1501,8 @@ void __fastcall TThreadTestGraph::NinuSearchCover()
 		IndsUnionSetsAbsorb(n,&Sets,&LenCover);
 
 		// build solver for each pair
+		int cnt = 0;
+		AnsiString msg = "";
 		for (set<pair<s_t,s_t> >::iterator it = Sets.begin(); it != Sets.end(); ++it)
 		{
 			++Q;
@@ -1506,6 +1513,9 @@ void __fastcall TThreadTestGraph::NinuSearchCover()
 			} else if (iLenCover == LenCover) {
 				++NumMinCovers;
 			}
+
+			++cnt;
+			ToConsol(msg.sprintf("\t%4d / %4d",cnt,Sets.size()));
 		}
 
 		if (LenMinCover == 0)
@@ -1546,8 +1556,6 @@ unsigned __fastcall TThreadTestGraph::IndsBuildFullSet(int n,ps_t FullSet,set<pa
 							it_max = it;
 					}
 				}
-
-				++Q;
 
 				set_union(FullSet.first.begin(),FullSet.first.end(),
 						it_max->first.begin(),it_max->first.end(),
