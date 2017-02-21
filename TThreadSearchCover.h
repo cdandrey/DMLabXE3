@@ -19,6 +19,7 @@ public:
 
 	v_t ListFuncExecut;    // список функций которые необходимо выполнить потоку
 	int FuncExecut;        // текущая выполняемая потоком функция
+    bool WriteLog;
 
 
 	AnsiString FileName;    // имя файла графа
@@ -36,6 +37,11 @@ protected:
 
 private:
 
+	typedef struct{
+		s8_t x;
+		s8_t y;
+	} path_t;
+
 	/**** переменные потока ****/
 
 	map<int,func_t> FuncPoint;    // указатели на функции потока
@@ -50,6 +56,7 @@ private:
 	v_t        Cover;             // вершинное покрытие
 	AnsiString LogShort;          // краткий отчет
 	AnsiString Log;               // отчет
+    AnsiString Note;              // заметки
 
 	/**** функции взаимодействия потока с главной формой приложения ****/
 
@@ -67,11 +74,15 @@ private:
 	static AnsiString __fastcall ToString(int ColCount,const vv_t &H);   // для рангового алгоритма
 	static AnsiString __fastcall ToString(AnsiString Tab, const s_t  &SetData, const vs_t &VecSetData);
 	static AnsiString __fastcall ToString(AnsiString Tab, const vs_t &data);
+    static AnsiString __fastcall ToString(AnsiString Tab,const ss_t &Data);
+    static AnsiString __fastcall ToString(AnsiString Tab,const ss8_t &Data);
 	static AnsiString __fastcall ToString(AnsiString infin, const v_t &data);  // для рангового алгоритма меняет значение INFIN на символ infin
 	static AnsiString __fastcall ToString(const v_t  &data);
 	static AnsiString __fastcall ToString(const s_t  &data);
+	static AnsiString __fastcall ToString(const s8_t  &data);
 	static AnsiString __fastcall ToString(const ps_t &data);
 	static AnsiString __fastcall ToString(const sps_t &Data);
+    AnsiString __fastcall ToString(const vector<path_t> &Tree);
 	static AnsiString __fastcall ToString(int count);
 
 	static AnsiString __fastcall ToStringEdges(const s_t  &VertexSet,
@@ -138,6 +149,12 @@ private:
 	inline int Max(int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);	// фукнция возвращает лучший прогноз по заданному критерию
 	inline int Max(int EdgesCountBegin,int I1,int I2,const v_t &EdgesCount,const v_t &CoverCount);	// фукнция возвращает лучший прогноз по заданному критерию
 
+	// метод дерево путей
+	void __fastcall TreeSearchCover();
+	vector<path_t> __fastcall TreePathBuild(const vector<path_t> &tree,int v);
+	void __fastcall TreePathUnion(const path_t &p,int v,path_t *p_next);
+
+    bool __fastcall TreeIsConnect(const s8_t &z1,const s8_t &z2);
 
 	/**** вспомогательные функции алгоритмов поиска вершинного покрытия ****/
 
@@ -209,6 +226,16 @@ private:
 	}
 
 	bool IsCovered(const vs_t &Edg,const v_t &Cov);
+
+	template<typename T>
+	void __fastcall InsertMax(const set<T> &s,set<set<T> > *ss) {
+		if ((ss->size() > 0) && (*ss->begin()).size() < s.size()){
+			ss->clear();
+			ss->insert(s);
+		} else if ((ss->size()== 0) || (*ss->begin()).size() == s.size()) {
+			ss->insert(s);
+		}
+    }
 };
 //---------------------------------------------------------------------------
 #endif

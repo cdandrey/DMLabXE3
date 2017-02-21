@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -39,7 +39,7 @@ __fastcall TThreadSearchCover::TThreadSearchCover(bool CreateSuspended)
 	FuncPoint[INDS] = IndsSearchCover;
 	FuncPoint[RANG] = RangSearchCover;
 	FuncPoint[VERT] = VertSearchCover;
-	FuncPoint[EQUA] = EquaSearchCover;
+	FuncPoint[EQUA] = TreeSearchCover;
 	FuncPoint[NIND] = NindSearchCover;
 	FuncPoint[NINU] = NinuSearchCover;
 }
@@ -134,6 +134,9 @@ void TThreadSearchCover::ToCover()
 		+= "\n  -- Максимальное независимое множество:\t";
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
 		+= FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Cover;
+
+	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].LogShort
+		+= Note;
 
 	FormMain->Graphs[GraphIndex]->ParamCovers[FuncExecut].Log = Log;
 
@@ -263,7 +266,47 @@ AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const vs_t &Da
 
 		Str += Tab
 				+ Buffer.sprintf("%3d (%3d) : ",i,Data.at(i).size())
-		   	    + ToString(Data.at(i)) + "\n";
+				+ ToString(Data.at(i)) + "\n";
+	}
+
+	return Str;
+}
+//---------------------------------------------------------------------------
+
+
+AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const ss_t &Data)
+{
+	AnsiString Str = "";
+	AnsiString Buffer = "";
+
+	int i = 1;
+	for (ss_t::const_iterator it = Data.begin(); it != Data.end(); ++it) {
+
+		Str += Tab
+				+ Buffer.sprintf("%3d (%3d) : ",i,it->size())
+				+ ToString(it.operator *()) + "\n";
+
+		++i;
+	}
+
+	return Str;
+}
+//---------------------------------------------------------------------------
+
+
+AnsiString __fastcall TThreadSearchCover::ToString(AnsiString Tab,const ss8_t &Data)
+{
+	AnsiString Str = "";
+	AnsiString Buffer = "";
+
+	int i = 1;
+	for (ss8_t::const_iterator it = Data.begin(); it != Data.end(); ++it) {
+
+		Str += Tab
+				+ Buffer.sprintf("%3d (%3d) : ",i,it->size())
+				+ ToString(it.operator *()) + "\n";
+
+		++i;
 	}
 
 	return Str;
@@ -316,6 +359,19 @@ AnsiString __fastcall TThreadSearchCover::ToString(const s_t &Data)
 //---------------------------------------------------------------------------
 
 
+AnsiString __fastcall TThreadSearchCover::ToString(const s8_t &Data)
+{
+	AnsiString Str = "";
+	AnsiString Buffer = "";
+
+	for (s8_t::const_iterator it = Data.begin(); it != Data.end(); ++it)
+        Str += Buffer.sprintf("%3d ",*it);
+
+	return Str.Trim();
+}
+//---------------------------------------------------------------------------
+
+
 AnsiString __fastcall TThreadSearchCover::ToString(const pair<s_t,s_t> &Data)
 {
 	AnsiString Buffer = "";
@@ -337,6 +393,30 @@ AnsiString __fastcall TThreadSearchCover::ToString(const set<pair<s_t,s_t> > &Da
 
 	for (set<pair<s_t,s_t> >::const_iterator it = Data.begin();it != Data.end(); ++it)
 		Str += Buffer.sprintf("   %3d.   ",++k) +  ToString(*it) + "\n";
+
+	return Str;
+}
+//---------------------------------------------------------------------------
+
+
+AnsiString __fastcall TThreadSearchCover::ToString(const vector<path_t> &Tree)
+{
+	AnsiString Str = "";
+	AnsiString Buffer = "";
+
+	int k = 0;
+
+	for (int i = 0; i < Tree.size(); ++i) {
+		s8_t z;
+		for (int j = 1; j <= N; ++j)
+			if (Tree[i].x.find(j) == Tree[i].x.end() && Tree[i].y.find(j) == Tree[i].y.end())
+				z.insert(j);
+
+		Str += Buffer.sprintf("\t%3d)\t",i) +
+			   ToString(Tree[i].x) + " | " +
+			   ToString(Tree[i].y) + " | " +
+			   ToString(z) + "\n";
+	}
 
 	return Str;
 }
@@ -3222,6 +3302,195 @@ void __fastcall TThreadSearchCover::EquaSearchCover()
 	} catch (...){
 		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
 	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::TreeSearchCover()
+{
+	try {
+
+		ToConsol("search-cover tree " + FileName);
+
+		if (Vertex.size() == 0) {
+			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			return;
+		}
+
+		// задаем начальные данные характеристикам алгоритма
+		Q        = 0;
+		Cover    = v_t();
+		LogShort = "МЕТОД ДЕРЕВО ПУТЕЙ\n\n";
+
+		if (WriteLog)
+			Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		else
+			Log = "";
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		AnsiString Buffer = "";
+		ss8_t mnm_max;
+		int cnt_mnm = 0;	// количество максимальных независимых множеств (МНМ)
+
+		for (int i = 1; i < N; ++i) {
+
+			vector<path_t> tree(1,path_t());
+
+			tree[0].x.insert(i);
+			for (s_t::iterator it = Vertex[i].begin(); it != Vertex[i].end(); ++it)
+				tree[0].y.insert(static_cast<uint8_t>(*it));
+
+			ToConsol(Buffer.sprintf("путь %d, ярус 0 ...",i));
+
+			if (WriteLog) {
+				Log += Buffer + "\n\n";
+				Log += ToString(tree);
+            }
+
+			bool next_path_is_build = true;
+			int k = 0;       	// номер яруса
+			ss8_t mnm;
+
+			while (next_path_is_build) {
+
+				next_path_is_build = false;
+				ToConsol(Buffer.sprintf("путь %d, ярус %d ...",i,++k));
+
+				vector<path_t> tree_next;
+
+				for (int j = 0; j < tree.size(); ++j) {
+
+					path_t p = tree.at(j);      // current path
+					int8_t v = *p.x.rbegin();   // last vertex of X set
+
+
+					// checking rule z1 and z2 must be connect
+					Q += p.y.size();
+					s8_t z1;
+					for (int8_t u = 1; u < v; ++u)
+						if (p.y.find(u) == p.y.end() && p.x.find(u) == p.x.end())
+						   z1.insert(u);
+
+					s8_t z2;
+					Q += p.y.size();
+					for (int8_t u = v + 1; u <= N; ++u)
+						if (p.y.find(u) == p.y.end())
+						   z2.insert(u);
+
+					if (!TreeIsConnect(z1,z2))
+						continue;
+
+					// build next path
+					for (s8_t::iterator it = z2.begin(); it != z2.end(); ++it) {
+
+						Q += 2;
+
+						int8_t u = *it;
+
+						path_t p_next;
+						TreePathUnion(p,u,&p_next);
+						if (p_next.x.size() + p_next.y.size() == N) {
+							InsertMax(p_next.x,&mnm);
+							++cnt_mnm;
+						} else if (u < N) {
+
+							++Q;
+
+							s8_t::iterator itup = p_next.y.upper_bound(u);
+
+							if ((itup == p_next.y.end()) ||
+								(*itup - u > 1)         ||
+								(distance(itup,p_next.y.end()) != N - *itup + 1))
+							{
+								next_path_is_build = true;
+								tree_next.push_back(p_next);
+							}
+						}
+					}
+				}
+
+				tree.swap(tree_next);
+
+				if (WriteLog) {
+					Log += Buffer.sprintf("\n\t %3d - ярус\n\n",k);
+					Log += Buffer.sprintf("\t дерево путей:\n\n");
+					Log += ToString(tree);
+					Log += Buffer.sprintf("\n\t максимальные независимые множества:\n\n");
+					Log += ToString("\t",mnm);
+					Log += "\n";
+				}
+			}
+
+			if ( mnm_max.size() > 0 && mnm.size() > 0 && (*mnm.begin()).size() > (*mnm_max.begin()).size()) {
+				mnm_max.swap(mnm);
+			} else if ( mnm_max.size() == 0 || ( mnm.size() > 0 && (*mnm.begin()).size() == (*mnm_max.begin()).size())) {
+                mnm_max.insert(mnm.begin(),mnm.end());
+			}
+		}
+
+		QueryPerformanceCounter(&TimeEnd);
+
+		for (int8_t i = 1; i <= N; ++i) {
+			if ((*mnm_max.begin()).find(i) == (*mnm_max.begin()).end())
+			Cover.push_back(static_cast<int>(i));
+		}
+
+		if (WriteLog) {
+			Log += Buffer.sprintf("\n алгоритм завершил работу\n\n");
+			Log += Buffer.sprintf("наибольшие максимальные независимые множества:\n\n");
+			Log += ToString("",mnm_max);
+			Log += "\n";
+		}
+
+		Note = "";
+		Note += Buffer.sprintf("\n\tколиечество МНМ:\t\t %d\n",cnt_mnm);
+		Note += Buffer.sprintf("\tколиечество наибольших МНМ: \t%d\n",mnm_max.size());
+		Note += ToString("\t",mnm_max);
+
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+
+		ToCover();
+
+	} catch (...){
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TThreadSearchCover::TreePathUnion(const path_t &p,int v,path_t *p_next)
+{
+	//  Xn == X + v
+	p_next->x = p.x;
+	p_next->x.insert(v);
+
+	Q += p.x.size() + 1;
+
+	// Yn = Y + Y(v)
+	set_union(p.y.begin(),p.y.end(),
+			  Vertex.at(v).begin(),Vertex.at(v).end(),
+			  inserter(p_next->y,p_next->y.begin()));
+
+	Q += p.y.size() + Vertex.at(v).size();
+
+}
+//---------------------------------------------------------------------------
+
+
+bool __fastcall TThreadSearchCover::TreeIsConnect(const s8_t &z1,const s8_t &z2)
+{
+	if (z1.size() == 0)
+		return true;
+
+	Q += z1.size();
+	Q += z2.size();
+
+	for (s8_t::const_iterator it1 = z1.begin(); it1 != z1.end(); ++it1)
+		for (s8_t::const_iterator it2 = z2.begin(); it2 != z2.end(); ++it2)
+			if (Vertex[*it1].find(*it2) != Vertex[*it1].end())
+				return true;
+
+    return false;
 }
 //---------------------------------------------------------------------------
 

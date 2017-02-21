@@ -111,6 +111,7 @@ __published:	// IDE-managed Components
 	TListView *ListViewTestType;
 	TAction *Action1;
 	TMenuItem *MenuAutoSaveTest;
+	TToolButton *ToolButtonAlgLogNonWrite;
 
 	void __fastcall ListBoxGraphsClick(TObject *Sender);
 

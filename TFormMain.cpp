@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -527,6 +527,7 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
 			ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
 			ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+            ThrSearchCover->WriteLog       = !ToolButtonAlgLogNonWrite->Down;
 
 			ThrSearchCover->Resume();
 

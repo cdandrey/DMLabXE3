@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <cstdint>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -78,7 +79,7 @@
 #define STR_VERT  "Metod vershin"
 #define STR_VPRE  "Metod vershin s prognozom"
 #define STR_VREC  "Metod vershin s recursiei"
-#define STR_EQUA  "Metod uravnenii"
+#define STR_EQUA  "Metod derevo putei"
 
 #define LIST_DIFF   200    // разница между id алгоритмов и их номеров в списке
 
@@ -128,6 +129,8 @@ typedef vector<AnsiString> vstr_t;
 
 typedef set<int>       s_t;
 typedef set<s_t>       ss_t;
+typedef set<uint8_t>   s8_t;
+typedef set<s8_t>      ss8_t;
 typedef vector<s_t>    vs_t;
 typedef vector<vs_t>   vvs_t;
 
