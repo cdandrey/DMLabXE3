@@ -108,6 +108,10 @@ private:
 		   void __fastcall VrecSearchCover();	// вершинный метод поиска минимального покрытия с рекурсией
 		   v_t  __fastcall VrecSearchIndep(int I,s_t VertexSet,vs_t Vertex,v_t Indep);
 
+		   void __fastcall TreeSearchCover();
+		   void __fastcall TreePathUnion(const path_t &p,int v,path_t *p_next);
+           bool __fastcall TreeIsConnect(const s8_t &z1,const s8_t &z2);
+
 	/* функции тестирования алгоритмов поиска минимальных покрытий графа*/
 		   void __fastcall TestMO();
 		   void __fastcall TestCOMP();

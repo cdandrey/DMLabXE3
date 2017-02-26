@@ -12,7 +12,7 @@ __fastcall TThreadTestGraph::TThreadTestGraph(bool CreateSuspended)
 {
 	QueryPerformanceFrequency(&Freq);
 
-	Algorithms[EQUA] = EquaSearchCover;	// 1
+	Algorithms[EQUA] = TreeSearchCover;	// 1
 	Algorithms[FREQ] = FreqSearchCover; // 2
 	Algorithms[FULL] = FullSearchCover; // 3
 	Algorithms[INDS] = IndsSearchCover; // 4
@@ -21,7 +21,7 @@ __fastcall TThreadTestGraph::TThreadTestGraph(bool CreateSuspended)
 	Algorithms[VPRE] = VpreSearchCover; // 7
 	Algorithms[VREC] = VrecSearchCover;	// 8
 	Algorithms[NIND] = NindSearchCover;	// 9
-	Algorithms[NINU] = NinuSearchCover;	// 9
+	Algorithms[NINU] = NinuSearchCover;	// 10
 }
 // ---------------------------------------------------------------------------
 
@@ -2394,6 +2394,152 @@ v_t __fastcall TThreadTestGraph::VrecSearchIndep(
     return MaxIndep;
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TThreadTestGraph::TreeSearchCover()
+{
+	try {
+
+		ToConsol("\tвыполняется метод: дерево путей...");
+
+		// задаем начальные данные характеристикам алгоритма
+		Q = 0;
+		TimeExecut = 0;
+		LenCover = INFIN;
+		NumMinCovers = 0;
+
+		LARGE_INTEGER TimeBegin;
+		LARGE_INTEGER TimeEnd;
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		unsigned int n = Vertex.size() - 1;
+
+		for (int i = 1; i < n; ++i) {
+
+			vector<path_t> tree(1,path_t());
+
+			tree[0].x.insert(i);
+			for (s_t::iterator it = Vertex[i].begin(); it != Vertex[i].end(); ++it)
+				tree[0].y.insert(static_cast<uint8_t>(*it));
+
+
+			bool next_path_is_build = true;
+			int k = 0;       	// номер яруса
+			ss8_t mnm;
+
+			while (next_path_is_build) {
+
+				next_path_is_build = false;
+
+				vector<path_t> tree_next;
+
+				for (int j = 0; j < tree.size(); ++j) {
+
+					path_t p = tree.at(j);      // current path
+					int8_t v = *p.x.rbegin();   // last vertex of X set
+
+
+					// checking rule z1 and z2 must be connect
+					Q += p.y.size();
+					s8_t z1;
+					for (int8_t u = 1; u < v; ++u)
+						if (p.y.find(u) == p.y.end() && p.x.find(u) == p.x.end())
+						   z1.insert(u);
+
+					s8_t z2;
+					Q += p.y.size();
+					for (int8_t u = v + 1; u <= n; ++u)
+						if (p.y.find(u) == p.y.end())
+						   z2.insert(u);
+
+					if (!TreeIsConnect(z1,z2))
+						continue;
+
+					// build next path
+					for (s8_t::iterator it = z2.begin(); it != z2.end(); ++it) {
+
+						Q += 2;
+
+						int8_t u = *it;
+
+						path_t p_next;
+						TreePathUnion(p,u,&p_next);
+						if (p_next.x.size() + p_next.y.size() == n) {
+							if (LenCover > p_next.y.size()) {
+								LenCover = p_next.y.size();
+								NumMinCovers = 1;
+							} else if (LenCover == p_next.y.size()) {
+								++NumMinCovers;
+							}
+						} else if (u < n) {
+
+							++Q;
+
+							s8_t::iterator itup = p_next.y.upper_bound(u);
+
+							if ((itup == p_next.y.end()) ||
+								(*itup - u > 1)         ||
+								(distance(itup,p_next.y.end()) != n - *itup + 1))
+							{
+								next_path_is_build = true;
+								tree_next.push_back(p_next);
+							}
+						}
+					}
+				}
+
+				tree.swap(tree_next);
+			}
+		}
+
+		if (LenMinCover == 0)
+			LenMinCover = LenCover;
+
+		QueryPerformanceCounter(&TimeEnd);
+		TimeExecut = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
+
+	} catch (...){
+		ToConsol("Ошибка выполнения метода вершин с рекурсией! Тестирование завершенно с ошибкой.");
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TThreadTestGraph::TreePathUnion(const path_t &p,int v,path_t *p_next)
+{
+	//  Xn == X + v
+	p_next->x = p.x;
+	p_next->x.insert(v);
+
+	Q += p.x.size() + 1;
+
+	// Yn = Y + Y(v)
+	set_union(p.y.begin(),p.y.end(),
+			  Vertex.at(v).begin(),Vertex.at(v).end(),
+			  inserter(p_next->y,p_next->y.begin()));
+
+	Q += p.y.size() + Vertex.at(v).size();
+
+}
+//---------------------------------------------------------------------------
+
+
+bool __fastcall TThreadTestGraph::TreeIsConnect(const s8_t &z1,const s8_t &z2)
+{
+	if (z1.size() == 0)
+		return true;
+
+	Q += z1.size();
+	Q += z2.size();
+
+	for (s8_t::const_iterator it1 = z1.begin(); it1 != z1.end(); ++it1)
+		for (s8_t::const_iterator it2 = z2.begin(); it2 != z2.end(); ++it2)
+			if (Vertex[*it1].find(*it2) != Vertex[*it1].end())
+				return true;
+
+    return false;
+}
+//---------------------------------------------------------------------------
+
 
 
 

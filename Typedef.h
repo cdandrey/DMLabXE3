@@ -143,6 +143,11 @@ typedef pair<s_t,s_t>           ps_t;
 typedef vector<pair<s_t,s_t> >  vps_t;
 typedef set<pair<s_t,s_t> >     sps_t;
 
+typedef struct{
+	s8_t x;
+	s8_t y;
+} path_t;
+
 template <class T>
 T next_it(T iter)
 {
