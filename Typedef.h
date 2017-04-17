@@ -76,7 +76,7 @@
 #define STR_NIND  "Novii metod nezavisimih mnojestv"
 #define STR_NINU  "Novii metod nezavisimih mnojestv s odnim poglosheniem"
 #define STR_FREQ  "Chastotnii metod"
-#define STR_VERT  "Metod vershin"
+#define STR_VERT  "Metod derevo putei odno NMNM"//"Metod vershin"
 #define STR_VPRE  "Metod vershin s prognozom"
 #define STR_VREC  "Metod vershin s recursiei"
 #define STR_EQUA  "Metod derevo putei"

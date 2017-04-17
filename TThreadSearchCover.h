@@ -37,11 +37,6 @@ protected:
 
 private:
 
-	typedef struct{
-		s8_t x;
-		s8_t y;
-	} path_t;
-
 	/**** переменные потока ****/
 
 	map<int,func_t> FuncPoint;    // указатели на функции потока
@@ -151,6 +146,7 @@ private:
 
 	// метод дерево путей
 	void __fastcall TreeSearchCover();
+	void __fastcall TreeOneSearchCover();
 	vector<path_t> __fastcall TreePathBuild(const vector<path_t> &tree,int v);
 	void __fastcall TreePathUnion(const path_t &p,int v,path_t *p_next);
 

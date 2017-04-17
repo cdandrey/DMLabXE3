@@ -2465,12 +2465,9 @@ void __fastcall TThreadTestGraph::TreeSearchCover()
 						path_t p_next;
 						TreePathUnion(p,u,&p_next);
 						if (p_next.x.size() + p_next.y.size() == n) {
-							if (LenCover > p_next.y.size()) {
+							++NumMinCovers;
+							if (LenCover > p_next.y.size())
 								LenCover = p_next.y.size();
-								NumMinCovers = 1;
-							} else if (LenCover == p_next.y.size()) {
-								++NumMinCovers;
-							}
 						} else if (u < n) {
 
 							++Q;
