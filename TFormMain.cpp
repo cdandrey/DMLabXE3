@@ -527,7 +527,7 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
 			ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
 			ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
-            ThrSearchCover->WriteLog       = !ToolButtonAlgLogNonWrite->Down;
+			ThrSearchCover->WriteLog       = !ToolButtonAlgLogNonWrite->Down;
 
 			ThrSearchCover->Resume();
 
@@ -1383,4 +1383,5 @@ void TFormMain::ToConsol(const AnsiString &Message)
 	Consol->SetFocus();
 }
 //---------------------------------------------------------------------------
+
 

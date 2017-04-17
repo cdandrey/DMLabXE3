@@ -3559,7 +3559,8 @@ void __fastcall TThreadSearchCover::TreeOneSearchCover()
 							   )
 							{
 								next_path_is_build = true;
-								tree_next.push_back(p_next);
+								if (!TreePathAbsorb(&tree_next,p_next))
+									tree_next.push_back(p_next);
 							}
 						}
 					}
@@ -3622,6 +3623,50 @@ void __fastcall TThreadSearchCover::TreePathUnion(const path_t &p,int v,path_t *
 //---------------------------------------------------------------------------
 
 
+bool __fastcall TThreadSearchCover::TreePathAbsorb(vector<path_t> *vp,path_t &p)
+{
+	s8_t z;
+	set_union(p.x.begin(),p.x.end(),
+			  p.y.begin(),p.y.end(),
+			  inserter(z,z.begin()));
+
+	s_t absorb_num;
+
+	for (unsigned i = 0; i < vp->size(); ++i) {
+		s8_t zi;
+		set_union(vp->operator[](i).x.begin(),vp->operator[](i).x.end(),
+				  vp->operator[](i).y.begin(),vp->operator[](i).y.end(),
+				  inserter(zi,zi.begin()));
+
+		s8_t zu;
+		set_union(z.begin(),z.end(),
+				  zi.begin(),zi.end(),
+				  inserter(zu,zu.begin()));
+
+		Q+= z.size() + zi.size();
+
+		if (z.size() > zi.size() && z.size() == zu.size())
+			return true;// новый путь поглощается уже существующим, не добовляем его
+		else if (zi.size() == zu.size())
+			// новый путь поглощает путь созданные ранее, зампоним номер
+			absorb_num.insert(i);
+	}
+
+	// формируем новый вектор путей, если есть поглощенные пути
+	if (absorb_num.size() > 0) {
+		vector<path_t> tmp;
+		for (unsigned i = 0; i < vp->size(); ++i)
+			if (absorb_num.find(i) == absorb_num.end())
+				tmp.push_back(vp->operator[](i));
+
+		vp->swap(tmp);
+	}
+
+    return false;
+}
+//---------------------------------------------------------------------------
+
+
 bool __fastcall TThreadSearchCover::TreeIsConnect(const s8_t &z1,const s8_t &z2)
 {
 	if (z1.size() == 0)
@@ -3635,7 +3680,7 @@ bool __fastcall TThreadSearchCover::TreeIsConnect(const s8_t &z1,const s8_t &z2)
 			if (Vertex[*it1].find(*it2) != Vertex[*it1].end())
 				return true;
 
-    return false;
+	return false;
 }
 //---------------------------------------------------------------------------
 

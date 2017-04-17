@@ -149,6 +149,7 @@ private:
 	void __fastcall TreeOneSearchCover();
 	vector<path_t> __fastcall TreePathBuild(const vector<path_t> &tree,int v);
 	void __fastcall TreePathUnion(const path_t &p,int v,path_t *p_next);
+    bool __fastcall TreePathAbsorb(vector<path_t> *vp,path_t &p);
 
     bool __fastcall TreeIsConnect(const s8_t &z1,const s8_t &z2);
 
