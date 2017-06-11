@@ -89,7 +89,7 @@ __published:	// IDE-managed Components
 	TOpenDialog *OpenDialog;
 	TAction *ActionOpen;
 	TBrowseForFolder *ActionSaveList;
-	TListView *ListViewAlg;
+	TListView *ListViewAlgMIS;
 	TRichEdit *RichEditLog;
 	TSplitter *SplitterListViewAlg;
 	TToolButton *ToolButtonSeparate3;
@@ -109,9 +109,12 @@ __published:	// IDE-managed Components
 	TGroupBox *GroupBoxTestResults;
 	TSplitter *Splitter3;
 	TListView *ListViewTestType;
-	TAction *Action1;
 	TMenuItem *MenuAutoSaveTest;
 	TToolButton *ToolButtonAlgLogNonWrite;
+	TPageControl *PageControlAlg;
+	TTabSheet *TabSheetMIS;
+	TTabSheet *TabSheetCLQ;
+	TListView *ListViewAlgCLQ;
 
 	void __fastcall ListBoxGraphsClick(TObject *Sender);
 
@@ -126,11 +129,12 @@ __published:	// IDE-managed Components
 	void __fastcall ActionOpenExecute(TObject *Sender);
 	void __fastcall ActionSaveListAccept(TObject *Sender);
 	void __fastcall ActionAlgLogViewExecute(TObject *Sender);
-	void __fastcall ListViewAlgClick(TObject *Sender);
+	void __fastcall ListViewAlgMISClick(TObject *Sender);
 	void __fastcall ActionRunAllExecute(TObject *Sender);
 	void __fastcall ListBoxTestsClick(TObject *Sender);
 	void __fastcall ListViewTestTypeClick(TObject *Sender);
-	void __fastcall ListViewAlgDblClick(TObject *Sender);
+	void __fastcall ListViewAlgMISDblClick(TObject *Sender);
+	void __fastcall ListViewAlgCLQDblClick(TObject *Sender);
 
 public:
 

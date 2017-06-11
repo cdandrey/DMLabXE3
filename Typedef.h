@@ -59,27 +59,27 @@
 #define VREC        209
 
 // названия алгоритмов
-//#define STR_RANG  "Ранговый метод"
-//#define STR_FULL  "Быстрый полный перебор"
-//#define STR_INDS  "Метод независимых множеств"
-//#define STR_NIND  "Новый метод независимых множеств"
-//#define STR_NINU  "Новый метод независимых множеств упрощенный"
-//#define STR_FREQ  "Частотный метод"
-//#define STR_VERT  "Метод вершин"
-//#define STR_VPRE  "Метод вершин с прогнозом"
-//#define STR_VREC  "Метод вершин с рекурсией"
-//#define STR_EQUA  "Метод уравнений"
+#define STR_RANG  "Ранговый метод"
+#define STR_FULL  "Быстрый полный перебор"
+#define STR_INDS  "Метод независимых множеств"
+#define STR_NIND  "Новый метод независимых множеств"
+#define STR_NINU  "Новый метод независимых множеств упрощенный"
+#define STR_FREQ  "Частотный метод"
+#define STR_VERT  "Метод вершин"
+#define STR_VPRE  "Метод вершин с прогнозом"
+#define STR_VREC  "Метод вершин с рекурсией"
+#define STR_EQUA  "Метод уравнений"
 
-#define STR_RANG  "Rangovii metod"
-#define STR_FULL  "Bistrii polnii perebor"
-#define STR_INDS  "Metod nezavisimih mnojestv"
-#define STR_NIND  "Novii metod nezavisimih mnojestv"
-#define STR_NINU  "Novii metod nezavisimih mnojestv s odnim poglosheniem"
-#define STR_FREQ  "Chastotnii metod"
-#define STR_VERT  "Metod derevo putei odno NMNM"//"Metod vershin"
-#define STR_VPRE  "Metod vershin s prognozom"
-#define STR_VREC  "Metod vershin s recursiei"
-#define STR_EQUA  "Metod derevo putei"
+//#define STR_RANG  "Rangovii metod"
+//#define STR_FULL  "Bistrii polnii perebor"
+//#define STR_INDS  "Metod nezavisimih mnojestv"
+//#define STR_NIND  "Novii metod nezavisimih mnojestv"
+//#define STR_NINU  "Novii metod nezavisimih mnojestv s odnim poglosheniem"
+//#define STR_FREQ  "Chastotnii metod"
+//#define STR_VERT  "Metod derevo putei odno NMNM"//"Metod vershin"
+//#define STR_VPRE  "Metod vershin s prognozom"
+//#define STR_VREC  "Metod vershin s recursiei"
+//#define STR_EQUA  "Metod derevo putei"
 
 #define LIST_DIFF   200    // разница между id алгоритмов и их номеров в списке
 
@@ -142,6 +142,8 @@ typedef vector<p_t>             vp_t;
 typedef pair<s_t,s_t>           ps_t;
 typedef vector<pair<s_t,s_t> >  vps_t;
 typedef set<pair<s_t,s_t> >     sps_t;
+
+enum ALGORITHMS {CLQ_TREANGL, CLQ_NEXT};
 
 typedef struct{
 	s8_t x;

@@ -17,24 +17,25 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 {
 	ThreadExecut = THR_NONE;
 
-	// codes and names of algorithm
-	 ListViewAlg->Items->Item[0]->Indent = RANG;    // ранговый
-	 ListViewAlg->Items->Item[1]->Indent = FULL;    // быстрый полный перебор
-	 ListViewAlg->Items->Item[2]->Indent = INDS;    // независимых множеств
-	 ListViewAlg->Items->Item[3]->Indent = NIND;    // новый метод независимых множеств
-	 ListViewAlg->Items->Item[4]->Indent = NINU;    // новый метод независимых множеств упрощенный
-	 ListViewAlg->Items->Item[5]->Indent = FREQ;    // частотный
-	 ListViewAlg->Items->Item[6]->Indent = VERT;    // метод вершин
-	 ListViewAlg->Items->Item[7]->Indent = EQUA;    // метод уравнений
 
-	 ListViewAlg->Items->Item[0]->Caption = STR_RANG;    // ранговый
-	 ListViewAlg->Items->Item[1]->Caption = STR_FULL;    // быстрый полный перебор
-	 ListViewAlg->Items->Item[2]->Caption = STR_INDS;    // независимых множеств
-	 ListViewAlg->Items->Item[3]->Caption = STR_NIND;    // новый метод независимых множеств
-	 ListViewAlg->Items->Item[4]->Caption = STR_NINU;    // новый метод независимых множеств упрощенный
-	 ListViewAlg->Items->Item[5]->Caption = STR_FREQ;    // частотный
-	 ListViewAlg->Items->Item[6]->Caption = STR_VERT;    // метод вершин
-	 ListViewAlg->Items->Item[7]->Caption = STR_EQUA;    // метод уравнений
+	// codes and names of algorithm
+	ListViewAlgMIS->Items->Item[0]->Indent = RANG;    // ранговый
+	ListViewAlgMIS->Items->Item[1]->Indent = FULL;    // быстрый полный перебор
+	ListViewAlgMIS->Items->Item[2]->Indent = INDS;    // независимых множеств
+	ListViewAlgMIS->Items->Item[3]->Indent = NIND;    // новый метод независимых множеств
+	ListViewAlgMIS->Items->Item[4]->Indent = NINU;    // новый метод независимых множеств упрощенный
+	ListViewAlgMIS->Items->Item[5]->Indent = FREQ;    // частотный
+	ListViewAlgMIS->Items->Item[6]->Indent = VERT;    // метод вершин
+	ListViewAlgMIS->Items->Item[7]->Indent = EQUA;    // метод уравнений
+
+	ListViewAlgMIS->Items->Item[0]->Caption = STR_RANG;    // ранговый
+	ListViewAlgMIS->Items->Item[1]->Caption = STR_FULL;    // быстрый полный перебор
+	ListViewAlgMIS->Items->Item[2]->Caption = STR_INDS;    // независимых множеств
+	ListViewAlgMIS->Items->Item[3]->Caption = STR_NIND;    // новый метод независимых множеств
+	ListViewAlgMIS->Items->Item[4]->Caption = STR_NINU;    // новый метод независимых множеств упрощенный
+	ListViewAlgMIS->Items->Item[5]->Caption = STR_FREQ;    // частотный
+	ListViewAlgMIS->Items->Item[6]->Caption = STR_VERT;    // метод вершин
+	ListViewAlgMIS->Items->Item[7]->Caption = STR_EQUA;    // метод уравнений
 
 	ListViewTestType->Items->Item[0]->Indent = TEST_MO; 	// математическое ожидание
 	ListViewTestType->Items->Item[1]->Indent = TEST_CKO;	// среднеквадратическое отклонение
@@ -449,9 +450,9 @@ void __fastcall TFormMain::ActionRunAllExecute(TObject *Sender)
 
 		v_t CheckedFunc;
 
-		for (int i = 0; i < ListViewAlg->Items->Count; ++i)
-			if (ListViewAlg->Items->Item[i]->Checked)
-				CheckedFunc.push_back(ListViewAlg->Items->Item[i]->Indent);
+		for (int i = 0; i < ListViewAlgMIS->Items->Count; ++i)
+			if (ListViewAlgMIS->Items->Item[i]->Checked)
+				CheckedFunc.push_back(ListViewAlgMIS->Items->Item[i]->Indent);
 
 		if (CheckedFunc.size() > 0) {
 
@@ -511,9 +512,9 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 
 		// определяем какой алгоритм нужно выполнить и заносим его в вектор
 		v_t CheckedFunc;
-		for (int i = 0; i < ListViewAlg->Items->Count; ++i)
-			if (ListViewAlg->Items->Item[i]->Checked) {
-				CheckedFunc.push_back(ListViewAlg->Items->Item[i]->Indent);
+		for (int i = 0; i < ListViewAlgMIS->Items->Count; ++i)
+			if (ListViewAlgMIS->Items->Item[i]->Checked) {
+				CheckedFunc.push_back(ListViewAlgMIS->Items->Item[i]->Indent);
 				break;
 			}
 
@@ -602,19 +603,19 @@ void __fastcall TFormMain::ActionAlgLogViewExecute(TObject *Sender)
 		// иначе выводим короткие отчеты
 		int AlgSelect = -1;
 
-		if (ListViewAlg->Selected
-			&& ListViewAlg->Selected->SubItems->Strings[0] != "") {
+		if (ListViewAlgMIS->Selected
+			&& ListViewAlgMIS->Selected->SubItems->Strings[0] != "") {
 
-			AlgSelect = ListViewAlg->Selected->Indent;
+			AlgSelect = ListViewAlgMIS->Selected->Indent;
 
 		} else {
 
-			for (int i = 0; i < ListViewAlg->Items->Count; ++i)
-				if (ListViewAlg->Items->Item[i]->Checked
-					&& ListViewAlg->Items->Item[i]->SubItems->Strings[0] != "")
+			for (int i = 0; i < ListViewAlgMIS->Items->Count; ++i)
+				if (ListViewAlgMIS->Items->Item[i]->Checked
+					&& ListViewAlgMIS->Items->Item[i]->SubItems->Strings[0] != "")
 			{
-				AlgSelect = ListViewAlg->Items->Item[i]->Indent;
-				ListViewAlg->Items->Item[i]->Selected = true;
+				AlgSelect = ListViewAlgMIS->Items->Item[i]->Indent;
+				ListViewAlgMIS->Items->Item[i]->Selected = true;
 				break;
 			}
 		}
@@ -1074,7 +1075,7 @@ void __fastcall TFormMain::ListBoxTestsClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TFormMain::ListViewAlgClick(TObject *Sender)
+void __fastcall TFormMain::ListViewAlgMISClick(TObject *Sender)
 {
 	unsigned int GraphIndex = ListBoxGraphs->ItemIndex;
 
@@ -1085,9 +1086,9 @@ void __fastcall TFormMain::ListViewAlgClick(TObject *Sender)
 
 		// выводим подробный отчет выбранного алгоритма
 
-		if (ListViewAlg->Selected) {
+		if (ListViewAlgMIS->Selected) {
 
-			int Alg = ListViewAlg->Selected->Indent;
+			int Alg = ListViewAlgMIS->Selected->Indent;
 			RichEditLog->Lines->Clear();
 			RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[Alg].LogShort);
 			RichEditLog->Lines->Append("\n");
@@ -1102,7 +1103,7 @@ void __fastcall TFormMain::ListViewAlgClick(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TFormMain::ListViewAlgDblClick(TObject *Sender)
+void __fastcall TFormMain::ListViewAlgMISDblClick(TObject *Sender)
 {
 	int GraphIndex = ListBoxGraphs->ItemIndex;
 
@@ -1113,8 +1114,8 @@ void __fastcall TFormMain::ListViewAlgDblClick(TObject *Sender)
 
 	// определяем какой алгоритм нужно выполнить и заносим его в вектор
 	v_t CheckedFunc;
-	if (ListViewAlg->Selected)
-		CheckedFunc.push_back(ListViewAlg->Selected->Indent);
+	if (ListViewAlgMIS->Selected)
+		CheckedFunc.push_back(ListViewAlgMIS->Selected->Indent);
 
 	if (CheckedFunc.size() > 0) {
 
@@ -1150,12 +1151,12 @@ void __fastcall TFormMain::ListViewTestTypeClick(TObject *Sender)
 void TFormMain::ParamCoversToListView()
 {
 	// очищаем список
-	for (register int i = 0; i < ListViewAlg->Items->Count; ++i) {
+	for (register int i = 0; i < ListViewAlgMIS->Items->Count; ++i) {
 
-		ListViewAlg->Items->Item[i]->SubItems->Strings[0] = "";
-		ListViewAlg->Items->Item[i]->SubItems->Strings[1] = "";
-		ListViewAlg->Items->Item[i]->SubItems->Strings[2] = "";
-		ListViewAlg->Items->Item[i]->SubItems->Strings[3] = "";
+		ListViewAlgMIS->Items->Item[i]->SubItems->Strings[0] = "";
+		ListViewAlgMIS->Items->Item[i]->SubItems->Strings[1] = "";
+		ListViewAlgMIS->Items->Item[i]->SubItems->Strings[2] = "";
+		ListViewAlgMIS->Items->Item[i]->SubItems->Strings[3] = "";
 	}
 
 	// проверяем сущесвтует ли выделенный граф
@@ -1165,9 +1166,9 @@ void TFormMain::ParamCoversToListView()
 		return;
 
 	// выводим данные по алгоритмам
-	for (register int i = 0; i < ListViewAlg->Items->Count; ++i) {
+	for (register int i = 0; i < ListViewAlgMIS->Items->Count; ++i) {
 
-		int AlgId = ListViewAlg->Items->Item[i]->Indent;  // в Indent хранится id алгоритма
+		int AlgId = ListViewAlgMIS->Items->Item[i]->Indent;  // в Indent хранится id алгоритма
 
 		if (Graphs[GraphIndex]->ParamCovers.find(AlgId)
 			!= Graphs[GraphIndex]->ParamCovers.end())
@@ -1177,10 +1178,10 @@ void TFormMain::ParamCoversToListView()
 			AnsiString LenCover = Graphs[GraphIndex]->ParamCovers[AlgId].LenCover;
 			AnsiString Cover = Graphs[GraphIndex]->ParamCovers[AlgId].Cover;
 
-			ListViewAlg->Items->Item[i]->SubItems->Strings[0] = Q;
-			ListViewAlg->Items->Item[i]->SubItems->Strings[1] = T;
-			ListViewAlg->Items->Item[i]->SubItems->Strings[2] = LenCover;
-			ListViewAlg->Items->Item[i]->SubItems->Strings[3] = Cover;
+			ListViewAlgMIS->Items->Item[i]->SubItems->Strings[0] = Q;
+			ListViewAlgMIS->Items->Item[i]->SubItems->Strings[1] = T;
+			ListViewAlgMIS->Items->Item[i]->SubItems->Strings[2] = LenCover;
+			ListViewAlgMIS->Items->Item[i]->SubItems->Strings[3] = Cover;
 		}
 	}
 }
@@ -1196,22 +1197,22 @@ void TFormMain::ParamCoversToRichEdit()
 	if (GraphIndex < 0 || GraphIndex >= Graphs.size())
 		return;
 
-	for (register int i = 0; i < ListViewAlg->Items->Count; ++i) {
+	for (register int i = 0; i < ListViewAlgMIS->Items->Count; ++i) {
 
 		int AlgId = -1;
 
 		// отображаем только выбранные отчеты
-		if (ListViewAlg->Items->Item[i]->Checked) {
-			AlgId = ListViewAlg->Items->Item[i]->Indent; // в Indent хранится id алгоритма
+		if (ListViewAlgMIS->Items->Item[i]->Checked) {
+			AlgId = ListViewAlgMIS->Items->Item[i]->Indent; // в Indent хранится id алгоритма
 
 			// проверяем существует ли отчет
-			if (ListViewAlg->Items->Item[i]->SubItems->Strings[0] != "") {
+			if (ListViewAlgMIS->Items->Item[i]->SubItems->Strings[0] != "") {
 
 				RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[AlgId].LogShort);
 				RichEditLog->Lines->Append("\n");
 			}
 		}
-	}    // end for i < ListViewAlg
+	}    // end for i < ListViewAlgMIS
 }
 //---------------------------------------------------------------------------
 
@@ -1384,4 +1385,34 @@ void TFormMain::ToConsol(const AnsiString &Message)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
+{
+	int GraphIndex = ListBoxGraphs->ItemIndex;
+
+	if (GraphIndex < 0 || GraphIndex > ListBoxGraphs->Count) {
+		ToConsol("Невозможно выполнить алгоритм - не выбран граф!");
+		return;
+	}
+
+	// определяем какой алгоритм нужно выполнить и заносим его в вектор
+	v_t CheckedFunc;
+	if (ListViewAlgCLQ->Selected)
+		CheckedFunc.push_back(ListViewAlgCLQ->Selected->Index);
+
+	if (CheckedFunc.size() > 0) {
+
+		ThrSearchCover                 = new TThreadSearchCover(true);
+		ThrSearchCover->ListFuncExecut = CheckedFunc;
+		ThrSearchCover->GraphIndex     = GraphIndex;
+		ThrSearchCover->FileName       = Graphs[GraphIndex]->FileName;
+		ThrSearchCover->N              = Graphs[GraphIndex]->N;
+		ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
+		ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
+		ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+
+		ThrSearchCover->Resume();
+	}
+}
+//---------------------------------------------------------------------------
 

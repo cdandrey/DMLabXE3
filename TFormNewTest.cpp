@@ -15,26 +15,11 @@ TFormNewTest *FormNewTest;
 __fastcall TFormNewTest::TFormNewTest(TComponent* Owner)
 	: TForm(Owner)
 {
-	for (int i = 0; i < FormMain->ListViewAlg->Items->Count; ++i) {
-		ListViewAlg->Items->Item[i]->Indent = FormMain->ListViewAlg->Items->Item[i]->Indent;
-		ListViewAlg->Items->Item[i]->Caption = FormMain->ListViewAlg->Items->Item[i]->Caption;
+	for (int i = 0; i < FormMain->ListViewAlgMIS->Items->Count; ++i) {
+		ListViewAlg->Items->Item[i]->Indent = FormMain->ListViewAlgMIS->Items->Item[i]->Indent;
+		ListViewAlg->Items->Item[i]->Caption = FormMain->ListViewAlgMIS->Items->Item[i]->Caption;
 
 	}
-//	ListViewAlg->Items->Item[1]->Indent = FormMain->ListViewAlg->Items->Item[1]->Indent;
-//	ListViewAlg->Items->Item[2]->Indent = FormMain->ListViewAlg->Items->Item[2]->Indent;
-//	ListViewAlg->Items->Item[3]->Indent = FormMain->ListViewAlg->Items->Item[3]->Indent;
-//	ListViewAlg->Items->Item[4]->Indent = FormMain->ListViewAlg->Items->Item[4]->Indent;
-//	ListViewAlg->Items->Item[5]->Indent = FormMain->ListViewAlg->Items->Item[5]->Indent;
-//	ListViewAlg->Items->Item[6]->Indent = FormMain->ListViewAlg->Items->Item[6]->Indent;
-//	ListViewAlg->Items->Item[7]->Indent = FormMain->ListViewAlg->Items->Item[7]->Indent;
-//
-//	ListViewAlg->Items->Item[1]->Caption = FormMain->ListViewAlg->Items->Item[1]->Caption;
-//	ListViewAlg->Items->Item[2]->Caption = FormMain->ListViewAlg->Items->Item[2]->Caption;
-//	ListViewAlg->Items->Item[3]->Caption = FormMain->ListViewAlg->Items->Item[3]->Caption;
-//	ListViewAlg->Items->Item[4]->Caption = FormMain->ListViewAlg->Items->Item[4]->Caption;
-//	ListViewAlg->Items->Item[5]->Caption = FormMain->ListViewAlg->Items->Item[5]->Caption;
-//	ListViewAlg->Items->Item[6]->Caption = FormMain->ListViewAlg->Items->Item[6]->Caption;
-//	ListViewAlg->Items->Item[7]->Caption = FormMain->ListViewAlg->Items->Item[7]->Caption;
 
 	ModalResult = false;
 }
