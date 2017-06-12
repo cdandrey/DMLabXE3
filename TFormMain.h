@@ -10,6 +10,7 @@
 #include "TThreadTestGraph.h"
 #include "TFormNewGraph.h"
 #include "TFormNewTest.h"
+#include "TThreadCLQ.h"
 
 #include <System.Actions.hpp>
 #include <System.Classes.hpp>
@@ -182,6 +183,8 @@ private:
 
 	TThreadCreateTest *ThrCreateTest;
 	TThreadTestGraph  *ThrTestGraph;
+
+    TThreadCLQ *ThrClique;
 
 	alg_t 		*Alg;
 	param_alg_t *ParamAlg;

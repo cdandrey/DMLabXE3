@@ -623,7 +623,6 @@ object FormMain: TFormMain
     Height = 29
     Images = ImageList
     TabOrder = 1
-    ExplicitWidth = 1001
     object ToolButtonOpen: TToolButton
       Left = 0
       Top = 0
@@ -722,8 +721,6 @@ object FormMain: TFormMain
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 614
-    ExplicitWidth = 1001
   end
   object GroupBoxConsol: TGroupBox
     AlignWithMargins = True

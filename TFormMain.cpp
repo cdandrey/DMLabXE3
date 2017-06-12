@@ -510,38 +510,45 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			return;
 		}
 
-		// определяем какой алгоритм нужно выполнить и заносим его в вектор
-		v_t CheckedFunc;
-		for (int i = 0; i < ListViewAlgMIS->Items->Count; ++i)
-			if (ListViewAlgMIS->Items->Item[i]->Checked) {
-				CheckedFunc.push_back(ListViewAlgMIS->Items->Item[i]->Indent);
-				break;
-			}
+		if (PageControlAlg->ActivePageIndex == 0) { 	// Problems of Maximal Independ Set
 
-		if (CheckedFunc.size() > 0) {
+			// определяем какой алгоритм нужно выполнить и заносим его в вектор
+//			v_t CheckedFunc;
+//			for (int i = 0; i < ListViewAlgMIS->Items->Count; ++i)
+//				if (ListViewAlgMIS->Items->Item[i]->Checked) {
+//					CheckedFunc.push_back(ListViewAlgMIS->Items->Item[i]->Indent);
+//					break;
+//				}
+//
+//			if (CheckedFunc.size() > 0) {
+//
+//				ThrSearchCover                 = new TThreadSearchCover(true);
+//				ThrSearchCover->ListFuncExecut = CheckedFunc;
+//				ThrSearchCover->GraphIndex     = GraphIndex;
+//				ThrSearchCover->FileName       = Graphs[GraphIndex]->FileName;
+//				ThrSearchCover->N              = Graphs[GraphIndex]->N;
+//				ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
+//				ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
+//				ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+//				ThrSearchCover->WriteLog       = !ToolButtonAlgLogNonWrite->Down;
+//
+//				ThrSearchCover->Resume();
+//
+//			} else {
+//				ToConsol("Не выбран алгоритм!");
+//				return;
+//			}
+            ListViewAlgMIS->OnDblClick(Sender);
 
-			ThrSearchCover                 = new TThreadSearchCover(true);
-			ThrSearchCover->ListFuncExecut = CheckedFunc;
-			ThrSearchCover->GraphIndex     = GraphIndex;
-			ThrSearchCover->FileName       = Graphs[GraphIndex]->FileName;
-			ThrSearchCover->N              = Graphs[GraphIndex]->N;
-			ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
-			ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
-			ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
-			ThrSearchCover->WriteLog       = !ToolButtonAlgLogNonWrite->Down;
-
-			ThrSearchCover->Resume();
-
-		} else {
-			ToConsol("Не выбран алгоритм!");
-			return;
+		} else {      // Problems of Maximal Clique
+            ListViewAlgCLQ->OnDblClick(Sender);
 		}
 
 	} else if (PageControlMain->ActivePageIndex == 1) {
 
 		// действия относятся к тесту
 
-        // определяем индек теста в списки и проверяем его корректность
+		// определяем индек теста в списки и проверяем его корректность
 		int TestIndex = ListBoxTests->ItemIndex;
 
 		if (TestIndex < 0 || TestIndex > ListBoxTests->Count) {
@@ -1396,23 +1403,22 @@ void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
 	}
 
 	// определяем какой алгоритм нужно выполнить и заносим его в вектор
-	v_t CheckedFunc;
-	if (ListViewAlgCLQ->Selected)
-		CheckedFunc.push_back(ListViewAlgCLQ->Selected->Index);
+//	v_t CheckedFunc;
+//	if (ListViewAlgCLQ->Selected)
+//		CheckedFunc.push_back(ListViewAlgCLQ->Selected->Index);
 
-	if (CheckedFunc.size() > 0) {
+//	if (CheckedFunc.size() > 0) {
 
-		ThrSearchCover                 = new TThreadSearchCover(true);
-		ThrSearchCover->ListFuncExecut = CheckedFunc;
-		ThrSearchCover->GraphIndex     = GraphIndex;
-		ThrSearchCover->FileName       = Graphs[GraphIndex]->FileName;
-		ThrSearchCover->N              = Graphs[GraphIndex]->N;
-		ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
-		ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
-		ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+		ThrClique                 = new TThreadCLQ(true);
+		ThrClique->GraphIndex     = GraphIndex;
+		ThrClique->FileName       = Graphs[GraphIndex]->FileName;
+		ThrClique->N              = Graphs[GraphIndex]->N;
+		ThrClique->Edges          = Graphs[GraphIndex]->Edges;
+		ThrClique->Vertex         = Graphs[GraphIndex]->Vertex;
+		ThrClique->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
 
-		ThrSearchCover->Resume();
-	}
+		ThrClique->Resume();
+//	}
 }
 //---------------------------------------------------------------------------
 
