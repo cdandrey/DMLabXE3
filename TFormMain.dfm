@@ -131,12 +131,8 @@ object FormMain: TFormMain
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 1001
-    ExplicitHeight = 406
     object TabSheetGraph: TTabSheet
       Caption = #1056#1072#1073#1086#1090#1072' '#1089' '#1075#1088#1072#1092#1072#1084#1080
-      ExplicitWidth = 993
-      ExplicitHeight = 375
       object SplitterGroupBoxGraph: TSplitter
         Left = 412
         Top = 0
@@ -158,7 +154,6 @@ object FormMain: TFormMain
         Ctl3D = True
         ParentCtl3D = False
         TabOrder = 0
-        ExplicitTop = 67
         object SplitterListViewAlg: TSplitter
           Left = 2
           Top = 281
@@ -186,8 +181,6 @@ object FormMain: TFormMain
           ScrollBars = ssBoth
           TabOrder = 0
           Zoom = 100
-          ExplicitTop = 320
-          ExplicitHeight = 168
         end
         object PageControlAlg: TPageControl
           Left = 2
@@ -197,10 +190,10 @@ object FormMain: TFormMain
           ActivePage = TabSheetCLQ
           Align = alTop
           TabOrder = 1
+          ExplicitLeft = 3
+          ExplicitTop = 20
           object TabSheetMIS: TTabSheet
             Caption = #1040#1083#1075#1086#1088#1080#1090#1084#1099' '#1087#1086#1080#1089#1082#1072' '#1084#1072#1082#1089#1080#1084#1072#1083#1100#1085#1099#1093' '#1085#1077#1079#1072#1074#1080#1089#1080#1084#1099#1093' '#1084#1085#1086#1078#1077#1089#1090#1074
-            ExplicitWidth = 285
-            ExplicitHeight = 162
             object ListViewAlgMIS: TListView
               AlignWithMargins = True
               Left = 3
@@ -272,17 +265,11 @@ object FormMain: TFormMain
               ViewStyle = vsReport
               OnClick = ListViewAlgMISClick
               OnDblClick = ListViewAlgMISDblClick
-              ExplicitLeft = -19
-              ExplicitTop = -76
-              ExplicitWidth = 787
-              ExplicitHeight = 236
             end
           end
           object TabSheetCLQ: TTabSheet
             Caption = #1040#1083#1075#1086#1088#1080#1090#1084#1099' '#1087#1086#1080#1089#1082#1072' '#1082#1083#1080#1082
             ImageIndex = 1
-            ExplicitWidth = 281
-            ExplicitHeight = 162
             object ListViewAlgCLQ: TListView
               AlignWithMargins = True
               Left = 3
@@ -332,8 +319,6 @@ object FormMain: TFormMain
               TabOrder = 0
               ViewStyle = vsReport
               OnDblClick = ListViewAlgCLQDblClick
-              ExplicitLeft = 6
-              ExplicitTop = 6
             end
           end
         end
@@ -356,7 +341,6 @@ object FormMain: TFormMain
         ParentFont = False
         TabOrder = 1
         StyleElements = []
-        ExplicitHeight = 369
         object SplitterListBoxGraph: TSplitter
           Left = 2
           Top = 149
@@ -403,15 +387,12 @@ object FormMain: TFormMain
           ScrollBars = ssBoth
           TabOrder = 1
           Zoom = 100
-          ExplicitHeight = 207
         end
       end
     end
     object TabSheetTestGraph: TTabSheet
       Caption = #1058#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1077' '#1072#1083#1075#1086#1088#1080#1090#1084#1086#1074
       ImageIndex = 1
-      ExplicitWidth = 993
-      ExplicitHeight = 375
       object PanelResult: TPanel
         Left = 0
         Top = 0
@@ -419,8 +400,6 @@ object FormMain: TFormMain
         Height = 499
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 993
-        ExplicitHeight = 375
         object Splitter2: TSplitter
           Left = 413
           Top = 1
@@ -449,7 +428,6 @@ object FormMain: TFormMain
           ParentFont = False
           TabOrder = 0
           StyleElements = []
-          ExplicitHeight = 367
           object Splitter1: TSplitter
             Left = 2
             Top = 149
@@ -496,7 +474,6 @@ object FormMain: TFormMain
             ScrollBars = ssBoth
             TabOrder = 1
             Zoom = 100
-            ExplicitHeight = 205
           end
         end
         object GroupBoxTestResults: TGroupBox
@@ -517,8 +494,6 @@ object FormMain: TFormMain
           ParentFont = False
           TabOrder = 1
           StyleElements = []
-          ExplicitWidth = 568
-          ExplicitHeight = 367
           object Splitter3: TSplitter
             Left = 2
             Top = 116
@@ -539,12 +514,8 @@ object FormMain: TFormMain
             ActivePage = TabSheetTestResultList
             Align = alClient
             TabOrder = 1
-            ExplicitWidth = 564
-            ExplicitHeight = 244
             object TabSheetTestResultList: TTabSheet
               Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1086#1074' '#1090#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1103' '#1074' '#1074#1080#1076#1077' '#1089#1087#1080#1089#1082#1072
-              ExplicitWidth = 556
-              ExplicitHeight = 213
               object RichEditTestResults: TRichEdit
                 Left = 0
                 Top = 0
@@ -560,15 +531,11 @@ object FormMain: TFormMain
                 ScrollBars = ssBoth
                 TabOrder = 0
                 Zoom = 100
-                ExplicitWidth = 556
-                ExplicitHeight = 213
               end
             end
             object TabSheetTestResultChart: TTabSheet
               Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1099' '#1090#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1103' '#1074' '#1075#1088#1072#1092#1080#1095#1077#1089#1082#1086#1084' '#1074#1080#1076#1077
               ImageIndex = 1
-              ExplicitWidth = 556
-              ExplicitHeight = 213
             end
           end
           object ListViewTestType: TListView
@@ -610,7 +577,6 @@ object FormMain: TFormMain
             ViewStyle = vsReport
             OnClick = ListViewTestTypeClick
             OnDblClick = ActionRunExecute
-            ExplicitWidth = 558
           end
         end
       end
@@ -737,8 +703,6 @@ object FormMain: TFormMain
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-    ExplicitTop = 443
-    ExplicitWidth = 995
     object Consol: TMemo
       AlignWithMargins = True
       Left = 5
@@ -755,7 +719,6 @@ object FormMain: TFormMain
       ReadOnly = True
       ScrollBars = ssVertical
       TabOrder = 0
-      ExplicitWidth = 985
     end
   end
   object MainMenu: TMainMenu
@@ -920,7 +883,7 @@ object FormMain: TFormMain
     ShareImages = True
     Left = 600
     Bitmap = {
-      494C01010C00C002740110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010C00C002780110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
