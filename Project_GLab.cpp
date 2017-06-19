@@ -14,10 +14,10 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 	{
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
-		Application->Title = "GLab32";
+		Application->Title = "GLab";
 		Application->CreateForm(__classid(TFormMain), &FormMain);
-		Application->CreateForm(__classid(TFormNewGraph), &FormNewGraph);
 		Application->CreateForm(__classid(TFormNewTest), &FormNewTest);
+		Application->CreateForm(__classid(TFormNewGraph), &FormNewGraph);
 		Application->Run();
 	}
 	catch (Exception &exception)

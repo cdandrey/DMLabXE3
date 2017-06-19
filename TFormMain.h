@@ -111,7 +111,7 @@ __published:	// IDE-managed Components
 	TSplitter *Splitter3;
 	TListView *ListViewTestType;
 	TMenuItem *MenuAutoSaveTest;
-	TToolButton *ToolButtonAlgLogNonWrite;
+	TToolButton *ToolButtonAlgLogWrite;
 	TPageControl *PageControlAlg;
 	TTabSheet *TabSheetMIS;
 	TTabSheet *TabSheetCLQ;
@@ -145,6 +145,7 @@ public:
 	void ActionsUnLock();
 
 	bool GraphFromFile(graph_t *Graph,const AnsiString &File);  // открывает граф из файла FileName
+	bool GraphDIMACSFromFile(graph_t *Graph,const AnsiString &File);  // открывает граф из файла FileName
 	bool GraphToFile(graph_t *Graph,const AnsiString &File);    // записывает созданный граф в файл FileName
 
 	void GraphToList(graph_t *Graph);

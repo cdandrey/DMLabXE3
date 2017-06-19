@@ -50,7 +50,7 @@ void __fastcall TThreadCLQ::Execute()
 void __fastcall TThreadCLQ::Lock()
 {
 	FormMain->ActionsLock();
-	FormMain->ThreadExecut = THR_SEARCH_COVER;
+	FormMain->ThreadExecut = THR_SEARCH_CLIQUE;
 	Application->ProcessMessages();
 }
 //------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl()
 		ToConsol("search-maximum-clique " + FileName);
 
 		if (Vertex.size() == 0) {
-			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			ToConsol("Ошибка! Не задан граф. Максимальная клика не найдена.");
 			return;
 		}
 
@@ -190,32 +190,53 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl()
 
 		SplitOnTreangls(&treangls,&degree);
 
-		Log += "Треугольные клики:\n";
-		Log += ToString(treangls) + "\n\n";
+		if (WriteLog) {
+			Log += "Треугольные клики:\n";
+			Log += ToString(treangls) + "\n\n";
+		}
 
 		s_t sub_vertex;
 		int vertex_max = MaxSubgraph(treangls,degree,&sub_vertex);
 
-		Str.sprintf("Максимальное подмножество:\n\tвершина: %8d(%d) | ",vertex_max,sub_vertex.size());
-		Log += Str + ToString(sub_vertex) + "\n\n";
+		if (WriteLog) {
+			Str.sprintf("Максимальное подмножество:\n\tвершина: %8d(%d) | ",vertex_max,sub_vertex.size());
+			Log += Str + ToString(sub_vertex) + "\n\n";
+		}
 
 		vs_t sub_graph(Vertex);
 		BuildSubgraph(sub_vertex,&sub_graph);
 
-		Log += "Подграф:\n" + ToString(sub_graph) + "\n\n";
+		if (WriteLog)
+			Log += "Подграф:\n" + ToString(sub_graph) + "\n\n";
+
+//		Log += "Debug: sub_vertex: " + ToString(sub_vertex) + "\n\n";
+		ExtractMaxClique(&sub_vertex,&sub_graph);
+
+		unsigned clq_size =  sub_vertex.empty() ? 2 : sub_vertex.size();
+
+		Log += Str.sprintf("Максимальная клика (%4d ) : ",clq_size);
+		Log += ToString(sub_vertex) + "\n";
 
 		QueryPerformanceCounter(&TimeEnd);
 
-		double Time = (double)(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
+		double Time = static_cast<double>(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
 
-		ToLog(Log);
+		if (Terminated) {
+			ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+			return;
+		}
 
 		ToConsol(Str.sprintf("\nКоличество треугольных клик: %8d ",Cnt));
 		ToConsol(Str.sprintf("\nКоличество операций: %8d ",Q));
-		ToConsol(Str.sprintf("\nВремя работы алгоритма: %8.8f мс",Time));
+		ToConsol(Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time));
 
-		ToConsol("\nМаксимальная клика найдена! Алгоритм завершился успешно.");
+		ToConsol("\nМаксимальная клика найдена.");
 
+		Log += Str.sprintf("\nКоличество треугольных клик: %8d ",Cnt);
+		Log += Str.sprintf("\nКоличество операций: %8d ",Q);
+		Log += Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time);
+
+		ToLog(Log);
 }
 //---------------------------------------------------------------------------
 
@@ -223,8 +244,14 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl()
 void __fastcall TThreadCLQ::SplitOnTreangls(ss_t *treangls, v_t *degree)
 {
 	v_t visit(Vertex.size(),0);
+	AnsiString Str;
 
-	for (unsigned i = 0; i < Vertex.size(); ++i) {
+	for (unsigned i = 1; i < Vertex.size(); ++i) {
+
+		if (Terminated)
+			return;
+
+		ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
 		visit[i] = 1;
 		v_t path(C_BASE_CLIQUE_LEN);
         path[0] = i;
@@ -244,6 +271,10 @@ void __fastcall TThreadCLQ::dfs(
 				)
 {
 	for (s_t::iterator it = Vertex.at(u).begin(); it != Vertex.at(u).end(); ++it) {
+
+		if (Terminated)
+			return;
+
 		unsigned v = static_cast<unsigned>(*it);
 		++Q;
 		if (!visit.at(v)) {
@@ -260,11 +291,10 @@ void __fastcall TThreadCLQ::dfs(
 				unsigned vc = path->at(level);
 				if (Vertex.at(va).find(vc) != Vertex.at(va).end()) {
 					// add new treangl
-					ToConsol(ToString(*path));
 
 					treangls->insert(ToSet(*path));
-					for (unsigned i = 0; i < path->size(); ++i)
-					++degree->operator[](path->at(i));
+					//for (unsigned i = 0; i < path->size(); ++i)
+					++degree->operator[](path->at(0));
 
 					++Cnt;
 				}
@@ -277,6 +307,8 @@ void __fastcall TThreadCLQ::dfs(
 
 int __fastcall TThreadCLQ::MaxSubgraph(const ss_t &treangls,const v_t &degree,s_t *sub_vertex)
 {
+	ToConsol("Поиск максимального подграфа ...");
+
 	int vertex_max = 0;
 	for (unsigned i = 1; i < N; ++i)
 		if (degree.at(vertex_max) < degree.at(i))
@@ -309,3 +341,45 @@ void __fastcall TThreadCLQ::BuildSubgraph(const s_t &sub_vertex,vs_t *sub_graph)
 		sub_graph->at(*it).clear();
 	}
 }
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::ExtractMaxClique(s_t *sub_vertex,vs_t *list_adjacent)
+{
+    ToConsol("Преобразование подграфа к полному подграфу ...");
+	while (!IsFull(*sub_vertex,*list_adjacent) && !sub_vertex->empty()){
+
+		s_t::iterator min_it = sub_vertex->begin();
+
+		for (s_t::iterator it = next_it(min_it); it != sub_vertex->end(); ++it)
+			if (list_adjacent->at(*min_it).size() > list_adjacent->at(*it).size())
+				min_it = it;
+
+//		Log += "Debug: min: " + IntToStr(*min_it) + "\n\n";
+
+		for (s_t::iterator it = sub_vertex->begin(); it != min_it; ++it)
+			list_adjacent->at(*it).erase(*min_it);
+
+		for (s_t::iterator it = next_it(min_it); it != sub_vertex->end(); ++it)
+			list_adjacent->at(*it).erase(*min_it);
+
+		list_adjacent->at(*min_it).clear();
+		sub_vertex->erase(min_it);
+
+//		Log += "Debug: list_adjacent: \n\n" + ToString(*list_adjacent) + "\n\n";
+//		Log += "Debug: sub_vertex: " + ToString(*sub_vertex) + "\n\n";
+	}
+}
+//------------------------------------------------------------------------------
+
+
+bool __fastcall TThreadCLQ::IsFull(const s_t &vertex,const vs_t &list_adjacent)
+{
+	for (s_t::const_iterator it = vertex.cbegin(); it != vertex.cend(); ++it)
+		if (list_adjacent.at(*it).size() != vertex.size() - 1)
+			return false;
+
+	return true;
+}
+//------------------------------------------------------------------------------
+

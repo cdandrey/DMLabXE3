@@ -28,6 +28,7 @@
 #define THR_GENERATE_TEST  2
 #define THR_SEARCH_COVER   3
 #define THR_TESTING        4
+#define THR_SEARCH_CLIQUE  5
 
 // тип вычисляемой характеристики теста
 #define TEST_MO   21  // мат.ожидание
@@ -142,8 +143,6 @@ typedef vector<p_t>             vp_t;
 typedef pair<s_t,s_t>           ps_t;
 typedef vector<pair<s_t,s_t> >  vps_t;
 typedef set<pair<s_t,s_t> >     sps_t;
-
-enum ALGORITHMS {CLQ_TREANGL, CLQ_NEXT};
 
 typedef struct{
 	s8_t x;

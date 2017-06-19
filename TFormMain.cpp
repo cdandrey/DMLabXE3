@@ -46,7 +46,8 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 						 AnsiString("|Тест (*") + SUFIX_TEST +
 						 AnsiString(")|*") + SUFIX_TEST;
 
-	OpenDialog->Filter = AnsiString("Граф (*") + SUFIX_GRAPH +
+	OpenDialog->Filter = AnsiString("Все файлы (*.*)|*.*|") +
+						 AnsiString("Граф (*") + SUFIX_GRAPH +
 						 AnsiString(")|*") + SUFIX_GRAPH +
 						 AnsiString("|Тест (*") + SUFIX_TEST +
 						 AnsiString(")|*") + SUFIX_TEST;
@@ -73,6 +74,7 @@ void TFormMain::ActionsLock()
 
 	// действия меню "Отчеты"
 	ActionAlgLogView->Enabled = false;
+	ToolButtonAlgLogWrite->Enabled = false;
 
 	PageControlMain->Enabled = false;
 
@@ -97,6 +99,7 @@ void TFormMain::ActionsUnLock()
 
 	// действия меню "Отчеты"
 	ActionAlgLogView->Enabled = true;
+    ToolButtonAlgLogWrite->Enabled = true;
 //	ActionAutoSaveTest->Enabled = true;
 
 	PageControlMain->Enabled = true;
@@ -177,9 +180,10 @@ void __fastcall TFormMain::ActionOpenExecute(TObject *Sender)
 	for (i = 0; i < OpenDialog->Files->Count; ++i) {
 
 		AnsiString File = OpenDialog->Files->operator [](i);
+		AnsiString FileExt = ExtractFileExt(File);
 
 		// если тип открываемого файла является графом - открываем граф
-		if (File.Pos(SUFIX_GRAPH) != 0){
+		if (FileExt == SUFIX_GRAPH){
 
 			StatusBar->SimpleText = MESSAGE_OPEN_GRAPH;
 			Consol->Lines->Append(AnsiString(MESSAGE_OPEN_GRAPH) + "  " + ExtractFileName(File));
@@ -203,6 +207,29 @@ void __fastcall TFormMain::ActionOpenExecute(TObject *Sender)
 			}    // end if GraphFromFile
 
 		}    // end if SUFIX_GRAPH
+		else {
+			StatusBar->SimpleText = MESSAGE_OPEN_GRAPH;
+			Consol->Lines->Append(AnsiString(MESSAGE_OPEN_GRAPH) + "  " + ExtractFileName(File));
+			Application->ProcessMessages();
+
+			graph_t *OpenGraph = new graph_t;
+
+			if (GraphDIMACSFromFile(OpenGraph,File)) {
+
+				GraphToList(OpenGraph);
+				GraphToRichEdit(OpenGraph);
+
+				Consol->Lines->Append("Граф успешно открыт.\n");
+
+			} else {
+
+				Consol->Lines->Append("Произошла ошибка.");
+				Consol->Lines->Append("Граф не был открыт.\n");
+				delete OpenGraph;
+
+			}    // end if GraphFromFile
+
+		}
 
 	}    // end for Files->count
 
@@ -428,6 +455,10 @@ void __fastcall TFormMain::ActionStopExecute(TObject *Sender)
 		ThrSearchCover->Terminate();
 		break;
 
+	case THR_SEARCH_CLIQUE:
+		ThrClique->Terminate();
+		break;
+
 	default :
 		ToConsol("Ошибка! Выполняется неизвестный процесс.");
 	}
@@ -510,37 +541,14 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			return;
 		}
 
-		if (PageControlAlg->ActivePageIndex == 0) { 	// Problems of Maximal Independ Set
+		if (PageControlAlg->ActivePageIndex == 0) {
 
-			// определяем какой алгоритм нужно выполнить и заносим его в вектор
-//			v_t CheckedFunc;
-//			for (int i = 0; i < ListViewAlgMIS->Items->Count; ++i)
-//				if (ListViewAlgMIS->Items->Item[i]->Checked) {
-//					CheckedFunc.push_back(ListViewAlgMIS->Items->Item[i]->Indent);
-//					break;
-//				}
-//
-//			if (CheckedFunc.size() > 0) {
-//
-//				ThrSearchCover                 = new TThreadSearchCover(true);
-//				ThrSearchCover->ListFuncExecut = CheckedFunc;
-//				ThrSearchCover->GraphIndex     = GraphIndex;
-//				ThrSearchCover->FileName       = Graphs[GraphIndex]->FileName;
-//				ThrSearchCover->N              = Graphs[GraphIndex]->N;
-//				ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
-//				ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
-//				ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
-//				ThrSearchCover->WriteLog       = !ToolButtonAlgLogNonWrite->Down;
-//
-//				ThrSearchCover->Resume();
-//
-//			} else {
-//				ToConsol("Не выбран алгоритм!");
-//				return;
-//			}
-            ListViewAlgMIS->OnDblClick(Sender);
+			// Problems of Maximal Independ Set
+			ListViewAlgMIS->OnDblClick(Sender);
 
-		} else {      // Problems of Maximal Clique
+		} else {
+
+		    // Problems of Maximal Clique
             ListViewAlgCLQ->OnDblClick(Sender);
 		}
 
@@ -894,6 +902,104 @@ bool TFormMain::GraphFromFile(graph_t *Graph,const AnsiString &File)
 
 			in.close();
 			return Succefull;
+
+		} else {
+			return false;
+		}
+
+	} catch(...) {
+
+		in.close();
+		return false;
+    }
+}
+//---------------------------------------------------------------------------
+
+
+bool TFormMain::GraphDIMACSFromFile(graph_t *Graph,const AnsiString &File)
+{
+	ifstream in(File.c_str(),ifstream::in);
+
+	try {
+
+		if (in.is_open()) {
+
+			Graph->FileName = ExtractFileName(File);
+			//Graph->FileName = ReplaceStr(Graph->FileName,SUFIX_GRAPH,"");
+			AnsiString line;
+			char ch;
+			unsigned e_idx = 0;
+			s_t nodes;
+
+			while (!in.eof()){
+
+				in >> ch;
+
+				switch (ch){
+				case 'c':
+							do
+								in.get(ch);
+							while (ch != '\n');
+
+							break;
+				case 'p':
+							in.seekg(1,std::ios_base::cur);
+							do
+								in.get(ch);
+							while (ch != ' ');
+
+							in >> Graph->N;
+							in >> Graph->E;
+
+							Graph->Vertex = vector<set<int> >(Graph->N + 1,set<int>());
+							Graph->Edges  = vector<set<int> >(Graph->E + 1,set<int>());
+
+							Graph->Vertex.reserve(Graph->N + 1);
+							Graph->Edges.reserve(Graph->E + 1);
+
+							int i;
+							for (i = 1; i <= Graph->N; ++i)
+								nodes.insert(i);
+
+							Graph->VertexAdd = vector<set<int> >(Graph->N + 1,nodes);
+							Graph->VertexAdd[0].clear();
+							Graph->VertexAdd.reserve(Graph->N + 1);
+
+							Graph->Matrix = vector<vector<int> >(Graph->N + 1,vector<int>(Graph->N + 1,0));
+
+							break;
+
+				case 'e':
+							int u;
+							int v;
+							in >> u;
+							in >> v;
+
+							Graph->Edges[e_idx].insert(u);
+							Graph->Edges[e_idx].insert(v);
+
+							Graph->Vertex[u].insert(v);
+							Graph->Vertex[v].insert(u);
+
+							Graph->VertexAdd[u].erase(v);
+							Graph->VertexAdd[v].erase(u);
+
+							Graph->Matrix[u][v] = 1;
+							Graph->Matrix[v][u] = 1;
+
+							++e_idx;
+
+							break;
+				default:
+					in.close();
+                    return false;
+				}
+			}
+
+			Graph->A = static_cast<double>(2 * (100 * Graph->E) / (Graph->N * (Graph->N - 1)));
+
+			in.close();
+			return true;
 
 		} else {
 			return false;
@@ -1416,9 +1522,11 @@ void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
 		ThrClique->Edges          = Graphs[GraphIndex]->Edges;
 		ThrClique->Vertex         = Graphs[GraphIndex]->Vertex;
 		ThrClique->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+		ThrClique->WriteLog       = ToolButtonAlgLogWrite->Down;
 
 		ThrClique->Resume();
 //	}
 }
 //---------------------------------------------------------------------------
+
 

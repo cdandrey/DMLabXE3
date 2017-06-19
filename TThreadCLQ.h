@@ -49,7 +49,9 @@ class TThreadCLQ : public TThread
 									const s_t &sub_vertex,
 									vs_t      *sub_graph
 								 );
-//           void       __fastcall
+
+		   void       __fastcall ExtractMaxClique(s_t *sub_vertex,vs_t *sub_graph);
+		   bool       __fastcall IsFull(const s_t &vertex,const vs_t &list_adjacent);
 
 		   void       __fastcall dfs(
 								unsigned u        ,
@@ -66,6 +68,8 @@ protected:
 public:
 	__fastcall TThreadCLQ(bool CreateSuspended);
 
+	__property Terminated;  // сигнал прерывания работы потока
+
 	AnsiString FileName;    // name of graph
 	int N;                  // numbers of vertex
 	int GraphIndex;         // number of graph in list
@@ -73,6 +77,8 @@ public:
 	vs_t  Edges;            // list of edges
 	vs_t  Vertex;           // list adjacent of vertex
 	vs_t  VertexAdd;        // list adjacent of vertex of graphs complement
+
+    bool WriteLog;
 
 };
 //---------------------------------------------------------------------------
