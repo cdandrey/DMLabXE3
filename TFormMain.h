@@ -116,6 +116,11 @@ __published:	// IDE-managed Components
 	TTabSheet *TabSheetMIS;
 	TTabSheet *TabSheetCLQ;
 	TListView *ListViewAlgCLQ;
+	TAction *ActionAlgLogWrite;
+	TMenuItem *MenuReports_AlgLogWrite;
+	TMenuItem *N2;
+	TMenuItem *MenuReports_GraphLogShort;
+	TAction *ActionGraphLogShort;
 
 	void __fastcall ListBoxGraphsClick(TObject *Sender);
 
@@ -136,6 +141,8 @@ __published:	// IDE-managed Components
 	void __fastcall ListViewTestTypeClick(TObject *Sender);
 	void __fastcall ListViewAlgMISDblClick(TObject *Sender);
 	void __fastcall ListViewAlgCLQDblClick(TObject *Sender);
+	void __fastcall ToolButtonAlgLogWriteClick(TObject *Sender);
+	void __fastcall ActionGraphLogShortExecute(TObject *Sender);
 
 public:
 

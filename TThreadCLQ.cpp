@@ -185,33 +185,61 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl()
 
 		QueryPerformanceCounter(&TimeBegin);
 
-		ss_t treangls;
-		v_t  degree(N,0);
-
-		SplitOnTreangls(&treangls,&degree);
+		s_t sub_vertex;
+		vs_t sub_graph(Vertex);
 
 		if (WriteLog) {
+
+			ss_t treangls;
+			vs_t  degree(N,set<int>());
+
+			SplitOnTreangls(&treangls,&degree);
+
+			if (Terminated) {
+				ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+				return;
+			}
+
 			Log += "Треугольные клики:\n";
 			Log += ToString(treangls) + "\n\n";
-		}
 
-		s_t sub_vertex;
-		int vertex_max = MaxSubgraph(treangls,degree,&sub_vertex);
+			int vertex_max = MaxSubgraph(degree);
 
-		if (WriteLog) {
+			sub_vertex = degree.at(vertex_max);
+			sub_vertex.insert(vertex_max);
+
 			Str.sprintf("Максимальное подмножество:\n\tвершина: %8d(%d) | ",vertex_max,sub_vertex.size());
 			Log += Str + ToString(sub_vertex) + "\n\n";
-		}
 
-		vs_t sub_graph(Vertex);
-		BuildSubgraph(sub_vertex,&sub_graph);
+			BuildSubgraph(sub_vertex,&sub_graph);
 
-		if (WriteLog)
 			Log += "Подграф:\n" + ToString(sub_graph) + "\n\n";
 
-//		Log += "Debug: sub_vertex: " + ToString(sub_vertex) + "\n\n";
-		ExtractMaxClique(&sub_vertex,&sub_graph);
+		}
+		else {
+			vs_t  degree(N,set<int>());
 
+			SplitOnTreangls(&degree);
+
+			if (Terminated) {
+				ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+				return;
+			}
+
+			int vertex_max = MaxSubgraph(degree);
+
+			sub_vertex = degree.at(vertex_max);
+			sub_vertex.insert(vertex_max);
+
+			BuildSubgraph(sub_vertex,&sub_graph);
+		}
+
+		if (Terminated) {
+			ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+			return;
+		}
+
+		ExtractMaxClique(&sub_vertex,&sub_graph);
 		unsigned clq_size =  sub_vertex.empty() ? 2 : sub_vertex.size();
 
 		Log += Str.sprintf("Максимальная клика (%4d ) : ",clq_size);
@@ -241,7 +269,7 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl()
 //---------------------------------------------------------------------------
 
 
-void __fastcall TThreadCLQ::SplitOnTreangls(ss_t *treangls, v_t *degree)
+void __fastcall TThreadCLQ::SplitOnTreangls(ss_t *treangls, vs_t *degree)
 {
 	v_t visit(Vertex.size(),0);
 	AnsiString Str;
@@ -254,8 +282,28 @@ void __fastcall TThreadCLQ::SplitOnTreangls(ss_t *treangls, v_t *degree)
 		ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
 		visit[i] = 1;
 		v_t path(C_BASE_CLIQUE_LEN);
-        path[0] = i;
+		path[0] = i;
 		dfs(i,1,visit,&path,treangls,degree);
+	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::SplitOnTreangls(vs_t *degree)
+{
+	v_t visit(Vertex.size(),0);
+	AnsiString Str;
+
+	for (unsigned i = 1; i < Vertex.size(); ++i) {
+
+		if (Terminated)
+			return;
+
+		ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
+		visit[i] = 1;
+		v_t path(C_BASE_CLIQUE_LEN);
+		path[0] = i;
+		dfs(i,1,visit,&path,degree);
 	}
 }
 //---------------------------------------------------------------------------
@@ -267,7 +315,7 @@ void __fastcall TThreadCLQ::dfs(
 								v_t      visit    ,
 								v_t     *path     ,
 								ss_t    *treangls ,
-								v_t     *degree
+								vs_t    *degree
 				)
 {
 	for (s_t::iterator it = Vertex.at(u).begin(); it != Vertex.at(u).end(); ++it) {
@@ -293,8 +341,9 @@ void __fastcall TThreadCLQ::dfs(
 					// add new treangl
 
 					treangls->insert(ToSet(*path));
-					//for (unsigned i = 0; i < path->size(); ++i)
-					++degree->operator[](path->at(0));
+					for (unsigned i = 1; i < path->size(); ++i)
+						degree->at(path->at(0)).insert(path->at(i));
+						//++degree->operator[](path->at(0));
 
 					++Cnt;
 				}
@@ -305,21 +354,69 @@ void __fastcall TThreadCLQ::dfs(
 //------------------------------------------------------------------------------
 
 
-int __fastcall TThreadCLQ::MaxSubgraph(const ss_t &treangls,const v_t &degree,s_t *sub_vertex)
+void __fastcall TThreadCLQ::dfs(
+								unsigned u        ,
+								unsigned level    ,
+								v_t      visit    ,
+								v_t     *path     ,
+								vs_t    *degree
+				)
+{
+	for (s_t::iterator it = Vertex.at(u).begin(); it != Vertex.at(u).end(); ++it) {
+
+		if (Terminated)
+			return;
+
+		unsigned v = static_cast<unsigned>(*it);
+		++Q;
+		if (!visit.at(v)) {
+			visit[v] = 1;
+			path->operator[](level) = v;
+			++Q;
+			if (level < C_BASE_CLIQUE_LEN - 1) {
+				// go next level
+				dfs(v,level + 1,visit,path,degree);
+			} else {
+				// check is the path a treangl
+                ++Q;
+				unsigned va = path->at(0);
+				unsigned vc = path->at(level);
+				if (Vertex.at(va).find(vc) != Vertex.at(va).end()) {
+					// add new treangl
+
+					for (unsigned i = 1; i < path->size(); ++i)
+						degree->at(path->at(0)).insert(path->at(i));
+//					for (unsigned i = 0; i < path->size() - 1; ++i) {
+//						for (unsigned j = 0; j < i; ++j)
+//							degree->at(path->at(i)).insert(path->at(j));
+//						for (unsigned j = i + 1; j < path->size(); ++j)
+//							degree->at(path->at(i)).insert(path->at(j));
+//					}
+
+					++Cnt;
+				}
+			}
+		}
+	}
+}
+//------------------------------------------------------------------------------
+
+
+int __fastcall TThreadCLQ::MaxSubgraph(const vs_t &degree)
 {
 	ToConsol("Поиск максимального подграфа ...");
 
 	int vertex_max = 0;
 	for (unsigned i = 1; i < N; ++i)
-		if (degree.at(vertex_max) < degree.at(i))
+		if (degree.at(vertex_max).size() < degree.at(i).size())
 			vertex_max = i;
 
-	for (ss_t::const_iterator it = treangls.begin(); it != treangls.end(); ++it)
-		if (it->find(vertex_max) != it->end()) {
-			set_union(sub_vertex->begin(),sub_vertex->end(),
-						it->begin(), it->end(),
-						inserter(*sub_vertex,sub_vertex->begin()));
-		}
+//	for (ss_t::const_iterator it = treangls.begin(); it != treangls.end(); ++it)
+//		if (it->find(vertex_max) != it->end()) {
+//			set_union(sub_vertex->begin(),sub_vertex->end(),
+//						it->begin(), it->end(),
+//						inserter(*sub_vertex,sub_vertex->begin()));
+//		}
 
 	return vertex_max;
 }

@@ -943,10 +943,9 @@ bool TFormMain::GraphDIMACSFromFile(graph_t *Graph,const AnsiString &File)
 
 							break;
 				case 'p':
-							in.seekg(1,std::ios_base::cur);
-							do
+                            in >> ch;
+							while (ch != ' ')
 								in.get(ch);
-							while (ch != ' ');
 
 							in >> Graph->N;
 							in >> Graph->E;
@@ -1077,6 +1076,14 @@ void TFormMain::GraphToRichEdit(graph_t *Graph) {
 		Str += "  вершин\t- "    + IntToStr(Graph->N) + "\n";
 		Str += "  ребер\t\t- "   + IntToStr(Graph->E) + "\n";
 		Str += "  плотность\t- " + IntToStr(Graph->A);
+
+		if (Graph->N > 100)
+			ActionGraphLogShort->Checked = true;
+
+		if (ActionGraphLogShort->Checked) {
+			RichEditGraph->Lines->Add(Str);
+			return;
+		}
 
 		// отображаем десятичную матрицу смежности в виде таблицы
 		Str += "\n\nСПИСОК ВЕРШИН:\n\n";
@@ -1529,4 +1536,17 @@ void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+
+void __fastcall TFormMain::ToolButtonAlgLogWriteClick(TObject *Sender)
+{
+	return;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ActionGraphLogShortExecute(TObject *Sender)
+{
+	return;
+}
+//---------------------------------------------------------------------------
 

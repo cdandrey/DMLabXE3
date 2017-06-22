@@ -675,9 +675,7 @@ object FormMain: TFormMain
     object ToolButtonAlgLogWrite: TToolButton
       Left = 231
       Top = 0
-      Hint = #1057#1090#1088#1086#1080#1090#1100' / '#1085#1077' '#1089#1090#1088#1086#1080#1090#1100' '#1087#1086#1076#1088#1086#1073#1085#1099#1081' '#1086#1090#1095#1077#1090
-      Caption = #1057#1090#1088#1086#1080#1090#1100' '#1087#1086#1076#1088#1086#1073#1085#1099#1081' '#1086#1090#1095#1077#1090' '
-      ImageIndex = 11
+      Action = ActionAlgLogWrite
       Style = tbsCheck
     end
   end
@@ -775,9 +773,21 @@ object FormMain: TFormMain
     end
     object MenuReports: TMenuItem
       Caption = #1054#1090#1095#1077#1090#1099
+      object MenuReports_GraphLogShort: TMenuItem
+        Action = ActionGraphLogShort
+        AutoCheck = True
+      end
       object MenuReports_AlgLogView: TMenuItem
         Action = ActionAlgLogView
         AutoCheck = True
+        Caption = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1087#1086#1076#1088#1086#1073#1085#1099#1081' '#1086#1090#1095#1077#1090' '#1074#1099#1087#1086#1083#1085#1077#1085#1080#1103' '#1072#1083#1075#1086#1088#1080#1090#1084#1086#1074
+      end
+      object MenuReports_AlgLogWrite: TMenuItem
+        Action = ActionAlgLogWrite
+        AutoCheck = True
+      end
+      object N2: TMenuItem
+        Caption = '-'
       end
       object MenuAutoSaveTest: TMenuItem
         AutoCheck = True
@@ -878,13 +888,26 @@ object FormMain: TFormMain
       ShortCut = 16500
       OnExecute = ActionRunAllExecute
     end
+    object ActionAlgLogWrite: TAction
+      Category = 'Reports'
+      AutoCheck = True
+      Caption = #1057#1090#1088#1086#1080#1090#1100' '#1087#1086#1076#1088#1086#1073#1085#1099#1081' '#1086#1090#1095#1077#1090' '#1088#1072#1073#1086#1090#1099' '#1072#1083#1075#1086#1088#1080#1090#1084#1072
+      ImageIndex = 11
+      OnExecute = ToolButtonAlgLogWriteClick
+    end
+    object ActionGraphLogShort: TAction
+      Category = 'Reports'
+      AutoCheck = True
+      Caption = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1082#1088#1072#1090#1082#1091#1102' '#1080#1085#1092#1086#1088#1084#1072#1094#1080#1102' '#1086' '#1075#1088#1072#1092#1077
+      OnExecute = ActionGraphLogShortExecute
+    end
   end
   object ImageList: TImageList
     BlendColor = clGrayText
     ShareImages = True
     Left = 600
     Bitmap = {
-      494C01010C00C002800110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010C00C002840110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
