@@ -30,6 +30,7 @@ __fastcall TThreadCLQ::TThreadCLQ(bool CreateSuspended)
 
 	FuncPoint[CLQ_TRE1] = SearchCliqueTreangl;
 	FuncPoint[CLQ_TRE2] = SearchCliqueTreangl2;
+	FuncPoint[CLQ_TRE3] = SearchCliqueTreangl3;
 }
 //---------------------------------------------------------------------------
 void __fastcall TThreadCLQ::Execute()
@@ -159,7 +160,7 @@ AnsiString __fastcall TThreadCLQ::ToString(vs_t &Data)
 	AnsiString Str = "";
 	AnsiString Buffer = "";
 
-	for (int i = 1; i < Data.size(); ++i) {
+	for (int i = 0; i < Data.size(); ++i) {
 		if (!Data.at(i).empty()) {
 			Str += Buffer.sprintf("%d (%d) : ",i,Data.at(i).size());
 			Str += ToString(Data.at(i)) + "\n";
@@ -448,6 +449,133 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl2()
 //---------------------------------------------------------------------------
 
 
+void __fastcall TThreadCLQ::SearchCliqueTreangl3()
+{
+		FormMain->RichEditLog->Clear();
+
+		ToConsol("search-maximum-clique-3 " + FileName);
+
+		if (Vertex.size() == 0) {
+			ToConsol("Ошибка! Не задан граф. Максимальная клика не найдена.");
+			return;
+		}
+
+		Q        = 0;
+        	Cnt      = 0;
+		Cover    = v_t();
+		LogShort = "\n";
+		Log      = "\n";
+		AnsiString Str = "";
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		s_t max_clique;
+
+		if (WriteLog) {
+
+			if (Terminated) {
+				ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+				return;
+			}
+
+			v_t visit(N + 1,0);
+
+			for (int i = 1; i < N; ++i) {
+
+				if (Terminated)
+					return;
+
+				ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
+
+				vs_t treangls;
+				v_t  path(C_BASE_CLIQUE_LEN);
+
+				path[0] = i;
+
+				visit[i] = 1;
+				dfs_top(i,1,visit,&path,&treangls);
+
+				if (!treangls.empty()) {
+
+					s_t clique; 
+					dfs_merge(0,treangls.at(0),treangls,&clique);
+
+					Log += "Поиск треугольных клик: вершина:" + IntToStr(i) + "\n\n";
+					Log += "Список треугольников:\n" + ToString(treangls) + "\n\n";
+					Log += "Клика:\n" + ToString(clique) + "\n\n";
+
+					Log += "--------------------------------------------------------\n\n";
+	
+					if (max_clique.size() < clique.size())
+						max_clique.swap(clique);
+				}
+			}
+
+		}
+		else {
+
+			if (Terminated) {
+				ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+				return;
+			}
+
+			v_t visit(N + 1,0);
+
+			for (int i = 1; i <= N; ++i) {
+
+				if (Terminated)
+					return;
+
+				ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
+
+				vs_t treangls;
+				v_t  path(C_BASE_CLIQUE_LEN);
+
+				path[0] = i;
+
+				visit[i] = 1;
+				dfs_top(i,1,visit,&path,&treangls);
+
+				if (!treangls.empty()) {
+
+					s_t clique; 
+					dfs_merge(0,treangls.at(0),treangls,&clique);
+
+					if (max_clique.size() < clique.size())
+						max_clique.swap(clique);
+				}
+
+			}
+		}
+
+		unsigned clq_size =  max_clique.empty() ? 2 : max_clique.size();
+		Log += Str.sprintf("\n\nКоличество треугольных клик: %8d",Cnt);
+		Log += Str.sprintf("\nМаксимальная клика (%4d ) : ",clq_size);
+		Log += ToString(max_clique);
+
+		QueryPerformanceCounter(&TimeEnd);
+
+		double Time = static_cast<double>(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
+
+		if (Terminated) {
+			ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+			return;
+		}
+
+		ToConsol(Str.sprintf("\nКоличество треугольных клик: %8d ",Cnt));
+		ToConsol(Str.sprintf("\nКоличество операций: %8d ",Q));
+		ToConsol(Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time));
+
+		ToConsol("\nМаксимальная клика найдена.");
+
+		Log += Str.sprintf("\nКоличество операций: %8d ",Q);
+		Log += Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time);
+
+		ToLog(Log);
+}
+//---------------------------------------------------------------------------
+
+
 void __fastcall TThreadCLQ::SplitOnTreangls(ss_t *treangls, vs_t *degree)
 {
 	v_t visit(Vertex.size(),0);
@@ -637,6 +765,112 @@ void __fastcall TThreadCLQ::dfs(
 			}
 		}
 	}
+}
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::dfs_top(
+					unsigned u        ,
+					unsigned level    ,
+					v_t      visit    ,
+					v_t     *path     ,
+					vs_t    *treangls  
+				)
+{
+	for (s_t::iterator it = Vertex.at(u).begin(); it != Vertex.at(u).end(); ++it) {
+
+		if (Terminated)
+			return;
+
+		unsigned v = static_cast<unsigned>(*it);
+		
+		++Q;
+		
+		if (!visit.at(v)) {
+		
+			visit[v] = 1;
+			path->operator[](level) = v;
+		
+			++Q;
+			if (level < C_BASE_CLIQUE_LEN - 1) {
+				
+				// go next level
+				dfs_top(v,level + 1,visit,path,treangls);
+
+			} else {
+				
+				// check is the path a treangl
+                		++Q;
+				
+				unsigned va = path->at(0);
+				unsigned vc = path->at(level);
+
+				if (Vertex.at(va).find(vc) != Vertex.at(va).end()) {
+
+					// add new treangl
+
+					treangls->push_back(ToSet(*path));
+
+					++Cnt;
+					return;
+				}
+			}
+		}
+	}
+}
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::dfs_merge(
+					      unsigned u             ,
+					      s_t      clq           ,
+					const vs_t    &treangls      ,
+					      s_t     *clq_max         
+				)
+{
+	for (unsigned v = u + 1; v < treangls.size(); ++v) {
+
+		if (Terminated)
+			return;
+
+		++Q;
+
+		bool is_poss = clq_max->size() < (clq.size() + (treangls.size() - v)*2);
+
+		if (is_poss) {
+			if (IsMerge(clq,treangls.at(v))) {
+
+				s_t clq_next = clq;
+				s_t::iterator it = next_it(treangls.at(v).begin());
+				clq_next.insert(*it);
+				clq_next.insert(*next_it(it));
+				
+				dfs_merge(v,clq_next,treangls,clq_max);
+
+			}
+		}
+	}
+
+	if (clq.size() > clq_max->size())
+		*clq_max = clq;
+}
+//------------------------------------------------------------------------------
+
+
+bool __fastcall TThreadCLQ::IsMerge(const s_t &clq, const s_t &treangl)
+{
+
+	for (s_t::iterator itb = next_it(treangl.begin()); itb != treangl.end(); ++itb) {
+		++Q;
+		if (clq.find(*itb) == clq.end())
+			for (s_t::iterator ita = next_it(clq.begin()); ita != clq.end(); ++ita) {
+				++Q;
+				if (Vertex.at(*ita).find(*itb) == Vertex.at(*ita).end())		
+					return false;
+			}
+	}
+
+	return true;
 }
 //------------------------------------------------------------------------------
 

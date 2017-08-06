@@ -40,13 +40,16 @@ class TThreadCLQ : public TThread
 
 		   void       __fastcall SearchCliqueTreangl();
 		   void       __fastcall SearchCliqueTreangl2();
+		   void       __fastcall SearchCliqueTreangl3();
 		   void       __fastcall SplitOnTreangls(ss_t *treangls, vs_t *degree);
 		   void       __fastcall SplitOnTreangls(vs_t *degree);
+		   void       __fastcall SplitOnTreangls3(vs_t *treangls);
 		   int        __fastcall MaxSubgraph(const vs_t  &degree);
 		   void       __fastcall BuildSubgraph(const s_t &sub_vertex,vs_t *sub_graph);
 
 		   void       __fastcall ExtractMaxClique(s_t *sub_vertex,vs_t *sub_graph);
 		   bool       __fastcall IsFull(const s_t &vertex,const vs_t &list_adjacent);
+		   bool       __fastcall IsMerge(const s_t &clq,const s_t &treangl);
 
 		   void       __fastcall ExtractMaxClique2(
 								s_t  *clique,
@@ -87,6 +90,22 @@ class TThreadCLQ : public TThread
 								v_t      visit    ,
 								v_t     *path     ,
 								vs_t    *degree
+						);
+
+
+		   void       __fastcall dfs_top(
+								unsigned u            ,
+								unsigned level        ,
+								v_t      visit        ,
+								v_t     *path         ,
+								vs_t    *treangls      
+						);
+
+		   void       __fastcall dfs_merge(
+								      unsigned u            ,
+								      s_t      clq          ,
+								const vs_t    &treangls     ,
+								      s_t     *clq_max       
 						);
 
 protected:
