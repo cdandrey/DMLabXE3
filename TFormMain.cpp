@@ -1516,13 +1516,14 @@ void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
 	}
 
 	// определяем какой алгоритм нужно выполнить и заносим его в вектор
-//	v_t CheckedFunc;
-//	if (ListViewAlgCLQ->Selected)
-//		CheckedFunc.push_back(ListViewAlgCLQ->Selected->Index);
+	v_t CheckedFunc;
+	if (ListViewAlgCLQ->Selected)
+		CheckedFunc.push_back(ListViewAlgCLQ->Selected->StateIndex);
 
-//	if (CheckedFunc.size() > 0) {
+	if (CheckedFunc.size() > 0) {
 
 		ThrClique                 = new TThreadCLQ(true);
+		ThrClique->ListFuncExecut = CheckedFunc;
 		ThrClique->GraphIndex     = GraphIndex;
 		ThrClique->FileName       = Graphs[GraphIndex]->FileName;
 		ThrClique->N              = Graphs[GraphIndex]->N;
@@ -1532,7 +1533,7 @@ void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
 		ThrClique->WriteLog       = ToolButtonAlgLogWrite->Down;
 
 		ThrClique->Resume();
-//	}
+	}
 }
 //---------------------------------------------------------------------------
 

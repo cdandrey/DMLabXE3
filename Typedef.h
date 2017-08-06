@@ -59,6 +59,9 @@
 #define VPRE        208
 #define VREC        209
 
+#define CLQ_TRE1    210
+#define CLQ_TRE2    211
+
 // названия алгоритмов
 #define STR_RANG  "Ранговый метод"
 #define STR_FULL  "Быстрый полный перебор"

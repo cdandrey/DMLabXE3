@@ -39,6 +39,7 @@ class TThreadCLQ : public TThread
 		   s_t        __fastcall ToSet(const v_t &data);
 
 		   void       __fastcall SearchCliqueTreangl();
+		   void       __fastcall SearchCliqueTreangl2();
 		   void       __fastcall SplitOnTreangls(ss_t *treangls, vs_t *degree);
 		   void       __fastcall SplitOnTreangls(vs_t *degree);
 		   int        __fastcall MaxSubgraph(const vs_t  &degree);
@@ -47,14 +48,38 @@ class TThreadCLQ : public TThread
 		   void       __fastcall ExtractMaxClique(s_t *sub_vertex,vs_t *sub_graph);
 		   bool       __fastcall IsFull(const s_t &vertex,const vs_t &list_adjacent);
 
+		   void       __fastcall ExtractMaxClique2(
+								s_t  *clique,
+								ss_t &treangls,
+								v_t  &treangls_degree,
+								vs_t &list_adjacent
+							);
+
+		   void       __fastcall ExtractMaxClique2Log(
+								s_t  *clique,
+								ss_t &treangls,
+								v_t  &treangls_degree,
+								vs_t &list_adjacent
+							);
+
+		   void       __fastcall dfs(
+								unsigned u              ,
+								unsigned level          ,
+								v_t      visit          ,
+								v_t     *path           ,
+								ss_t    *treangls       ,
+								v_t     *treangls_degree,
+								vs_t    *list_adjacent
+						);
+
 		   void       __fastcall dfs(
 								unsigned u        ,
 								unsigned level    ,
 								v_t      visit    ,
 								v_t     *path     ,
 								ss_t    *treangls ,
-		   						vs_t    *degree
-		   				);
+								vs_t    *degree
+						);
 
 		   void       __fastcall dfs(
 								unsigned u        ,
@@ -80,7 +105,11 @@ public:
 	vs_t  Vertex;           // list adjacent of vertex
 	vs_t  VertexAdd;        // list adjacent of vertex of graphs complement
 
-    bool WriteLog;
+	bool WriteLog;
+
+	v_t ListFuncExecut;    // список функций которые необходимо выполнить потоку
+	map<int,func_t> FuncPoint;    // указатели на функции потока
+    int FuncExecut;
 
 };
 //---------------------------------------------------------------------------

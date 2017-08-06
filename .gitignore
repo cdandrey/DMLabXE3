@@ -1,0 +1,11 @@
+__*/
+Win32/
+Win64/
+Graphs/
+Test/
+*.local
+*.stat
+*.txt
+*.swp
+*.jpg
+
