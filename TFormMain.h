@@ -29,6 +29,7 @@
 #include <Vcl.ValEdit.hpp>
 #include <System.Actions.hpp>
 #include <System.ImageList.hpp>
+#include <Vcl.CategoryButtons.hpp>
 
 //---------------------------------------------------------------------------
 class TFormMain : public TForm
@@ -121,6 +122,10 @@ __published:	// IDE-managed Components
 	TMenuItem *N2;
 	TMenuItem *MenuReports_GraphLogShort;
 	TAction *ActionGraphLogShort;
+	TTabSheet *TabSheetCLQSel;
+	TRadioGroup *RadioGroupCLQMerge;
+	TRadioGroup *RadioGroupCLQTreangls;
+	TRadioGroup *RadioGroupCLQSort;
 
 	void __fastcall ListBoxGraphsClick(TObject *Sender);
 
@@ -196,6 +201,8 @@ private:
 
 	alg_t 		*Alg;
 	param_alg_t *ParamAlg;
+
+    void __fastcall RunCLQSelect();
 
 };
 //---------------------------------------------------------------------------

@@ -188,11 +188,15 @@ object FormMain: TFormMain
           Top = 18
           Width = 793
           Height = 263
-          ActivePage = TabSheetCLQ
+          ActivePage = TabSheetCLQSel
           Align = alTop
           TabOrder = 1
           object TabSheetMIS: TTabSheet
             Caption = #1040#1083#1075#1086#1088#1080#1090#1084#1099' '#1087#1086#1080#1089#1082#1072' '#1084#1072#1082#1089#1080#1084#1072#1083#1100#1085#1099#1093' '#1085#1077#1079#1072#1074#1080#1089#1080#1084#1099#1093' '#1084#1085#1086#1078#1077#1089#1090#1074
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object ListViewAlgMIS: TListView
               AlignWithMargins = True
               Left = 3
@@ -269,13 +273,16 @@ object FormMain: TFormMain
           object TabSheetCLQ: TTabSheet
             Caption = #1040#1083#1075#1086#1088#1080#1090#1084#1099' '#1087#1086#1080#1089#1082#1072' '#1082#1083#1080#1082
             ImageIndex = 1
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object ListViewAlgCLQ: TListView
               AlignWithMargins = True
               Left = 3
               Top = 3
               Width = 779
-              Height = 226
-              Align = alClient
+              Height = 106
               Checkboxes = True
               Columns = <
                 item
@@ -323,6 +330,49 @@ object FormMain: TFormMain
               TabOrder = 0
               ViewStyle = vsReport
               OnDblClick = ListViewAlgCLQDblClick
+            end
+          end
+          object TabSheetCLQSel: TTabSheet
+            Caption = #1040#1083#1075#1086#1088#1080#1090#1084#1099' '#1087#1086#1080#1089#1082#1072' '#1082#1083#1080#1082#1080'('#1089#1086#1089#1090#1072#1074#1085#1086#1081')'
+            ImageIndex = 2
+            object RadioGroupCLQMerge: TRadioGroup
+              Left = 0
+              Top = 140
+              Width = 785
+              Height = 70
+              Align = alTop
+              Caption = #1054#1073#1098#1077#1076#1080#1085#1077#1085#1080#1077' '#1090#1088#1077#1091#1075#1086#1083#1100#1085#1080#1082#1086#1074
+              ItemIndex = 0
+              Items.Strings = (
+                #1087#1086#1083#1085#1099#1081' '#1087#1077#1088#1077#1073#1086#1088
+                #1083#1080#1085#1077#1081#1085#1099#1081' '#1087#1077#1088#1077#1073#1086#1088)
+              TabOrder = 0
+            end
+            object RadioGroupCLQTreangls: TRadioGroup
+              Left = 0
+              Top = 70
+              Width = 785
+              Height = 70
+              Align = alTop
+              Caption = #1060#1086#1088#1084#1080#1088#1086#1074#1072#1085#1080#1077' '#1087#1086#1076#1084#1085#1086#1078#1077#1089#1090#1074
+              ItemIndex = 0
+              Items.Strings = (
+                #1074#1089#1077' '#1090#1088#1077#1091#1075#1086#1083#1100#1085#1080#1082#1080
+                #1087#1077#1088#1074#1072#1103' '#1089#1090#1088#1086#1082#1072' '#1090#1088#1077#1091#1075#1086#1083#1100#1085#1080#1082#1086#1074)
+              TabOrder = 1
+            end
+            object RadioGroupCLQSort: TRadioGroup
+              Left = 0
+              Top = 0
+              Width = 785
+              Height = 70
+              Align = alTop
+              Caption = #1043#1083#1086#1073#1072#1083#1100#1085#1099#1077
+              ItemIndex = 0
+              Items.Strings = (
+                #1085#1077' '#1089#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1074#1077#1088#1096#1080#1085#1099' '#1075#1088#1072#1092#1072
+                #1089#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1074#1077#1088#1096#1080#1085#1099' '#1075#1088#1072#1092#1072)
+              TabOrder = 2
             end
           end
         end
@@ -397,6 +447,10 @@ object FormMain: TFormMain
     object TabSheetTestGraph: TTabSheet
       Caption = #1058#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1077' '#1072#1083#1075#1086#1088#1080#1090#1084#1086#1074
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object PanelResult: TPanel
         Left = 0
         Top = 0
@@ -520,6 +574,10 @@ object FormMain: TFormMain
             TabOrder = 1
             object TabSheetTestResultList: TTabSheet
               Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1086#1074' '#1090#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1103' '#1074' '#1074#1080#1076#1077' '#1089#1087#1080#1089#1082#1072
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 0
+              ExplicitHeight = 0
               object RichEditTestResults: TRichEdit
                 Left = 0
                 Top = 0
@@ -540,6 +598,10 @@ object FormMain: TFormMain
             object TabSheetTestResultChart: TTabSheet
               Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1099' '#1090#1077#1089#1090#1080#1088#1086#1074#1072#1085#1080#1103' '#1074' '#1075#1088#1072#1092#1080#1095#1077#1089#1082#1086#1084' '#1074#1080#1076#1077
               ImageIndex = 1
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 0
+              ExplicitHeight = 0
             end
           end
           object ListViewTestType: TListView
@@ -911,7 +973,7 @@ object FormMain: TFormMain
     ShareImages = True
     Left = 600
     Bitmap = {
-      494C01010C00C0028C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010C00C002B00110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

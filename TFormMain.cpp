@@ -541,15 +541,18 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			return;
 		}
 
-		if (PageControlAlg->ActivePageIndex == 0) {
+		switch (PageControlAlg->ActivePageIndex) {
 
 			// Problems of Maximal Independ Set
-			ListViewAlgMIS->OnDblClick(Sender);
+			case 0: ListViewAlgMIS->OnDblClick(Sender);
+					break;
 
-		} else {
+			// Problems of Maximal Clique
+			case 1: ListViewAlgCLQ->OnDblClick(Sender);
+					break;
 
-		    // Problems of Maximal Clique
-            ListViewAlgCLQ->OnDblClick(Sender);
+			case 2: RunCLQSelect();
+					break;
 		}
 
 	} else if (PageControlMain->ActivePageIndex == 1) {
@@ -577,7 +580,7 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 		if ((TestType == TEST_COMP)&&(Tests.at(TestIndex)->Alg.size() == 1)) {
 			ToConsol("В выбраном тесте исследуется только один алгоритм, сравнение выполнить не возможно!");
 			return;
-        }
+		}
 
 		// создаем поток и запускаем его
 		ThrTestGraph                = new TThreadTestGraph(true);
@@ -1545,9 +1548,35 @@ void __fastcall TFormMain::ToolButtonAlgLogWriteClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+
 void __fastcall TFormMain::ActionGraphLogShortExecute(TObject *Sender)
 {
 	return;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TFormMain::RunCLQSelect()
+{
+	int GraphIndex = ListBoxGraphs->ItemIndex;
+
+	unsigned SelectAlg = 0;
+	SelectAlg |= RadioGroupCLQSort->ItemIndex;
+	SelectAlg |= (RadioGroupCLQTreangls->ItemIndex<<1);
+	SelectAlg |= (RadioGroupCLQMerge->ItemIndex<<3);
+
+	ThrClique                 = new TThreadCLQ(true);
+    ThrClique->SelectAlg      = SelectAlg;
+	ThrClique->GraphIndex     = GraphIndex;
+	ThrClique->FileName       = Graphs[GraphIndex]->FileName;
+	ThrClique->N              = Graphs[GraphIndex]->N;
+	ThrClique->Edges          = Graphs[GraphIndex]->Edges;
+	ThrClique->Vertex         = Graphs[GraphIndex]->Vertex;
+	ThrClique->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+	ThrClique->WriteLog       = ToolButtonAlgLogWrite->Down;
+
+	ThrClique->Resume();
 }
 //---------------------------------------------------------------------------
 
