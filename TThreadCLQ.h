@@ -39,8 +39,35 @@ class TThreadCLQ : public TThread
 		   s_t        __fastcall ToSet(const v_t &data);
 
 		   void       __fastcall SearchCliqueTreangl();
-		   void       __fastcall SearchCliqueTreangl2();
-		   void       __fastcall SearchCliqueTreangl3();
+//		   void       __fastcall SearchCliqueTreangl2();
+		   void       __fastcall SearchCliqueTreanglSel();
+
+		   void       __fastcall SplitOnTreanglsAll(
+									 unsigned    u       ,
+									 unsigned    level   ,
+									 const vs_t &lsa     ,
+									 v_t         visit   ,
+									 v_t        *path    ,
+									 vs_t       *treangls
+								 );
+
+		   void       __fastcall SplitOnTreanglsTop(
+									 unsigned    u        ,
+									 unsigned    level    ,
+									 const vs_t &lsa      ,
+									 v_t         visit    ,
+									 v_t        *path     ,
+									 vs_t       *treangls
+								 );
+
+		   void       __fastcall Sort(const vs_t &lsa,v_t *mv,vs_t *lsa_sort);
+
+		   void       __fastcall MergeTreanglsAll(s_t *clq_max,const vs_t &trgl,const vs_t &lsa);
+		   void       __fastcall MergeTreanglsLine(unsigned u,s_t clq,s_t *clq_max,const vs_t &trgl,const vs_t &lsa);
+		   bool       __fastcall IsFull(const s_t &vertex,const vs_t &list_adjacent);
+		   bool       __fastcall IsMerge(const s_t &clq,const s_t &trgl,const vs_t &lsa);
+
+           //
 		   void       __fastcall SplitOnTreangls(ss_t *treangls, vs_t *degree);
 		   void       __fastcall SplitOnTreangls(vs_t *degree);
 		   void       __fastcall SplitOnTreangls3(vs_t *treangls);
@@ -48,9 +75,6 @@ class TThreadCLQ : public TThread
 		   void       __fastcall BuildSubgraph(const s_t &sub_vertex,vs_t *sub_graph);
 
 		   void       __fastcall ExtractMaxClique(s_t *sub_vertex,vs_t *sub_graph);
-		   bool       __fastcall IsFull(const s_t &vertex,const vs_t &list_adjacent);
-		   bool       __fastcall IsMerge(const s_t &clq,const s_t &treangl);
-
 		   void       __fastcall ExtractMaxClique2(
 								s_t  *clique,
 								ss_t &treangls,
@@ -93,20 +117,6 @@ class TThreadCLQ : public TThread
 						);
 
 
-		   void       __fastcall dfs_top(
-								unsigned u            ,
-								unsigned level        ,
-								v_t      visit        ,
-								v_t     *path         ,
-								vs_t    *treangls      
-						);
-
-		   void       __fastcall dfs_merge(
-								      unsigned u            ,
-								      s_t      clq          ,
-								const vs_t    &treangls     ,
-								      s_t     *clq_max       
-						);
 
 protected:
 	void __fastcall Execute();
@@ -125,6 +135,11 @@ public:
 	vs_t  VertexAdd;        // list adjacent of vertex of graphs complement
 
 	bool WriteLog;
+
+	unsigned SelectAlg;
+	unsigned SelTreangls;
+	unsigned SelSort;
+	unsigned SelMerge;
 
 	v_t ListFuncExecut;    // список функций которые необходимо выполнить потоку
 	map<int,func_t> FuncPoint;    // указатели на функции потока

@@ -61,7 +61,6 @@
 
 #define CLQ_TRE1    210
 #define CLQ_TRE2    211
-#define CLQ_TRE3    212
 
 // названия алгоритмов
 #define STR_RANG  "Ранговый метод"
