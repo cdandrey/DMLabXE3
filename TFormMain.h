@@ -126,6 +126,8 @@ __published:	// IDE-managed Components
 	TRadioGroup *RadioGroupCLQMerge;
 	TRadioGroup *RadioGroupCLQTreangls;
 	TRadioGroup *RadioGroupCLQSort;
+	TCheckBox *CheckBoxLastChecked;
+	TRadioGroup *RG_MIS_SPPA_PAIR;
 
 	void __fastcall ListBoxGraphsClick(TObject *Sender);
 

@@ -47,9 +47,10 @@ void __fastcall TThreadCLQ::Execute()
 //		}
 //		Synchronize(SearchCliqueTreangl);
 
-		SelSort     = SelectAlg & 1;
-		SelTreangls = (SelectAlg & 6) >> 1;
-		SelMerge    = (SelectAlg & 8) >> 3;
+		SelSort        = SelectAlg & 1;
+		SelTreangls    = (SelectAlg>>1) & 3;
+		SelMerge       = (SelectAlg>>3) & 1;
+		SelLastChecked = (SelectAlg>>4) & 1;
 
 		Synchronize(SearchCliqueTreanglSel);
 
@@ -107,13 +108,20 @@ s_t __fastcall TThreadCLQ::ToSet(const v_t &data)
 //---------------------------------------------------------------------------
 
 
-AnsiString __fastcall TThreadCLQ::ToString(v_t &Data)
+AnsiString __fastcall TThreadCLQ::ToString(const v_t &Data,int Begin)
 {
 	AnsiString Str = "";
 	AnsiString Buffer = "";
 
-	for (int i = 0; i < Data.size(); ++i)
-		Str += Buffer.sprintf("%3d ",Data.at(i));
+	for (unsigned i = Begin; i < Data.size(); ++i) {
+
+		if (Data.at(i) < 10)
+			Str += Buffer.sprintf("  %d ",Data.at(i));
+		else if (Data.at(i) > 9 && Data.at(i) < 100)
+			Str += Buffer.sprintf(" %d ",Data.at(i));
+		else
+			Str += Buffer.sprintf("%d ",Data.at(i));
+	}
 
 	if (Str == "")
 		Str = "{}";
@@ -128,8 +136,14 @@ AnsiString __fastcall TThreadCLQ::ToString(const s_t &Data)
 	AnsiString Str = "";
 	AnsiString Buffer = "";
 
-	for (s_t::const_iterator it = Data.begin(); it != Data.end(); ++it)
-		Str += Buffer.sprintf("%3d ",*it);
+	for (s_t::const_iterator it = Data.begin(); it != Data.end(); ++it) {
+		if (*it < 10)
+			Str += Buffer.sprintf("  %d ",*it);
+		else if (*it > 9 && *it < 100)
+			Str += Buffer.sprintf(" %d ",*it);
+		else
+			Str += Buffer.sprintf("%d ",*it);
+	}
 
 	if (Str == "")
 		Str = "{}";
@@ -488,18 +502,30 @@ void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
 		Log      = "\n";
 		AnsiString Str = "";
 
-		QueryPerformanceCounter(&TimeBegin);
-
 		s_t max_clique;
+		v_t visit(N + 1,0);
 
 		vs_t lsa;
 		v_t  mv(Vertex.size());
+		v_t  mvr(Vertex.size());
+
 
 		if (SelSort) {
-			Sort(Vertex,&mv,&lsa);
+			Sort(Vertex,&mv,&mvr,&lsa);
+			Log += "Карта соответсвий номеров:\n\n";
+			v_t m(lsa.size());
+			for (unsigned i = 0; i < m.size(); ++i)
+				m[i] = i;
+			Log += "исходные номера:\t" + ToString(m,1) + "\n";
+			Log += "сорт-ные номера:\t" + ToString(mvr,1) + "\n\n";
+
+			Log += "сорт-ные номера:\t" + ToString(m,1) + "\n";
+			Log += "исходные номера:\t" + ToString(mv,1) + "\n\n";
 		} else {
-            lsa = Vertex;
+			lsa = Vertex;
 		}
+
+		QueryPerformanceCounter(&TimeBegin);
 
 		if (WriteLog) {
 
@@ -508,32 +534,83 @@ void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
 				return;
 			}
 
-			v_t visit(N + 1,0);
+			if (SelSort) {
+				Log += "отсортированный список смежности:\n\n";
+				Log += ToString(lsa);
+				Log += "\n\n";
+			}
 
-			for (int i = 1; i <= N; ++i) {
+			if (SelTreangls < 2) {
+				for (int i = 1; i <= N; ++i) {
 
-				if (Terminated)
-					return;
+					if (Terminated)
+						return;
 
-				ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
-				Log += "Поиск треугольных клик: вершина:" + IntToStr(i) + "\n\n";
+					ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
+					Log += "Поиск треугольных клик: вершина:" + IntToStr(i) + "\n\n";
 
-				vs_t treangls;
-				v_t  path(C_BASE_CLIQUE_LEN);
+					vs_t treangls;
+					v_t  path(C_BASE_CLIQUE_LEN);
 
-				path[0] = i;
-				visit[i] = 1;
+					path[0] = i;
+					visit[i] = 1;
 
-				switch (SelTreangls) {
-				case 0: SplitOnTreanglsAll(i,1,lsa,visit,&path,&treangls);
-						break;
-				case 1: SplitOnTreanglsTop(i,1,lsa,visit,&path,&treangls);
-						break;
-                case 2: break;
+					switch (SelTreangls) {
+					case 0: SplitOnTreanglsAll(i,1,lsa,visit,&path,&treangls);
+							break;
+					case 1: SplitOnTreanglsTop(i,1,lsa,visit,&path,&treangls);
+							break;
+					}
+
+					Log += ToString(treangls);
+					Log += "\n\nобъединение треугольников:\n";
+
+					if (!treangls.empty()) {
+						s_t clique;
+
+						switch (SelMerge) {
+						case 0: MergeTreanglsAll(&clique,treangls,lsa);
+								break;
+						case 1: MergeTreanglsLine(0,treangls.at(0),&clique,treangls,lsa);
+								break;
+						}
+
+						Log += "  " + ToString(clique) + "\n\n";
+						Log += "--------------------------------------------------------\n\n";
+
+						if (max_clique.size() < clique.size())
+							max_clique.swap(clique);
+					}
 				}
 
+			} else {  //  SelTreangsl == 2
+
+				ToConsol(Str.sprintf("Поиск треугольных клик:"));
+				Log += "Поиск треугольных клик:\n\n";
+
+				vs_t treangls;
+
+				for (int i = 1; i <= N; ++i) {
+
+					if (Terminated)
+						return;
+
+					v_t  path(C_BASE_CLIQUE_LEN);
+					path[0] = i;
+					visit[i] = 1;
+					vs_t tmp;
+
+					SplitOnTreanglsOnce(i,1,lsa,visit,&path,&tmp);
+
+					if (!tmp.empty())
+						treangls.push_back(tmp[0]);
+				}
+
+				Log += ToString(treangls);
+				Log += "\n\nобъединение треугольников:";
 
 				if (!treangls.empty()) {
+
 					s_t clique;
 
 					switch (SelMerge) {
@@ -541,14 +618,15 @@ void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
 							break;
 					case 1: MergeTreanglsLine(0,treangls.at(0),&clique,treangls,lsa);
 							break;
-                    }
+					}
 
+					Log += "  " + ToString(clique) + "\n\n";
 					Log += "--------------------------------------------------------\n\n";
 
 					if (max_clique.size() < clique.size())
 						max_clique.swap(clique);
 				}
-			}
+			}   // SelTreangls
 
 		}
 		else {
@@ -558,27 +636,62 @@ void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
 				return;
 			}
 
-			v_t visit(N + 1,0);
+			if (SelTreangls < 2) {
+				for (int i = 1; i <= N; ++i) {
 
-			for (int i = 1; i <= N; ++i) {
+					if (Terminated)
+						return;
 
-				if (Terminated)
-					return;
+					ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
 
-				ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
+					vs_t treangls;
+					v_t  path(C_BASE_CLIQUE_LEN);
+
+					path[0] = i;
+					visit[i] = 1;
+
+					switch (SelTreangls) {
+					case 0: SplitOnTreanglsAll(i,1,lsa,visit,&path,&treangls);
+							break;
+					case 1: SplitOnTreanglsTop(i,1,lsa,visit,&path,&treangls);
+							break;
+					}
+
+					if (!treangls.empty()) {
+						s_t clique;
+
+						switch (SelMerge) {
+						case 0: MergeTreanglsAll(&clique,treangls,lsa);
+								break;
+						case 1: MergeTreanglsLine(0,treangls.at(0),&clique,treangls,lsa);
+								break;
+						}
+
+						if (max_clique.size() < clique.size())
+							max_clique.swap(clique);
+					}
+				}
+
+			} else {  //  SelTreangsl == 2
+
+				ToConsol(Str.sprintf("Поиск треугольных клик:"));
 
 				vs_t treangls;
-				v_t  path(C_BASE_CLIQUE_LEN);
 
-				path[0] = i;
-				visit[i] = 1;
+				for (int i = 1; i <= N; ++i) {
 
-				switch (SelTreangls) {
-				case 0: SplitOnTreanglsAll(i,1,lsa,visit,&path,&treangls);
-						break;
-				case 1: SplitOnTreanglsTop(i,1,lsa,visit,&path,&treangls);
-						break;
-				case 2: break;
+					if (Terminated)
+						return;
+
+					v_t  path(C_BASE_CLIQUE_LEN);
+					path[0] = i;
+					visit[i] = 1;
+					vs_t tmp;
+
+					SplitOnTreanglsOnce(i,1,lsa,visit,&path,&tmp);
+
+					if (!tmp.empty())
+						treangls.push_back(tmp[0]);
 				}
 
 				if (!treangls.empty()) {
@@ -589,13 +702,16 @@ void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
 							break;
 					case 1: MergeTreanglsLine(0,treangls.at(0),&clique,treangls,lsa);
 							break;
-                    }
+					}
 
 					if (max_clique.size() < clique.size())
 						max_clique.swap(clique);
 				}
-			}
-		}
+			}   			// SelTreangls
+		}  				 	// LogWrite
+
+		if (SelLastChecked)
+			LastChecked(lsa,&max_clique);
 
 		unsigned clq_size =  max_clique.empty() ? 2 : max_clique.size();
 		Log += Str.sprintf("\n\nКоличество треугольных клик: %8d",Cnt);
@@ -605,7 +721,7 @@ void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
 			s_t tmp;
 			for (s_t::iterator it = max_clique.begin(); it != max_clique.end(); ++it)
 				tmp.insert(mv[*it]);
-            max_clique.swap(tmp);
+			max_clique.swap(tmp);
 		}
 
 		Log += ToString(max_clique);
@@ -929,6 +1045,62 @@ void __fastcall TThreadCLQ::SplitOnTreanglsTop(
 //------------------------------------------------------------------------------
 
 
+void __fastcall TThreadCLQ::SplitOnTreanglsOnce(
+					unsigned    u        ,
+					unsigned    level    ,
+					const vs_t &lsa      ,
+					v_t         visit    ,
+					v_t        *path     ,
+					vs_t       *trgl
+				)
+{
+	for (s_t::iterator it = lsa.at(u).begin(); it != lsa.at(u).end(); ++it) {
+
+		if (Terminated)
+			return;
+
+		unsigned v = static_cast<unsigned>(*it);
+
+		++Q;
+
+		if (!visit.at(v)) {
+
+			visit[v] = 1;
+			path->operator[](level) = v;
+
+			++Q;
+			if (level < C_BASE_CLIQUE_LEN - 1) {
+
+				// go next level
+				SplitOnTreanglsOnce(v,level + 1,lsa,visit,path,trgl);
+
+			} else {
+
+				// check is the path a treangl
+						++Q;
+
+				unsigned va = path->at(0);
+				unsigned vc = path->at(level);
+
+				if (lsa.at(va).find(vc) != lsa.at(va).end()) {
+
+					// add new treangl
+
+					trgl->push_back(ToSet(*path));
+
+					++Cnt;
+					return;
+				}
+			}
+		}
+
+		if (trgl->size() > 0)
+            return;
+	}
+}
+//------------------------------------------------------------------------------
+
+
 void __fastcall TThreadCLQ::MergeTreanglsAll(s_t *clq_max,const vs_t &trgl,const vs_t &lsa)
 {
 	if (trgl.size() == 1 ) {
@@ -1152,10 +1324,10 @@ bool __fastcall TThreadCLQ::IsFull(const s_t &v,const vs_t &lsa)
 bool __fastcall TThreadCLQ::IsMerge(const s_t &clq, const s_t &trgl,const vs_t &lsa)
 {
 
-	for (s_t::iterator itb = next_it(trgl.begin()); itb != trgl.end(); ++itb) {
+	for (s_t::iterator itb = trgl.begin(); itb != trgl.end(); ++itb) {
 		++Q;
 		if (clq.find(*itb) == clq.end())
-			for (s_t::iterator ita = next_it(clq.begin()); ita != clq.end(); ++ita) {
+			for (s_t::iterator ita = clq.begin(); ita != clq.end(); ++ita) {
 				++Q;
 				if (lsa.at(*ita).find(*itb) == lsa.at(*ita).end())
 					return false;
@@ -1168,13 +1340,12 @@ bool __fastcall TThreadCLQ::IsMerge(const s_t &clq, const s_t &trgl,const vs_t &
 
 
 
-void __fastcall TThreadCLQ::Sort(const vs_t &lsa,v_t *mv,vs_t *lsa_sort)
+void __fastcall TThreadCLQ::Sort(const vs_t &lsa,v_t *mv,v_t *mvr,vs_t *lsa_sort)
 {
 	bool is_swap;
 
-	v_t  m(lsa.size());
-	for (unsigned i = 0; i < lsa.size(); ++i)
-		m[i] = i;
+	for (unsigned i = 0; i < mv->size(); ++i)
+		mv->at(i) = i;
 
 	for (unsigned i = 0; i < lsa.size(); ++i) {
 
@@ -1182,10 +1353,10 @@ void __fastcall TThreadCLQ::Sort(const vs_t &lsa,v_t *mv,vs_t *lsa_sort)
 
 		for (unsigned j = 1; j < lsa.size() - 1; ++j)
 
-			if (lsa[m[j]].size() < lsa[m[j + 1]].size()) {
-				int tmp = m[j];
-				m[j] = m[j + 1];
-				m[j + 1] = tmp;
+			if (lsa[mv->at(j)].size() < lsa[mv->at(j + 1)].size()) {
+				int tmp = mv->at(j);
+				mv->at(j) = mv->at(j + 1);
+				mv->at(j + 1) = tmp;
                 is_swap = true;
 			}
 
@@ -1193,16 +1364,45 @@ void __fastcall TThreadCLQ::Sort(const vs_t &lsa,v_t *mv,vs_t *lsa_sort)
 			break;
 	}
 
-	for (unsigned i = 0; i < m.size(); ++i)
-		mv->at(m[i]) = i;
+	for (unsigned i = 0; i < mvr->size(); ++i)
+		mvr->at(mv->at(i)) = i;
 
 	lsa_sort->push_back(s_t());
 	for (unsigned i = 1; i < lsa.size(); ++i) {
 		s_t v;
-		for (s_t::iterator it = lsa[m[i]].begin(); it != lsa[m[i]].end(); ++it)
-			v.insert(mv->at(*it));
+		for (s_t::iterator it = lsa[mv->at(i)].begin(); it != lsa[mv->at(i)].end(); ++it)
+			v.insert(mvr->at(*it));
 
 		lsa_sort->push_back(v);
 	}
 }
+//------------------------------------------------------------------------------
 
+
+
+void __fastcall TThreadCLQ::LastChecked(const vs_t &lsa,s_t *clq)
+{
+	if (clq->empty())
+		return;
+
+	s_t last;
+	for (unsigned i = 1; i < lsa.size(); ++i) {
+        ++Q;
+		if (clq->find(i) == clq->end())
+			last.insert(i);
+	}
+
+	for (s_t::iterator it = last.begin(); it != last.end(); ++it) {
+		bool isAdd = true;
+		for (s_t::iterator it_clq = clq->begin(); it_clq != clq->end(); ++it_clq) {
+			++Q;
+			if (lsa.at(*it_clq).find(*it) == lsa.at(*it_clq).end()) {
+				isAdd = false;
+                break;
+			}
+		}
+
+		if (isAdd)
+            clq->insert(*it);
+	}
+}

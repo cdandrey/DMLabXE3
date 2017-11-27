@@ -58,6 +58,7 @@
 #define EQUA        207
 #define VPRE        208
 #define VREC        209
+#define SPPA        212
 
 #define CLQ_TRE1    210
 #define CLQ_TRE2    211
@@ -73,6 +74,7 @@
 #define STR_VPRE  "Метод вершин с прогнозом"
 #define STR_VREC  "Метод вершин с рекурсией"
 #define STR_EQUA  "Метод уравнений"
+#define STR_SPPA  "Метод разбиения на пары"
 
 //#define STR_RANG  "Rangovii metod"
 //#define STR_FULL  "Bistrii polnii perebor"
@@ -151,6 +153,11 @@ typedef struct{
 	s8_t x;
 	s8_t y;
 } path_t;
+
+typedef struct{
+	unsigned num;
+	bool visit;
+} node_t;
 
 template <class T>
 T next_it(T iter)

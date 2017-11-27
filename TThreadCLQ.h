@@ -31,7 +31,7 @@ class TThreadCLQ : public TThread
 		   void __fastcall Lock();
 		   void __fastcall UnLock();
 
-		   AnsiString __fastcall ToString(v_t &Data);
+		   AnsiString __fastcall ToString(const v_t &Data,int Begin = 0);
 		   AnsiString __fastcall ToString(const s_t &Data);
 		   AnsiString __fastcall ToString(ss_t &Data);
 		   AnsiString __fastcall ToString(vs_t &Data);
@@ -60,10 +60,20 @@ class TThreadCLQ : public TThread
 									 vs_t       *treangls
 								 );
 
-		   void       __fastcall Sort(const vs_t &lsa,v_t *mv,vs_t *lsa_sort);
+		   void       __fastcall SplitOnTreanglsOnce(
+									 unsigned    u        ,
+									 unsigned    level    ,
+									 const vs_t &lsa      ,
+									 v_t         visit    ,
+									 v_t        *path     ,
+									 vs_t       *trgl
+								 );
+
+		   void       __fastcall Sort(const vs_t &lsa,v_t *mv,v_t *mvr,vs_t *lsa_sort);
 
 		   void       __fastcall MergeTreanglsAll(s_t *clq_max,const vs_t &trgl,const vs_t &lsa);
 		   void       __fastcall MergeTreanglsLine(unsigned u,s_t clq,s_t *clq_max,const vs_t &trgl,const vs_t &lsa);
+           void       __fastcall LastChecked(const vs_t &lsa,s_t *clq);
 		   bool       __fastcall IsFull(const s_t &vertex,const vs_t &list_adjacent);
 		   bool       __fastcall IsMerge(const s_t &clq,const s_t &trgl,const vs_t &lsa);
 
@@ -140,6 +150,7 @@ public:
 	unsigned SelTreangls;
 	unsigned SelSort;
 	unsigned SelMerge;
+    unsigned SelLastChecked;
 
 	v_t ListFuncExecut;    // список функций которые необходимо выполнить потоку
 	map<int,func_t> FuncPoint;    // указатели на функции потока

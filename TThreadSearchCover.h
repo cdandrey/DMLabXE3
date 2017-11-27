@@ -26,6 +26,8 @@ public:
 	int N;                  // количество вершин
 	int GraphIndex;         // номер графа в списке
 
+    unsigned ExtraOption;   // дополнительные параметры алгоритма
+
 	vs_t  Edges;            // список ребер
 	vs_t  Vertex;           // список вершин
 	vs_t  VertexAdd;        // список вершин графа дополнения
@@ -151,7 +153,14 @@ private:
 	void __fastcall TreePathUnion(const path_t &p,int v,path_t *p_next);
     bool __fastcall TreePathAbsorb(vector<path_t> *vp,path_t &p);
 
-    bool __fastcall TreeIsConnect(const s8_t &z1,const s8_t &z2);
+	bool __fastcall TreeIsConnect(const s8_t &z1,const s8_t &z2);
+
+	// метод разбиения на пары
+	void     __fastcall SppaSearchCover();
+	unsigned __fastcall SppaMax(const vs_t &lsac);
+	void     __fastcall SppaMergeBruteForce(unsigned v,const vs_t &lsac,v_t *mis);
+	void     __fastcall SppaMergeBruteForce(unsigned v,const vector<node_t> &nodes,const vs_t &lsac,v_t *mis);
+	bool     __fastcall SppaIsMerge(unsigned u,const v_t& mis,const vs_t &lsac);
 
 	/**** вспомогательные функции алгоритмов поиска вершинного покрытия ****/
 
