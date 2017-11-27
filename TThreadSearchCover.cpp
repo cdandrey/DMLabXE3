@@ -39,7 +39,7 @@ __fastcall TThreadSearchCover::TThreadSearchCover(bool CreateSuspended)
 	FuncPoint[INDS] = IndsSearchCover;
 	FuncPoint[RANG] = RangSearchCover;
 	FuncPoint[VERT] = TreeOneSearchCover;
-	FuncPoint[EQUA] = TreeSearchCover;
+	FuncPoint[SPPA] = SppaSearchCover;
 	FuncPoint[NIND] = NindSearchCover;
 	FuncPoint[NINU] = NinuSearchCover;
 }
@@ -3761,3 +3761,186 @@ inline int TThreadSearchCover::Max(int EdgesCountBegin,int I1,int I2,const v_t &
 //---------------------------------------------------------------------------
 
 
+void __fastcall TThreadSearchCover::SppaSearchCover()
+{
+	try {
+
+		ToConsol("search-cover split on pair" + FileName);
+
+		if (Vertex.size() == 0) {
+			ToConsol("Ошибка! Не задан граф. Минимальное покрытие не найдено.");
+			return;
+		}
+
+		// задаем начальные данные характеристикам алгоритма
+		Q        = 0;
+		Cover    = v_t();
+		LogShort = "МЕТОД РАЗБИЕНИЯ НА ПАРЫ\n\n";
+
+		if (WriteLog)
+			Log      = "Пошаговый отчет работы алгоритма: \n\n";
+		else
+			Log = "";
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		AnsiString Buffer = "";
+
+		// searsh vertex with max size of VertexAdd
+		vs_t lsac = VertexAdd;  //list adjacent complete
+		v_t mis;
+
+		Log += ToString("",lsac);
+
+		if (ExtraOption == 1) { // serach for one max row
+
+			unsigned vmax = SppaMax(lsac);
+
+			Log += Buffer.sprintf("\n\nвершина образующая максимальное количесво пар: %d - ",vmax);
+			Log += ToString(lsac.at(vmax));
+
+			SppaMergeBruteForce(vmax,lsac,&mis);
+
+		} else {    // search for all pairs
+
+			for (unsigned i = 1; i < lsac.size(); ++i) {
+
+				v_t imis;
+
+				SppaMergeBruteForce(i,lsac,&imis);
+
+				if (imis.size() > mis.size())
+					mis.swap(imis);
+			}
+		}
+
+		QueryPerformanceCounter(&TimeEnd);
+
+		if (WriteLog) {
+			Log += Buffer.sprintf("\n алгоритм завершил работу\n\n");
+			Log += Buffer.sprintf("наибольшие максимальные независимые множества:\n\n");
+			Log += ToString(mis);
+			Log += "\n";
+		}
+
+		s_t VertexSet;
+		for (int i = 1; i <= N; ++i)
+			VertexSet.insert(i);
+
+        Cover = CoverFromIndep(VertexSet,mis);
+
+		ToConsol("Максимальное независимое множество найдено! Алгоритм завершил работу.");
+
+		ToCover();
+
+	} catch (...){
+		ToConsol("Неизвестная ошибка! Максимальное независимое множество не найдено.");
+	}
+}
+//---------------------------------------------------------------------------
+
+
+unsigned __fastcall TThreadSearchCover::SppaMax(const vs_t &lsac)
+{
+	unsigned num_max = 1;
+	unsigned size_max = lsac.at(num_max).size();
+
+	for (unsigned i = 2; i < lsac.size(); ++i) {
+
+		++Q;
+
+		if (size_max < lsac.at(i).size()) {
+			num_max  = i;
+			size_max = lsac.at(num_max).size();
+		}
+	}
+
+    return num_max;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::SppaMergeBruteForce(unsigned v,const vs_t &lsac,v_t *mis)
+{
+	AnsiString Buffer = "";
+
+	mis->push_back(v);
+
+	if (lsac.at(v).size() == 1) {
+		mis->push_back(*lsac.at(v).begin());
+	}
+	else {
+
+
+		vector<node_t> nodes(lsac.at(v).size());
+		s_t::iterator it = lsac.at(v).begin();
+
+		for (unsigned i = 0; i < lsac.at(v).size(); ++i,++it) {
+
+			nodes[i].num = *it;
+			nodes[i].visit = false;
+		}
+
+		for (unsigned i = 0; i < lsac.at(v).size() - 1; ++i) {
+
+			v_t i_mis(1,v);
+			i_mis.push_back(nodes[i].num);
+
+			SppaMergeBruteForce(i,nodes,lsac,&i_mis);
+
+            Log += Buffer.sprintf("\n\n%d) ",nodes[i].num);
+			Log += ToString(i_mis);
+
+			++Q;
+
+			if (i_mis.size() > mis->size())
+				mis->swap(i_mis);
+
+			nodes[i].visit = true;
+		}
+	}
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TThreadSearchCover::SppaMergeBruteForce(unsigned i,const vector<node_t> &nodes,const vs_t &lsac,v_t *mis)
+{
+	unsigned v = nodes.at(i).num;
+	v_t imis(*mis);
+
+	for (unsigned j = i + 1; j < nodes.size(); ++j) {
+
+		if (!nodes.at(j).visit) {
+
+			unsigned u = nodes.at(j).num;
+
+			if (SppaIsMerge(u,imis,lsac)) {
+
+				vector<node_t> jnodes(nodes);
+				jnodes[j].visit = true;
+
+				v_t jmis(imis);
+				jmis.push_back(nodes[j].num);
+
+				SppaMergeBruteForce(j,jnodes,lsac,&jmis);
+
+				if (jmis.size() > mis->size())
+					mis->swap(jmis);
+
+			}
+		}
+	}
+}
+//---------------------------------------------------------------------------
+
+
+bool __fastcall TThreadSearchCover::SppaIsMerge(unsigned u,const v_t& mis,const vs_t &lsac)
+{
+	for (unsigned i = 0; i < mis.size(); ++i) {
+        ++Q;
+		if (lsac.at(mis.at(i)).find(u) == lsac.at(mis.at(i)).end())
+			return false;
+	}
+
+	return true;
+}

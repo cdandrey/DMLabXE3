@@ -26,7 +26,8 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 	ListViewAlgMIS->Items->Item[4]->Indent = NINU;    // новый метод независимых множеств упрощенный
 	ListViewAlgMIS->Items->Item[5]->Indent = FREQ;    // частотный
 	ListViewAlgMIS->Items->Item[6]->Indent = VERT;    // метод вершин
-	ListViewAlgMIS->Items->Item[7]->Indent = EQUA;    // метод уравнений
+//	ListViewAlgMIS->Items->Item[7]->Indent = EQUA;    // метод уравнений
+	ListViewAlgMIS->Items->Item[7]->Indent = SPPA;    // метод разбиения на пары
 
 	ListViewAlgMIS->Items->Item[0]->Caption = STR_RANG;    // ранговый
 	ListViewAlgMIS->Items->Item[1]->Caption = STR_FULL;    // быстрый полный перебор
@@ -35,7 +36,8 @@ __fastcall TFormMain::TFormMain(TComponent* Owner)
 	ListViewAlgMIS->Items->Item[4]->Caption = STR_NINU;    // новый метод независимых множеств упрощенный
 	ListViewAlgMIS->Items->Item[5]->Caption = STR_FREQ;    // частотный
 	ListViewAlgMIS->Items->Item[6]->Caption = STR_VERT;    // метод вершин
-	ListViewAlgMIS->Items->Item[7]->Caption = STR_EQUA;    // метод уравнений
+//	ListViewAlgMIS->Items->Item[7]->Caption = STR_EQUA;    // метод уравнений
+	ListViewAlgMIS->Items->Item[7]->Caption = STR_SPPA;    // метод разбиения на пары
 
 	ListViewTestType->Items->Item[0]->Indent = TEST_MO; 	// математическое ожидание
 	ListViewTestType->Items->Item[1]->Indent = TEST_CKO;	// среднеквадратическое отклонение
@@ -1200,6 +1202,16 @@ void __fastcall TFormMain::ListBoxTestsClick(TObject *Sender)
 
 void __fastcall TFormMain::ListViewAlgMISClick(TObject *Sender)
 {
+    // view extra options of alg
+	if (ListViewAlgMIS->Selected) {
+
+		if (ListViewAlgMIS->Selected->Indent == SPPA){
+			RG_MIS_SPPA_PAIR->Visible = true;
+		} else {
+			RG_MIS_SPPA_PAIR->Visible = false;
+		}
+	}
+
 	unsigned int GraphIndex = ListBoxGraphs->ItemIndex;
 
 	if (GraphIndex < 0 || GraphIndex >= Graphs.size())
@@ -1216,6 +1228,7 @@ void __fastcall TFormMain::ListViewAlgMISClick(TObject *Sender)
 			RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[Alg].LogShort);
 			RichEditLog->Lines->Append("\n");
 			RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[Alg].Log);
+
 		}
 
 	} else {
@@ -1237,8 +1250,15 @@ void __fastcall TFormMain::ListViewAlgMISDblClick(TObject *Sender)
 
 	// определяем какой алгоритм нужно выполнить и заносим его в вектор
 	v_t CheckedFunc;
-	if (ListViewAlgMIS->Selected)
+	unsigned ExtraOptions;
+
+	if (ListViewAlgMIS->Selected) {
+
 		CheckedFunc.push_back(ListViewAlgMIS->Selected->Indent);
+
+		if (ListViewAlgMIS->Selected->Indent == SPPA)
+            ExtraOptions = RG_MIS_SPPA_PAIR->ItemIndex;
+	}
 
 	if (CheckedFunc.size() > 0) {
 
@@ -1247,6 +1267,7 @@ void __fastcall TFormMain::ListViewAlgMISDblClick(TObject *Sender)
 		ThrSearchCover->GraphIndex     = GraphIndex;
 		ThrSearchCover->FileName       = Graphs[GraphIndex]->FileName;
 		ThrSearchCover->N              = Graphs[GraphIndex]->N;
+		ThrSearchCover->ExtraOption    = ExtraOptions;
 		ThrSearchCover->Edges          = Graphs[GraphIndex]->Edges;
 		ThrSearchCover->Vertex         = Graphs[GraphIndex]->Vertex;
 		ThrSearchCover->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
@@ -1565,6 +1586,7 @@ void __fastcall TFormMain::RunCLQSelect()
 	SelectAlg |= RadioGroupCLQSort->ItemIndex;
 	SelectAlg |= (RadioGroupCLQTreangls->ItemIndex<<1);
 	SelectAlg |= (RadioGroupCLQMerge->ItemIndex<<3);
+    SelectAlg |= (CheckBoxLastChecked->Checked<<4);
 
 	ThrClique                 = new TThreadCLQ(true);
     ThrClique->SelectAlg      = SelectAlg;
@@ -1579,4 +1601,6 @@ void __fastcall TFormMain::RunCLQSelect()
 	ThrClique->Resume();
 }
 //---------------------------------------------------------------------------
+
+
 
