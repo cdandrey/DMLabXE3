@@ -29,30 +29,30 @@ __fastcall TThreadCLQ::TThreadCLQ(bool CreateSuspended)
 	FuncExecut = NONE;
 
 	FuncPoint[CLQ_TRE1] = SearchCliqueTreangl;
-//	FuncPoint[CLQ_TRE2] = SearchCliqueTreangl2;
+	FuncPoint[CLQ_TRE2] = SearchCliqueTreangl2;
+	FuncPoint[CLR_BIP]  = SearchColoringBipartite;
 
 }
 //---------------------------------------------------------------------------
 void __fastcall TThreadCLQ::Execute()
 {
-	NameThreadForDebugging(System::String(L"ThreadCLQ"));
-	//---- Place thread code here ----
 	try {
 
 		Synchronize(Lock);
 
-//		for (int i = 0; i < ListFuncExecut.size(); ++i) {
-//			FuncExecut = ListFuncExecut[i];
-//			Synchronize(FuncPoint[FuncExecut]);
-//		}
-//		Synchronize(SearchCliqueTreangl);
+		for (int i = 0; i < ListFuncExecut.size(); ++i) {
 
-		SelSort        = SelectAlg & 1;
-		SelTreangls    = (SelectAlg>>1) & 3;
-		SelMerge       = (SelectAlg>>3) & 1;
-		SelLastChecked = (SelectAlg>>4) & 1;
+			FuncExecut = ListFuncExecut[i];
 
-		Synchronize(SearchCliqueTreanglSel);
+			if (FuncExecut == CLQ_TRE2) {
+				SelSort        = SelectAlg & 1;
+				SelTreangls    = (SelectAlg>>1) & 3;
+				SelMerge       = (SelectAlg>>3) & 1;
+				SelLastChecked = (SelectAlg>>4) & 1;
+			}
+
+			Synchronize(FuncPoint[FuncExecut]);
+		}
 
 	} __finally {
 
@@ -131,7 +131,7 @@ AnsiString __fastcall TThreadCLQ::ToString(const v_t &Data,int Begin)
 //---------------------------------------------------------------------------
 
 
-AnsiString __fastcall TThreadCLQ::ToString(const s_t &Data)
+AnsiString __fastcall TThreadCLQ::ToString(const s_t &Data,AnsiString Tab)
 {
 	AnsiString Str = "";
 	AnsiString Buffer = "";
@@ -146,7 +146,7 @@ AnsiString __fastcall TThreadCLQ::ToString(const s_t &Data)
 	}
 
 	if (Str == "")
-		Str = "{}";
+		Str = Tab + "{}";
 
 	return Str.Trim();
 }
@@ -175,22 +175,22 @@ AnsiString __fastcall TThreadCLQ::ToString(ss_t &data)
 //---------------------------------------------------------------------------
 
 
-AnsiString __fastcall TThreadCLQ::ToString(vs_t &Data)
+AnsiString __fastcall TThreadCLQ::ToString(vs_t &Data,AnsiString Tab)
 {
 	AnsiString Str = "";
 	AnsiString Buffer = "";
 
 	for (int i = 0; i < Data.size(); ++i) {
 		if (!Data.at(i).empty()) {
-			Str += Buffer.sprintf("%d (%d) : ",i,Data.at(i).size());
+			Str += Tab + Buffer.sprintf("%d (%d) : ",i,Data.at(i).size());
 			Str += ToString(Data.at(i)) + "\n";
 		}
 	}
 
 	if (Str == "")
-		Str = "{}";
+		Str = Tab + "{}";
 
-	return Str.Trim();
+	return Str;
 }
 //---------------------------------------------------------------------------
 
@@ -341,150 +341,7 @@ void __fastcall TThreadCLQ::SearchCliqueTreangl()
 //---------------------------------------------------------------------------
 
 
-//void __fastcall TThreadCLQ::SearchCliqueTreangl2()
-//{
-//		// select:
-//		// all treangls
-//		// full merge
-//		//
-//
-//		FormMain->RichEditLog->Clear();
-//
-//		ToConsol("search-maximum-clique-2 " + FileName);
-//
-//		if (Vertex.size() == 0) {
-//			ToConsol("Ошибка! Не задан граф. Максимальная клика не найдена.");
-//			return;
-//		}
-//
-//		Q        = 0;
-//        Cnt      = 0;
-//		Cover    = v_t();
-//		LogShort = "\n";
-//		Log      = "\n";
-//		AnsiString Str = "";
-//
-//		QueryPerformanceCounter(&TimeBegin);
-//
-//		s_t max_clique;
-//
-//		if (WriteLog) {
-//
-//			if (Terminated) {
-//				ToConsol("Процесс остановлен! Максимальная клика не найдена.");
-//				return;
-//			}
-//
-//			v_t visit(N + 1,0);
-//
-//			for (int i = 1; i <= N; ++i) {
-//
-//				if (Terminated)
-//					return;
-//
-//				ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
-//				Log += "Поиск треугольных клик: вершина:" + IntToStr(i) + "\n\n";
-//
-//				ss_t treangls;
-//				v_t  treangls_degree(N + 1,0);
-//				vs_t list_adjacent(N + 1,s_t());
-//				v_t  path(C_BASE_CLIQUE_LEN);
-//
-//				path[0] = i;
-//				visit[i] = 1;
-//				dfs(i,1,visit,&path,&treangls,&treangls_degree,&list_adjacent);
-//
-//
-////				s_t clique = list_adjacent.at(i);
-////				clique.insert(i);
-////				ExtractMaxClique2Log(&clique,treangls,treangls_degree,list_adjacent);
-//
-//				if (!treangls.empty()) {
-//					s_t clique;
-//					vs_t vtreangls;
-//					for (ss_t::iterator it = treangls.begin(); it != treangls.end(); ++it)
-//						vtreangls.push_back(*it);
-//
-//					MergeTreanglsAll(vtreangls,&clique);
-//					Log += "--------------------------------------------------------\n\n";
-//
-//					if (max_clique.size() < clique.size())
-//						max_clique.swap(clique);
-//				}
-//			}
-//
-//		}
-//		else {
-//
-//			if (Terminated) {
-//				ToConsol("Процесс остановлен! Максимальная клика не найдена.");
-//				return;
-//			}
-//
-//			v_t visit(N + 1,0);
-//
-//			for (int i = 1; i <= N; ++i) {
-//
-//				if (Terminated)
-//					return;
-//
-//				ToConsol(Str.sprintf("Поиск треугольных клик: вершина: %8d ",i));
-//
-//				ss_t treangls;
-//				v_t  treangls_degree(N + 1,0);
-//				vs_t list_adjacent(N + 1,s_t());
-//				v_t  path(C_BASE_CLIQUE_LEN);
-//
-//				path[0] = i;
-//				visit[i] = 1;
-//				dfs(i,1,visit,&path,&treangls,&treangls_degree,&list_adjacent);
-//
-////				s_t clique = list_adjacent.at(i);
-////				clique.insert(i);
-////				ExtractMaxClique2(&clique,treangls,treangls_degree,list_adjacent);
-//
-//				if (!treangls.empty()) {
-//					s_t clique;
-//					vs_t vtreangls;
-//					for (ss_t::iterator it = treangls.begin(); it != treangls.end(); ++it)
-//						vtreangls.push_back(*it);
-//					MergeTreanglsAll(vtreangls,&clique);
-//
-//					if (max_clique.size() < clique.size())
-//						max_clique.swap(clique);
-//                }
-//			}
-//		}
-//
-//		unsigned clq_size =  max_clique.empty() ? 2 : max_clique.size();
-//		Log += Str.sprintf("\n\nКоличество треугольных клик: %8d",Cnt);
-//		Log += Str.sprintf("\nМаксимальная клика (%4d ) : ",clq_size);
-//		Log += ToString(max_clique);
-//
-//		QueryPerformanceCounter(&TimeEnd);
-//
-//		double Time = static_cast<double>(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
-//
-//		if (Terminated) {
-//			ToConsol("Процесс остановлен! Максимальная клика не найдена.");
-//			return;
-//		}
-//
-//		ToConsol(Str.sprintf("\nКоличество треугольных клик: %8d ",Cnt));
-//		ToConsol(Str.sprintf("\nКоличество операций: %8d ",Q));
-//		ToConsol(Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time));
-//
-//		ToConsol("\nМаксимальная клика найдена.");
-//
-//		Log += Str.sprintf("\nКоличество операций: %8d ",Q);
-//		Log += Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time);
-//
-//		ToLog(Log);
-//}
-////---------------------------------------------------------------------------
-//
-//
-void __fastcall TThreadCLQ::SearchCliqueTreanglSel()
+void __fastcall TThreadCLQ::SearchCliqueTreangl2()
 {
 		FormMain->RichEditLog->Clear();
 
@@ -1379,7 +1236,6 @@ void __fastcall TThreadCLQ::Sort(const vs_t &lsa,v_t *mv,v_t *mvr,vs_t *lsa_sort
 //------------------------------------------------------------------------------
 
 
-
 void __fastcall TThreadCLQ::LastChecked(const vs_t &lsa,s_t *clq)
 {
 	if (clq->empty())
@@ -1398,11 +1254,195 @@ void __fastcall TThreadCLQ::LastChecked(const vs_t &lsa,s_t *clq)
 			++Q;
 			if (lsa.at(*it_clq).find(*it) == lsa.at(*it_clq).end()) {
 				isAdd = false;
-                break;
+				break;
 			}
 		}
 
 		if (isAdd)
-            clq->insert(*it);
+			clq->insert(*it);
 	}
 }
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::SearchColoringBipartite()
+{
+		FormMain->RichEditLog->Clear();
+
+		ToConsol("search-coloring-by-bipartite " + FileName);
+
+		if (Vertex.size() == 0) {
+			ToConsol("Ошибка! Не задан граф. Максимальная клика не найдена.");
+			return;
+		}
+
+		Q        = 0;
+		Cnt      = 0;
+		Cover    = v_t();
+		LogShort = "\n\n";
+		Log      = "";
+		AnsiString Str = "";
+
+		QueryPerformanceCounter(&TimeBegin);
+
+		vp_t edges;
+        unsigned coloring = 0;
+
+		BuildEdgesCover(Vertex,&edges);
+		BuildBipartGraph(Vertex,edges,&coloring,&Cover);
+
+		QueryPerformanceCounter(&TimeEnd);
+		double Time = static_cast<double>(TimeEnd.QuadPart - TimeBegin.QuadPart) / Freq.QuadPart;
+
+		ToConsol(Str.sprintf("\n\nХроматическое число: %8d",coloring));
+		ToConsol(Str.sprintf("\nМаксимальное независимое множество (%d): ",Cover.size()));
+		ToConsol(Str.sprintf("\nКоличество операций: %8d ",Q));
+		ToConsol(Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time));
+
+		ToConsol("\nХроматическое число графа найдено.");
+
+		Log += Str.sprintf("\n\nХроматическое число: %8d",coloring);
+		Log += Str.sprintf("\nМаксимальное независимое множество (%d): ",Cover.size());
+		Log += ToString(Cover);
+		Log += Str.sprintf("\nКоличество операций: %8d ",Q);
+		Log += Str.sprintf("\nВремя работы алгоритма: %8.8f с",Time);
+		ToLog(Log);
+}
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::BuildEdgesCover(const vs_t &ls,vp_t *edges)
+{
+	v_t visit(ls.size(),0);
+	unsigned cnt = 0;
+	if (WriteLog)
+		Log += "\n\nФормируем множество Z:";
+	BuildEdgesCover(1,ls,&cnt,&visit,edges);
+}
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::BuildEdgesCover(unsigned v,const vs_t &ls,unsigned *cnt,v_t *visit,vp_t *edges)
+{
+	visit->operator[](v) = 1;
+
+	for (s_t::iterator it = ls.at(v).begin(); it != ls.at(v).end(); ++it){
+
+		unsigned u = *it;
+
+		++Q;
+
+		if (!visit->at(u)){
+
+			edges->push_back(make_pair<int,int>(v,u));
+			*cnt += 1;
+
+			if (WriteLog)
+				Log += "\n\t - " + IntToStr((int)v) + ", " + IntToStr((int)u);
+
+			++Q;
+			if (*cnt < ls.size() - 1)
+				BuildEdgesCover(u,ls,cnt,visit,edges);
+		}
+	}
+}
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::BuildBipartGraph(const vs_t &ls,const vp_t &edges,unsigned *coloring,v_t *mis)
+{
+	vs_t parts(2);
+	parts[0].insert(edges.at(0).first);
+	parts[1].insert(edges.at(0).second);
+
+	if (WriteLog) {
+		Log += "\n\nФормируем двудольный граф:";
+		Log += "\n\n\t - добовляем ребро: " +  IntToStr(edges.at(0).first) + ", " + IntToStr(edges.at(0).second);
+		Log += "\n\n\t - доли:\n";
+		Log += ToString(parts,"\t - ");
+	}
+
+	for (unsigned i = 1; i < edges.size(); ++i) {
+
+		if (Terminated) {
+			ToConsol("Процесс остановлен! Максимальная клика не найдена.");
+			return;
+		}
+
+		BuildBipartGraph(edges.at(i).first,ls,&parts);
+		BuildBipartGraph(edges.at(i).second,ls,&parts);
+
+		if (WriteLog) {
+			Log += "\n\n\t - добовляем ребро: " +  IntToStr(edges.at(i).first) + ", " + IntToStr(edges.at(i).second);
+			Log += "\n\n\t - доли:\n" + ToString(parts,"\t - ");
+        }
+	}
+
+	(*coloring) = parts.size();
+
+	unsigned imax = 0;
+
+	Q += parts.size();
+
+	for (unsigned i = 1; i < parts.size(); ++i)
+		if (parts.at(imax).size() < parts.at(i).size())
+			imax = i;
+
+	for (s_t::iterator it = parts.at(imax).begin(); it != parts.at(imax).end(); ++it)
+        mis->push_back(*it);
+}
+//------------------------------------------------------------------------------
+
+
+void __fastcall TThreadCLQ::BuildBipartGraph(int v,const vs_t &ls,vs_t *parts)
+{
+	Q += parts->size();
+
+	for (unsigned i = 0; i < parts->size(); ++i) {
+
+		Q += parts->at(i).size();
+
+		if (parts->at(i).find(v) != parts->at(i).end())
+			return;
+	}
+
+	int imax = -1;
+
+	for (unsigned i = 0; i < parts->size(); ++i){
+
+		++Q;
+
+		if (!IsConnect(v,parts->at(i),ls)) {
+			if (imax == -1)
+				imax = i;
+			else if (parts->at(imax).size() < parts->at(i).size())
+				imax = i;
+		}
+	}
+
+	++Q;
+
+	if (imax == -1) {
+		parts->push_back(s_t());
+		parts->operator[](parts->size() - 1).insert(v);
+	} else {
+		parts->operator[](imax).insert(v);
+	}
+}
+//------------------------------------------------------------------------------
+
+
+bool __fastcall TThreadCLQ::IsConnect(int v,const s_t &part,const vs_t &ls)
+{
+	for (s_t::iterator it = part.begin(); it != part.end(); ++it) {
+		++Q;
+		if (ls.at(v).find(*it) != ls.at(v).end()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+//---------------------------------------------------------------------------
+
+

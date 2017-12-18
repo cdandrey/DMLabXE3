@@ -122,12 +122,13 @@ __published:	// IDE-managed Components
 	TMenuItem *N2;
 	TMenuItem *MenuReports_GraphLogShort;
 	TAction *ActionGraphLogShort;
-	TTabSheet *TabSheetCLQSel;
-	TRadioGroup *RadioGroupCLQMerge;
-	TRadioGroup *RadioGroupCLQTreangls;
-	TRadioGroup *RadioGroupCLQSort;
-	TCheckBox *CheckBoxLastChecked;
+	TTabSheet *TSH_CLR;
+	TRadioGroup *RG_CLQ_MERGE;
+	TRadioGroup *RG_CLQ_TREANGLS;
+	TRadioGroup *RG_CLQ_SORT;
+	TCheckBox *CHB_CLQ_LAST_CHECKED;
 	TRadioGroup *RG_MIS_SPPA_PAIR;
+	TListView *LV_ALG_CLR;
 
 	void __fastcall ListBoxGraphsClick(TObject *Sender);
 
@@ -150,6 +151,8 @@ __published:	// IDE-managed Components
 	void __fastcall ListViewAlgCLQDblClick(TObject *Sender);
 	void __fastcall ToolButtonAlgLogWriteClick(TObject *Sender);
 	void __fastcall ActionGraphLogShortExecute(TObject *Sender);
+	void __fastcall ListViewAlgCLQClick(TObject *Sender);
+	void __fastcall LV_ALG_CLRDblClick(TObject *Sender);
 
 public:
 
@@ -203,8 +206,6 @@ private:
 
 	alg_t 		*Alg;
 	param_alg_t *ParamAlg;
-
-    void __fastcall RunCLQSelect();
 
 };
 //---------------------------------------------------------------------------
