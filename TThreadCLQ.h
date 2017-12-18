@@ -32,15 +32,14 @@ class TThreadCLQ : public TThread
 		   void __fastcall UnLock();
 
 		   AnsiString __fastcall ToString(const v_t &Data,int Begin = 0);
-		   AnsiString __fastcall ToString(const s_t &Data);
+		   AnsiString __fastcall ToString(const s_t &Data,AnsiString Tab = "");
 		   AnsiString __fastcall ToString(ss_t &Data);
-		   AnsiString __fastcall ToString(vs_t &Data);
+		   AnsiString __fastcall ToString(vs_t &Data,AnsiString Tab = "");
 
 		   s_t        __fastcall ToSet(const v_t &data);
 
 		   void       __fastcall SearchCliqueTreangl();
-//		   void       __fastcall SearchCliqueTreangl2();
-		   void       __fastcall SearchCliqueTreanglSel();
+		   void       __fastcall SearchCliqueTreangl2();
 
 		   void       __fastcall SplitOnTreanglsAll(
 									 unsigned    u       ,
@@ -127,6 +126,13 @@ class TThreadCLQ : public TThread
 						);
 
 
+		   // graph coloring
+		   void __fastcall SearchColoringBipartite();
+		   void __fastcall BuildEdgesCover(const vs_t &ls,vp_t *edges);
+		   void __fastcall BuildEdgesCover(unsigned v,const vs_t &ls,unsigned *cnt,v_t *visit,vp_t *edges);
+		   void __fastcall BuildBipartGraph(const vs_t &ls,const vp_t &edges,unsigned *coloring,v_t *mis);
+		   void __fastcall BuildBipartGraph(int v,const vs_t &ls,vs_t *parts);
+           bool __fastcall IsConnect(int v,const s_t &part,const vs_t &ls);
 
 protected:
 	void __fastcall Execute();
@@ -140,7 +146,6 @@ public:
 	int N;                  // numbers of vertex
 	int GraphIndex;         // number of graph in list
 
-	vs_t  Edges;            // list of edges
 	vs_t  Vertex;           // list adjacent of vertex
 	vs_t  VertexAdd;        // list adjacent of vertex of graphs complement
 

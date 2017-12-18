@@ -3944,3 +3944,5 @@ bool __fastcall TThreadSearchCover::SppaIsMerge(unsigned u,const v_t& mis,const 
 
 	return true;
 }
+//---------------------------------------------------------------------------
+

@@ -92,7 +92,7 @@ void TFormMain::ActionsUnLock()
 	ActionOpen->Enabled       = true;
 	ActionSave->Enabled       = true;
 	ActionSaveList->Enabled   = true;
-	ActionReCreate->Enabled = true;
+	ActionReCreate->Enabled   = true;
 	ActionDel->Enabled        = true;
 
 	// действия меню "Операции"
@@ -553,8 +553,9 @@ void __fastcall TFormMain::ActionRunExecute(TObject *Sender)
 			case 1: ListViewAlgCLQ->OnDblClick(Sender);
 					break;
 
-			case 2: RunCLQSelect();
+			case 2: LV_ALG_CLR->OnDblClick(Sender);
 					break;
+
 		}
 
 	} else if (PageControlMain->ActivePageIndex == 1) {
@@ -1202,7 +1203,7 @@ void __fastcall TFormMain::ListBoxTestsClick(TObject *Sender)
 
 void __fastcall TFormMain::ListViewAlgMISClick(TObject *Sender)
 {
-    // view extra options of alg
+	// view extra options of alg
 	if (ListViewAlgMIS->Selected) {
 
 		if (ListViewAlgMIS->Selected->Indent == SPPA){
@@ -1541,17 +1542,26 @@ void __fastcall TFormMain::ListViewAlgCLQDblClick(TObject *Sender)
 
 	// определяем какой алгоритм нужно выполнить и заносим его в вектор
 	v_t CheckedFunc;
-	if (ListViewAlgCLQ->Selected)
+	unsigned SelectAlg = 0;
+	if (ListViewAlgCLQ->Selected) {
 		CheckedFunc.push_back(ListViewAlgCLQ->Selected->StateIndex);
+		if (ListViewAlgCLQ->Selected->StateIndex == CLQ_TRE2){
+			SelectAlg |= RG_CLQ_SORT->ItemIndex;
+			SelectAlg |= (RG_CLQ_TREANGLS->ItemIndex<<1);
+			SelectAlg |= (RG_CLQ_MERGE->ItemIndex<<3);
+			SelectAlg |= (CHB_CLQ_LAST_CHECKED->Checked<<4);
+		}
+	}
+
 
 	if (CheckedFunc.size() > 0) {
 
 		ThrClique                 = new TThreadCLQ(true);
 		ThrClique->ListFuncExecut = CheckedFunc;
+		ThrClique->SelectAlg      = SelectAlg;
 		ThrClique->GraphIndex     = GraphIndex;
 		ThrClique->FileName       = Graphs[GraphIndex]->FileName;
 		ThrClique->N              = Graphs[GraphIndex]->N;
-		ThrClique->Edges          = Graphs[GraphIndex]->Edges;
 		ThrClique->Vertex         = Graphs[GraphIndex]->Vertex;
 		ThrClique->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
 		ThrClique->WriteLog       = ToolButtonAlgLogWrite->Down;
@@ -1578,29 +1588,80 @@ void __fastcall TFormMain::ActionGraphLogShortExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 
 
-void __fastcall TFormMain::RunCLQSelect()
+void __fastcall TFormMain::ListViewAlgCLQClick(TObject *Sender)
 {
-	int GraphIndex = ListBoxGraphs->ItemIndex;
+	// view extra options of alg
+	if (ListViewAlgCLQ->Selected) {
 
-	unsigned SelectAlg = 0;
-	SelectAlg |= RadioGroupCLQSort->ItemIndex;
-	SelectAlg |= (RadioGroupCLQTreangls->ItemIndex<<1);
-	SelectAlg |= (RadioGroupCLQMerge->ItemIndex<<3);
-    SelectAlg |= (CheckBoxLastChecked->Checked<<4);
+		if (ListViewAlgCLQ->Selected->StateIndex == CLQ_TRE2){
+			RG_CLQ_SORT->Visible = true;
+			RG_CLQ_MERGE->Visible = true;
+			RG_CLQ_TREANGLS->Visible = true;
+			CHB_CLQ_LAST_CHECKED->Visible = true;
+		} else {
+			RG_CLQ_SORT->Visible = false;
+			RG_CLQ_MERGE->Visible = false;
+			RG_CLQ_TREANGLS->Visible = false;
+			CHB_CLQ_LAST_CHECKED->Visible = false;
+		}
+	}
 
-	ThrClique                 = new TThreadCLQ(true);
-    ThrClique->SelectAlg      = SelectAlg;
-	ThrClique->GraphIndex     = GraphIndex;
-	ThrClique->FileName       = Graphs[GraphIndex]->FileName;
-	ThrClique->N              = Graphs[GraphIndex]->N;
-	ThrClique->Edges          = Graphs[GraphIndex]->Edges;
-	ThrClique->Vertex         = Graphs[GraphIndex]->Vertex;
-	ThrClique->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
-	ThrClique->WriteLog       = ToolButtonAlgLogWrite->Down;
+	unsigned int GraphIndex = ListBoxGraphs->ItemIndex;
 
-	ThrClique->Resume();
+	if (GraphIndex < 0 || GraphIndex >= Graphs.size())
+		return;
+
+	if (ActionAlgLogView->Checked) {
+
+		// выводим подробный отчет выбранного алгоритма
+
+		if (ListViewAlgCLQ->Selected) {
+
+			int Alg = ListViewAlgCLQ->Selected->Indent;
+			RichEditLog->Lines->Clear();
+			RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[Alg].LogShort);
+			RichEditLog->Lines->Append("\n");
+			RichEditLog->Lines->Append(Graphs[GraphIndex]->ParamCovers[Alg].Log);
+
+		}
+
+	} else {
+		// выводим краткие отчеты всех алгоритмов
+		ParamCoversToRichEdit();
+	}
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::LV_ALG_CLRDblClick(TObject *Sender)
+{
+	int GraphIndex = ListBoxGraphs->ItemIndex;
 
+	if (GraphIndex < 0 || GraphIndex > ListBoxGraphs->Count) {
+		ToConsol("Невозможно выполнить алгоритм - не выбран граф!");
+		return;
+	}
+
+	// определяем какой алгоритм нужно выполнить и заносим его в вектор
+	v_t CheckedFunc;
+
+	if (LV_ALG_CLR->Selected) {
+		CheckedFunc.push_back(LV_ALG_CLR->Selected->StateIndex);
+	}
+
+
+	if (CheckedFunc.size() > 0) {
+
+		ThrClique                 = new TThreadCLQ(true);
+		ThrClique->ListFuncExecut = CheckedFunc;
+		ThrClique->GraphIndex     = GraphIndex;
+		ThrClique->FileName       = Graphs[GraphIndex]->FileName;
+		ThrClique->N              = Graphs[GraphIndex]->N;
+		ThrClique->Vertex         = Graphs[GraphIndex]->Vertex;
+		ThrClique->VertexAdd      = Graphs[GraphIndex]->VertexAdd;
+		ThrClique->WriteLog       = ToolButtonAlgLogWrite->Down;
+
+		ThrClique->Resume();
+	}
+}
+//---------------------------------------------------------------------------
 
